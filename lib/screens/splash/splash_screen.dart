@@ -1,5 +1,6 @@
-import 'package:TINH_Mobile/helper/navigation_helper.dart';
-import 'package:TINH_Mobile/screens/home_screen/home_screen.dart';
+import 'package:tinh/const/colors_conts.dart';
+import 'package:tinh/helper/navigation_helper.dart';
+import 'package:tinh/screens/home_screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
@@ -8,7 +9,7 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     void navigate(BuildContext context) {
       Future.delayed(Duration(seconds: 2)).whenComplete(() {
-        NavigationHelper.push(context, HomeScreen());
+        NavigationHelper.pushReplacement(context, HomeScreen());
       });
     }
 
@@ -19,7 +20,7 @@ class SplashScreen extends StatelessWidget {
         home: Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          color: Color.fromRGBO(20, 72, 84, 1),
+          color: ColorsConts.primaryColor,
           child: SingleChildScrollView(
             child: AnimationLimiter(
               child: Column(

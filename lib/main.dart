@@ -1,4 +1,4 @@
-import 'package:TINH_Mobile/screens/splash/splash_screen.dart';
+import 'package:tinh/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {

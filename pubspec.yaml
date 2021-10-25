@@ -1,4 +1,4 @@
-name: TINH_Mobile
+name: tinh
 description: A new Flutter project.
 
 publish_to: 'none' 
@@ -7,13 +7,23 @@ environment:
 
 dependencies:
   flutter:
-    sdk: flutter
+    sdk: flutter 
+
+
   cupertino_icons: ^1.0.0
   flutter_staggered_animations: "^1.0.0"
+  font_awesome_flutter: ^9.1.0
+  dio: ^4.0.0
+  mobx: ^2.0.5
+  flutter_spinkit: ^5.1.0
+  flutter_mobx: ^2.0.2
+  provider: ^6.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  mobx_codegen: 
+  build_runner: 
 
 flutter:
   assets:
