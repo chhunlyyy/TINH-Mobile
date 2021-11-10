@@ -9,6 +9,7 @@ import 'package:tinh/models/deparment/department_model.dart';
 import 'package:tinh/models/product/product_model.dart';
 import 'package:tinh/screens/home_screen/components/department_item.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
+import 'package:tinh/screens/home_screen/components/search_filter_dialog.dart';
 import 'package:tinh/store/main/main_store.dart';
 
 // ignore: must_be_immutable
@@ -247,8 +248,18 @@ class _HomeScreenState extends State<HomeScreen> {
         cursorColor: ColorsConts.primaryColor,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.zero,
-            hintText: 'ស្វែងរកទំនិញ',
+            hintText: _mainStore.searchFilterStore.radioValue == 1 ? 'ស្វែងរកតាមឈ្មោះទំនិញ' : 'ស្វែងរកតាមប្រភេទទំនិញ',
             border: InputBorder.none,
+            suffixIcon: InkWell(
+              onTap: () {
+                showSearchFilterDialog(context, _mainStore);
+              },
+              child: Icon(
+                Icons.filter_list_outlined,
+                size: 26,
+                color: ColorsConts.primaryColor,
+              ),
+            ),
             prefixIcon: Icon(
               Icons.search,
               size: 26,
