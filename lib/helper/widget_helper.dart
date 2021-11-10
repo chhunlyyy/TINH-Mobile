@@ -4,27 +4,33 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:tinh/const/colors_conts.dart';
 
 class WidgetHelper {
-  static Widget loadingWidget() {
+  static Widget loadingWidget(BuildContext context) {
     return Container(
-      width: 100,
-      height: 100,
-      child: Column(
-        children: [
-          SpinKitFadingCircle(
-            itemBuilder: (BuildContext context, int index) {
-              return DecoratedBox(
-                decoration: BoxDecoration(
-                  color: index.isEven ? ColorsConts.primaryColor : Colors.green,
-                ),
-              );
-            },
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: Center(
+        child: Container(
+          width: 100,
+          height: 100,
+          child: Column(
+            children: [
+              SpinKitFadingCircle(
+                itemBuilder: (BuildContext context, int index) {
+                  return DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: index.isEven ? ColorsConts.primaryColor : Colors.green,
+                    ),
+                  );
+                },
+              ),
+              SizedBox(height: 10),
+              Text(
+                'សូមរងចាំ',
+                style: TextStyle(color: ColorsConts.primaryColor, fontSize: 18),
+              )
+            ],
           ),
-          SizedBox(height: 10),
-          Text(
-            'សូមរងចាំ',
-            style: TextStyle(color: ColorsConts.primaryColor, fontSize: 18),
-          )
-        ],
+        ),
       ),
     );
   }

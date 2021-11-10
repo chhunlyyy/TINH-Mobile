@@ -2,6 +2,11 @@
 
 A new Flutter project.
 
+
+## GENARATE STORE
+flutter packages pub run build_runner build watch
+
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
