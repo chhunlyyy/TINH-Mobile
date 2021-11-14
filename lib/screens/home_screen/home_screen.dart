@@ -1,5 +1,6 @@
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:mobx/mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/deparment/department_model.dart';
 import 'package:tinh/models/product/product_model.dart';
 import 'package:tinh/screens/home_screen/components/department_item.dart';
+import 'package:tinh/screens/home_screen/components/product_entity_list.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
 import 'package:tinh/screens/home_screen/components/search_filter_dialog.dart';
 import 'package:tinh/store/main/main_store.dart';
@@ -21,15 +23,48 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   late double _width;
   late double _height;
+  TextEditingController _searchController = TextEditingController();
   List<DepartmentModel>? _departmentmodelList = [];
   List<ProductModel>? _productModelList = [];
+  List<ProductModel>? _searchProductList = [];
   int _cartNum = 0;
+  int _productPageIndex = 0;
+  int _productPageSize = 5;
+  int _searchPageSize = 5;
 
   MainStore _mainStore = MainStore();
 
+  void _onSearch(String text) {
+    if (_searchController.text.isEmpty) {
+      _productPageSize = 5;
+      _mainStore.productStore.loadData(pageIndex: _productPageIndex, pageSize: _productPageSize);
+    } else {
+      _searchPageSize = 5;
+      _searchProductList!.clear();
+      _mainStore.productStore.search(name: text, pageIndex: _productPageIndex, pageSize: _searchPageSize);
+    }
+  }
+
   Future<void> _getData() async {
+    _productModelList!.clear();
+    _productPageIndex = 0;
     _mainStore.departmentStore.loadData();
-    _mainStore.productStore.loadData();
+    if (_searchController.text.isEmpty) {
+      _productPageSize = 5;
+      _mainStore.productStore.loadData(pageIndex: _productPageIndex, pageSize: _productPageSize);
+    } else {
+      _searchPageSize = 5;
+      _searchProductList!.clear();
+      _mainStore.productStore.search(name: _searchController.text, pageIndex: _productPageIndex, pageSize: _searchPageSize);
+    }
+  }
+
+  Future<void> _onLoad() {
+    if (_searchController.text.isEmpty) {
+      return _mainStore.productStore.loadData(pageSize: _productPageSize, pageIndex: _productPageIndex += _productPageSize);
+    } else {
+      return _mainStore.productStore.search(name: _searchController.text, pageSize: _productPageSize, pageIndex: _searchPageSize += _searchPageSize);
+    }
   }
 
   @override
@@ -55,42 +90,48 @@ class _HomeScreenState extends State<HomeScreen> {
 
       if (observableDepartmentFuture != null && observableProductFuture != null) {
         _departmentmodelList = observableDepartmentFuture.value;
-        _productModelList = observableProductFuture.value;
-        switch (observableDepartmentFuture.status) {
-          case FutureStatus.pending:
-            body = WidgetHelper.loadingWidget(context);
-            break;
-          case FutureStatus.fulfilled:
-            {
-              body = Container(
-                height: _height,
-                width: _width,
-                child: EasyRefresh(
-                  onRefresh: _getData,
-                  child: Column(
+
+        if (observableProductFuture.value != null) {
+          if (_searchController.text.isNotEmpty) {
+            for (var item in observableProductFuture.value!) {
+              if (!_searchProductList!.contains(item)) {
+                _searchProductList!.add(item);
+              }
+            }
+          } else {
+            for (var item in observableProductFuture.value!) {
+              _productModelList!.add(item);
+            }
+          }
+        }
+
+        if (_productModelList!.isNotEmpty && _departmentmodelList!.isNotEmpty || _searchProductList!.isNotEmpty) {
+          body = Container(
+            height: _height,
+            width: _width,
+            child: EasyRefresh(
+              header: BallPulseHeader(color: ColorsConts.primaryColor),
+              onLoad: _onLoad,
+              onRefresh: _getData,
+              child: Column(
+                children: [
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Expanded(child: _searchWidget()),
-                          _cartWidget(),
-                        ],
-                      ),
-                      _departmentLabel(),
-                      _departmentWidget(),
-                      _productLabel(),
-                      _productWidget(),
+                      Expanded(child: _searchWidget()),
+                      _cartWidget(),
                     ],
                   ),
-                ),
-              );
-            }
-            break;
-
-          default:
-            body = WidgetHelper.loadingWidget(context);
+                  _departmentLabel(),
+                  _departmentWidget(),
+                  _productLabel(),
+                  _productWidget(),
+                ],
+              ),
+            ),
+          );
+        } else {
+          body = WidgetHelper.loadingWidget(context);
         }
-      } else {
-        body = Container();
       }
 
       return body;
@@ -153,9 +194,13 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisCount: 2,
             padding: EdgeInsets.all(1.0),
             childAspectRatio: 8 / 12.0,
-            children: List<Widget>.generate(_productModelList!.length, (index) {
-              return GridTile(child: WidgetHelper.animation(index, ProductItem(productModel: _productModelList![index])));
-            }),
+            children: _searchController.text.isEmpty
+                ? List<Widget>.generate(_productModelList!.length, (index) {
+                    return GridTile(child: WidgetHelper.animation(index, ProductItem(productModel: _productModelList![index])));
+                  })
+                : List<Widget>.generate(_searchProductList!.length, (index) {
+                    return GridTile(child: WidgetHelper.animation(index, ProductItem(productModel: _searchProductList![index])));
+                  }),
           )
         // Container(
         //     child: Column(
@@ -244,22 +289,26 @@ class _HomeScreenState extends State<HomeScreen> {
       height: 40,
       margin: EdgeInsets.only(left: 10, right: 10),
       child: TextFormField(
+        onChanged: (String text) {
+          _onSearch(text);
+        },
+        controller: _searchController,
         style: TextStyle(color: ColorsConts.primaryColor),
         cursorColor: ColorsConts.primaryColor,
         decoration: InputDecoration(
             contentPadding: EdgeInsets.zero,
             hintText: _mainStore.searchFilterStore.radioValue == 1 ? 'ស្វែងរកតាមឈ្មោះទំនិញ' : 'ស្វែងរកតាមប្រភេទទំនិញ',
             border: InputBorder.none,
-            suffixIcon: InkWell(
-              onTap: () {
-                showSearchFilterDialog(context, _mainStore);
-              },
-              child: Icon(
-                Icons.filter_list_outlined,
-                size: 26,
-                color: ColorsConts.primaryColor,
-              ),
-            ),
+            // suffixIcon: InkWell(
+            //   onTap: () {
+            //     showSearchFilterDialog(context, _mainStore);
+            //   },
+            //   child: Icon(
+            //     Icons.filter_list_outlined,
+            //     size: 26,
+            //     color: ColorsConts.primaryColor,
+            //   ),
+            // ),
             prefixIcon: Icon(
               Icons.search,
               size: 26,

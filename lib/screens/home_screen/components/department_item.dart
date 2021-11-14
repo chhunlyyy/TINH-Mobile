@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:tinh/models/deparment/department_model.dart';
+import 'package:tinh/widgets/show_image_widget.dart';
 
 class DepartmentItem extends StatelessWidget {
   final DepartmentModel departmentModel;
@@ -20,8 +21,11 @@ class DepartmentItem extends StatelessWidget {
             child: Container(
               width: 65,
               height: 65,
+              child: DisplayImage(
+                imageBorderRadius: 0,
+                imageString: departmentModel.image,
+              ),
               decoration: BoxDecoration(
-                image: DecorationImage(image: MemoryImage(base64Decode(departmentModel.image))),
                 color: Color.fromRGBO(255, 236, 223, 1),
                 borderRadius: BorderRadius.circular(5),
               ),

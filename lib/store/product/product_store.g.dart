@@ -29,8 +29,20 @@ mixin _$ProductStore on _ProductStore, Store {
   final _$loadDataAsyncAction = AsyncAction('_ProductStore.loadData');
 
   @override
-  Future<void> loadData() {
-    return _$loadDataAsyncAction.run(() => super.loadData());
+  Future<void> loadData({required int pageSize, required dynamic pageIndex}) {
+    return _$loadDataAsyncAction
+        .run(() => super.loadData(pageSize: pageSize, pageIndex: pageIndex));
+  }
+
+  final _$searchAsyncAction = AsyncAction('_ProductStore.search');
+
+  @override
+  Future<void> search(
+      {required String name,
+      required int pageSize,
+      required dynamic pageIndex}) {
+    return _$searchAsyncAction.run(() =>
+        super.search(name: name, pageSize: pageSize, pageIndex: pageIndex));
   }
 
   @override

@@ -39,7 +39,7 @@ class WidgetHelper {
     return AnimationConfiguration.staggeredList(
       position: index,
       child: SlideAnimation(
-        verticalOffset: 50.0,
+        verticalOffset: 100.0,
         child: FadeInAnimation(child: child),
       ),
     );

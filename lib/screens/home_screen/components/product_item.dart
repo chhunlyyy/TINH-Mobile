@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/models/product/product_model.dart';
+import 'package:tinh/widgets/show_image_widget.dart';
 
 class ProductItem extends StatelessWidget {
   final ProductModel productModel;
@@ -29,12 +30,14 @@ class ProductItem extends StatelessWidget {
             children: [
               Container(
                   margin: EdgeInsets.all(10),
-                  padding: EdgeInsets.all(5),
                   width: MediaQuery.of(context).size.width / 2 - 50,
                   height: 180,
+                  child: DisplayImage(
+                    imageBorderRadius: 20,
+                    imageString: productModel.images![0],
+                  ),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    image: DecorationImage(fit: BoxFit.fill, image: MemoryImage(base64Decode(productModel.images![0]))),
                   )),
               Visibility(
                 visible: productModel.discount.toString() != '0',

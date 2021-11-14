@@ -5,9 +5,22 @@ import 'package:tinh/http/http_config.dart';
 import 'package:tinh/models/product/product_model.dart';
 
 class ProductServices {
-  Future<List<ProductModel>> getAllProducts() async {
+  Future<List<ProductModel>> getAllProducts({int pageSize = 10, int pageIndex = 0}) async {
     try {
-      return await httpApiService.get(HttApi.API_PRODUCTS, null, new Options(headers: HttpConfig.headers)).then((value) {
+      Map<String, dynamic> params = {'pageSize': pageSize, 'pageIndex': pageIndex};
+      return await httpApiService.get(HttApi.API_PRODUCTS, params, new Options(headers: HttpConfig.headers)).then((value) {
+        return List<ProductModel>.from(value.data.map((x) => ProductModel.fromJson(x)));
+      });
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
+  Future<List<ProductModel>> searchProduct({required String name, int pageSize = 10, int pageIndex = 0}) async {
+    try {
+      Map<String, dynamic> params = {'name': name, 'pageSize': pageSize, 'pageIndex': pageIndex};
+      return await httpApiService.get(HttApi.API_SEARCH, params, new Options(headers: HttpConfig.headers)).then((value) {
         return List<ProductModel>.from(value.data.map((x) => ProductModel.fromJson(x)));
       });
     } catch (e) {
