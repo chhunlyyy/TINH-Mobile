@@ -44,4 +44,40 @@ class WidgetHelper {
       ),
     );
   }
+
+  static Widget appBar(BuildContext context) {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      height: 60,
+      child: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Icon(
+                          Icons.arrow_back_ios,
+                          size: 25,
+                          color: ColorsConts.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                )),
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(color: Colors.grey.withOpacity(.1), shape: BoxShape.circle),
+          ),
+          Expanded(child: Container())
+        ],
+      ),
+    );
+  }
 }

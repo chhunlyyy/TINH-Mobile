@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class NavigationHelper {
   static push(BuildContext context, Widget widget) {
     Navigator.of(context).push(PageRouteBuilder(
-        transitionDuration: Duration(milliseconds: 110),
+        transitionDuration: Duration(milliseconds: 300),
         transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
           return new SlideTransition(
             position: new Tween<Offset>(
@@ -20,7 +20,7 @@ class NavigationHelper {
 
   static pushReplacement(BuildContext context, Widget widget) {
     Navigator.of(context).pushReplacement(PageRouteBuilder(
-        transitionDuration: Duration(milliseconds: 110),
+        transitionDuration: Duration(milliseconds: 300),
         transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
           return new SlideTransition(
             position: new Tween<Offset>(

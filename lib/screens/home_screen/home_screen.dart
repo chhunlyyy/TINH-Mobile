@@ -6,10 +6,9 @@ import 'package:tinh/const/colors_conts.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinh/helper/widget_helper.dart';
-import 'package:tinh/models/deparment/department_model.dart';
+import 'package:tinh/models/category/category_model.dart';
 import 'package:tinh/models/product/product_model.dart';
-import 'package:tinh/screens/home_screen/components/department_item.dart';
-import 'package:tinh/screens/home_screen/components/product_entity_list.dart';
+import 'package:tinh/screens/home_screen/components/category_item.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
 import 'package:tinh/screens/home_screen/components/search_filter_dialog.dart';
 import 'package:tinh/store/main/main_store.dart';
@@ -24,9 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
   late double _width;
   late double _height;
   TextEditingController _searchController = TextEditingController();
-  List<DepartmentModel>? _departmentmodelList = [];
+
   List<ProductModel>? _productModelList = [];
   List<ProductModel>? _searchProductList = [];
+  List<CategoryModel>? _categoryModelList = [];
   int _cartNum = 0;
   int _productPageIndex = 0;
   int _productPageSize = 5;
@@ -42,7 +42,6 @@ class _HomeScreenState extends State<HomeScreen> {
       _productPageIndex = 0;
       _mainStore.productStore.loadData(pageIndex: _productPageIndex, pageSize: _productPageSize);
     } else {
-      _searchPageIndex = 0;
       _searchPageSize = 5;
       _searchProductList!.clear();
       _mainStore.productStore.search(name: text, pageIndex: _searchPageIndex, pageSize: _searchPageSize);
@@ -50,9 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _getData() async {
+    _mainStore.categoryStore.loadData();
+
     _productModelList!.clear();
     _productPageIndex = 0;
-    _mainStore.departmentStore.loadData();
     if (_searchController.text.isEmpty) {
       _productPageSize = 5;
       _productPageIndex = 0;
@@ -77,7 +77,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
     _mainStore.homeScreenStore.changeLoading();
     _getData();
   }
@@ -97,13 +96,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBody() {
     Widget body = WidgetHelper.loadingWidget(context);
     return Observer(builder: (_) {
-      final observableDepartmentFuture = _mainStore.departmentStore.observableDepartmentFuture;
       final observableProductFuture = _mainStore.productStore.observableFutureProduct;
-
-      if (observableDepartmentFuture != null && observableProductFuture != null) {
-        _departmentmodelList = observableDepartmentFuture.value;
-
-        if (observableProductFuture.value != null) {
+      final observableCategoryFuture = _mainStore.categoryStore.observableFutureCategory;
+      if (observableProductFuture != null && observableCategoryFuture != null) {
+        if (observableProductFuture.value != null && observableCategoryFuture.value != null) {
           if (_searchController.text.isNotEmpty) {
             for (var item in observableProductFuture.value!) {
               if (!_searchProductList!.contains(item)) {
@@ -117,9 +113,10 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         }
 
+        _categoryModelList = observableCategoryFuture.value;
+
         if (_mainStore.homeScreenStore.isLoading) {
           body = WidgetHelper.loadingWidget(context);
-          _productModelList!.clear();
         } else {
           body = Container(
             height: _height,
@@ -136,8 +133,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       _cartWidget(),
                     ],
                   ),
-                  _departmentLabel(),
-                  _departmentWidget(),
+                  _categoryLabel(),
+                  _categoryWidget(),
                   _productLabel(),
                   _productWidget(),
                 ],
@@ -163,19 +160,13 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(fontSize: 18),
             ),
           ),
-          // GestureDetector(
-          //   onTap: () => _departmentStore.changeDepartmentDisplay(),
-          //   child: Text(
-          //     !_departmentStore.isShowAllDepartment ? 'មើលទាំងអស់' : 'បង្រួម',
-          //     style: TextStyle(color: ColorsConts.primaryColor, fontSize: 15),
-          //   ),
-          // )
+          //
         ],
       ),
     );
   }
 
-  Widget _departmentLabel() {
+  Widget _categoryLabel() {
     return Container(
       margin: EdgeInsets.only(left: 10, right: 10, top: 20),
       width: _width,
@@ -188,9 +179,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () => _mainStore.departmentStore.changeDepartmentDisplay(),
+            onTap: () => _mainStore.categoryStore.changeCategoryDisplay(),
             child: Text(
-              _mainStore.departmentStore.isShowAllDepartment ? 'មើលទាំងអស់' : 'បង្រួម',
+              !_mainStore.categoryStore.isShowAllCategory ? 'មើលទាំងអស់' : 'បង្រួម',
               style: TextStyle(color: ColorsConts.primaryColor, fontSize: 15),
             ),
           )
@@ -227,14 +218,14 @@ class _HomeScreenState extends State<HomeScreen> {
         : Container();
   }
 
-  Widget _departmentWidget() {
+  Widget _categoryWidget() {
     List<Widget> _departmentItemList = [];
 
-    _departmentmodelList?.forEach((departmentModel) {
-      _departmentItemList.add(DepartmentItem(departmentModel: departmentModel));
+    _categoryModelList?.forEach((categoryModel) {
+      _departmentItemList.add(CategoryItem(categoryModel: categoryModel));
     });
 
-    return !_mainStore.departmentStore.isShowAllDepartment
+    return !_mainStore.categoryStore.isShowAllCategory
         ? Container(
             margin: EdgeInsets.only(top: 10),
             width: _width,

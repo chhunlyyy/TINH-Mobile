@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
 class DisplayImage extends StatefulWidget {
+  final BoxFit boxFit;
   final String imageString;
   final double imageBorderRadius;
-  const DisplayImage({Key? key, required this.imageString, required this.imageBorderRadius}) : super(key: key);
+  const DisplayImage({Key? key, required this.imageString, required this.imageBorderRadius, required this.boxFit}) : super(key: key);
 
   @override
   _DisplayImageState createState() => _DisplayImageState();
@@ -49,7 +50,7 @@ class _DisplayImageState extends State<DisplayImage> {
         : Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(widget.imageBorderRadius),
-              image: DecorationImage(image: Image.file(fileImg).image, fit: BoxFit.fill),
+              image: DecorationImage(image: Image.file(fileImg).image, fit: widget.boxFit),
             ),
           );
   }
