@@ -31,17 +31,21 @@ class _HomeScreenState extends State<HomeScreen> {
   int _productPageIndex = 0;
   int _productPageSize = 5;
   int _searchPageSize = 5;
+  int _searchPageIndex = 0;
 
   MainStore _mainStore = MainStore();
 
   void _onSearch(String text) {
     if (_searchController.text.isEmpty) {
+      _productModelList!.clear();
       _productPageSize = 5;
+      _productPageIndex = 0;
       _mainStore.productStore.loadData(pageIndex: _productPageIndex, pageSize: _productPageSize);
     } else {
+      _searchPageIndex = 0;
       _searchPageSize = 5;
       _searchProductList!.clear();
-      _mainStore.productStore.search(name: text, pageIndex: _productPageIndex, pageSize: _searchPageSize);
+      _mainStore.productStore.search(name: text, pageIndex: _searchPageIndex, pageSize: _searchPageSize);
     }
   }
 
@@ -51,11 +55,13 @@ class _HomeScreenState extends State<HomeScreen> {
     _mainStore.departmentStore.loadData();
     if (_searchController.text.isEmpty) {
       _productPageSize = 5;
+      _productPageIndex = 0;
       _mainStore.productStore.loadData(pageIndex: _productPageIndex, pageSize: _productPageSize);
     } else {
       _searchPageSize = 5;
+      _searchPageIndex = 0;
       _searchProductList!.clear();
-      _mainStore.productStore.search(name: _searchController.text, pageIndex: _productPageIndex, pageSize: _searchPageSize);
+      _mainStore.productStore.search(name: _searchController.text, pageIndex: _searchPageIndex, pageSize: _searchPageSize);
     }
   }
 
@@ -63,7 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (_searchController.text.isEmpty) {
       return _mainStore.productStore.loadData(pageSize: _productPageSize, pageIndex: _productPageIndex += _productPageSize);
     } else {
-      return _mainStore.productStore.search(name: _searchController.text, pageSize: _productPageSize, pageIndex: _searchPageSize += _searchPageSize);
+      return _mainStore.productStore.search(name: _searchController.text, pageSize: _searchPageSize, pageIndex: _searchPageSize += _searchPageSize);
     }
   }
 
@@ -71,6 +77,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _mainStore.homeScreenStore.changeLoading();
     _getData();
   }
 
@@ -79,12 +87,16 @@ class _HomeScreenState extends State<HomeScreen> {
     _width = MediaQuery.of(context).size.width;
     _height = MediaQuery.of(context).size.height;
 
-    return Scaffold(body: SafeArea(child: _buildBody()));
+    return Scaffold(
+      body: SafeArea(
+        child: _buildBody(),
+      ),
+    );
   }
 
   Widget _buildBody() {
+    Widget body = WidgetHelper.loadingWidget(context);
     return Observer(builder: (_) {
-      Widget body = Container();
       final observableDepartmentFuture = _mainStore.departmentStore.observableDepartmentFuture;
       final observableProductFuture = _mainStore.productStore.observableFutureProduct;
 
@@ -105,7 +117,10 @@ class _HomeScreenState extends State<HomeScreen> {
           }
         }
 
-        if (_productModelList!.isNotEmpty && _departmentmodelList!.isNotEmpty || _searchProductList!.isNotEmpty) {
+        if (_mainStore.homeScreenStore.isLoading) {
+          body = WidgetHelper.loadingWidget(context);
+          _productModelList!.clear();
+        } else {
           body = Container(
             height: _height,
             width: _width,
@@ -129,8 +144,6 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           );
-        } else {
-          body = WidgetHelper.loadingWidget(context);
         }
       }
 
