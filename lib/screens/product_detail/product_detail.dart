@@ -132,10 +132,15 @@ class _ProductDetailState extends State<ProductDetail> {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style:
-                _model.discount != '0' ? TextStyle(decoration: TextDecoration.lineThrough, color: Colors.black) : TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: ColorsConts.primaryColor),
+                _model.discount != '0' ? TextStyle(decoration: TextDecoration.lineThrough, color: Colors.red) : TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: ColorsConts.primaryColor),
           ),
           SizedBox(width: 10),
-          Visibility(visible: _model.discount.toString() != '0', child: Text('បញ្ចុះតម្លៃ ' + _model.discount.toString() + r'%'))
+          Visibility(
+              visible: _model.discount.toString() != '0',
+              child: Text(
+                'បញ្ចុះតម្លៃ ' + _model.discount.toString() + r'%',
+                style: TextStyle(color: Colors.red),
+              ))
         ],
       ),
     );
