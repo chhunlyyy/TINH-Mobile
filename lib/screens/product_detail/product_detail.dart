@@ -74,9 +74,19 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   Widget _totalPriceWidget() {
+    String price = (double.parse(_priceAfterDiscount) * _quantity).toString().replaceAll(_regex, '');
+    String lastPrice = price;
+
+    if (price.contains('.')) {
+      int condition = price.substring(price.indexOf('.')).length;
+      if (condition > 3) {
+        lastPrice = price.substring(0, price.indexOf('.')) + price.substring(price.indexOf('.'), price.indexOf('.') + 3);
+      }
+    }
+
     return Container(
       child: Text(
-        r'$' + (double.parse(_priceAfterDiscount) * _quantity).toString().replaceAll(_regex, ''),
+        r'$' + lastPrice,
         style: TextStyle(color: Colors.white, fontSize: 22),
       ),
     );
