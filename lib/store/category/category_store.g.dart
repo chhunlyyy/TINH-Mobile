@@ -49,6 +49,20 @@ mixin _$CategoryStore on _CategoryStore, Store {
     return _$loadDataAsyncAction.run(() => super.loadData());
   }
 
+  final _$_CategoryStoreActionController =
+      ActionController(name: '_CategoryStore');
+
+  @override
+  void changeCategoryDisplay() {
+    final _$actionInfo = _$_CategoryStoreActionController.startAction(
+        name: '_CategoryStore.changeCategoryDisplay');
+    try {
+      return super.changeCategoryDisplay();
+    } finally {
+      _$_CategoryStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
   @override
   String toString() {
     return '''

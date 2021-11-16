@@ -31,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _productPageIndex = 0;
   int _productPageSize = 5;
   int _searchPageSize = 5;
+  ScrollController _scrollController = ScrollController();
   int _searchPageIndex = 0;
 
   MainStore _mainStore = MainStore();
@@ -78,6 +79,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     _mainStore.homeScreenStore.changeLoading();
+
     _getData();
   }
 
@@ -117,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (_mainStore.homeScreenStore.isLoading) {
           body = WidgetHelper.loadingWidget(context);
+          _productModelList!.clear();
         } else {
           body = Container(
             height: _height,
@@ -174,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Expanded(
             child: Text(
-              'ផ្នែកផលិតផល',
+              'ប្រភេទផលិតផល',
               style: TextStyle(fontSize: 18),
             ),
           ),
@@ -193,6 +196,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _productWidget() {
     return _productModelList != null
         ? GridView.count(
+            controller: _scrollController,
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             crossAxisCount: 2,

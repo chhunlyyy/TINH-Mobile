@@ -25,6 +25,21 @@ mixin _$ProductDetailStore on _ProductDetailStore, Store {
     });
   }
 
+  final _$colorIndexAtom = Atom(name: '_ProductDetailStore.colorIndex');
+
+  @override
+  int get colorIndex {
+    _$colorIndexAtom.reportRead();
+    return super.colorIndex;
+  }
+
+  @override
+  set colorIndex(int value) {
+    _$colorIndexAtom.reportWrite(value, super.colorIndex, () {
+      super.colorIndex = value;
+    });
+  }
+
   final _$_ProductDetailStoreActionController =
       ActionController(name: '_ProductDetailStore');
 
@@ -40,9 +55,21 @@ mixin _$ProductDetailStore on _ProductDetailStore, Store {
   }
 
   @override
+  void checkColor(int colorIndex) {
+    final _$actionInfo = _$_ProductDetailStoreActionController.startAction(
+        name: '_ProductDetailStore.checkColor');
+    try {
+      return super.checkColor(colorIndex);
+    } finally {
+      _$_ProductDetailStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
-productPageCount: ${productPageCount}
+productPageCount: ${productPageCount},
+colorIndex: ${colorIndex}
     ''';
   }
 }

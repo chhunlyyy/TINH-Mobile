@@ -46,7 +46,7 @@ class ProductItem extends StatelessWidget {
                         child: DisplayImage(
                           boxFit: BoxFit.fill,
                           imageBorderRadius: 20,
-                          imageString: productModel.images![0],
+                          imageString: productModel.images[0],
                         ),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
@@ -75,7 +75,7 @@ class ProductItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  productModel.productName!,
+                  productModel.productName,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -88,7 +88,7 @@ class ProductItem extends StatelessWidget {
                       Column(
                         children: [
                           Text(
-                            r'$' + productModel.price!,
+                            r'$' + productModel.price,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: productModel.discount != '0' ? TextStyle(decoration: TextDecoration.lineThrough) : TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
