@@ -15,6 +15,11 @@ abstract class _ProductStore with Store {
   }
 
   @action
+  Future<void> loadProductByCategory({required int pageSize, required pageIndex, required categoryId}) async {
+    observableFutureProduct = ObservableFuture(productServices.getAllProductsByCategory(pageIndex: pageIndex, pageSize: pageSize, categoryId: categoryId));
+  }
+
+  @action
   Future<void> search({required String name, required int pageSize, required pageIndex}) async {
     observableFutureProduct = ObservableFuture(productServices.searchProduct(name: name, pageIndex: pageIndex, pageSize: pageSize));
   }

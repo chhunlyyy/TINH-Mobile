@@ -34,6 +34,19 @@ mixin _$ProductStore on _ProductStore, Store {
         .run(() => super.loadData(pageSize: pageSize, pageIndex: pageIndex));
   }
 
+  final _$loadProductByCategoryAsyncAction =
+      AsyncAction('_ProductStore.loadProductByCategory');
+
+  @override
+  Future<void> loadProductByCategory(
+      {required int pageSize,
+      required dynamic pageIndex,
+      required dynamic categoryId}) {
+    return _$loadProductByCategoryAsyncAction.run(() => super
+        .loadProductByCategory(
+            pageSize: pageSize, pageIndex: pageIndex, categoryId: categoryId));
+  }
+
   final _$searchAsyncAction = AsyncAction('_ProductStore.search');
 
   @override
