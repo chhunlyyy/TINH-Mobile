@@ -1,6 +1,7 @@
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-import 'package:tinh/screens/login/Screens/login/login.dart';
+import 'package:tinh/screens/login/login/login.dart';
+
 import 'package:tinh/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:tinh/store/main/main_store.dart';
