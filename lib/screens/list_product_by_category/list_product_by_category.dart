@@ -19,7 +19,7 @@ class ListProductbyCategory extends StatefulWidget {
 
 class _ListProductbyCategoryState extends State<ListProductbyCategory> {
   MainStore _mainStore = MainStore();
-  List<ProductModel> _productModelList = [];
+  List<ProductModel>? _productModelList;
   bool _isOnRefres = false;
   Future<void> _getData(bool isRefresh) async {
     _isOnRefres = isRefresh;
@@ -54,7 +54,7 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
           children: [
             WidgetHelper.appBar(context),
             _titleWidget(),
-            SizedBox(height: 10),
+            SizedBox(height: 5),
             Expanded(child: _productWidget()),
           ],
         ),
@@ -66,9 +66,11 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
 
   Widget _productWidget() {
     Future.delayed(Duration(seconds: _isOnRefres ? 1 : 0)).whenComplete(() {
-      setState(() {
-        _productModelList = _mainStore.productStore.observableFutureProduct!.value!;
-      });
+      if (this.mounted) {
+        setState(() {
+          _productModelList = _mainStore.productStore.observableFutureProduct!.value;
+        });
+      }
     });
 
     return Container(
@@ -78,7 +80,7 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
           header: BallPulseHeader(color: ColorsConts.primaryColor),
           onLoad: () async {},
           onRefresh: () => _getData(true),
-          child: _productModelList.isNotEmpty
+          child: _productModelList != null
               ? GridView.count(
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
@@ -103,8 +105,8 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
 
   Widget _titleWidget() {
     return Container(
-      decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.5), blurRadius: 2, spreadRadius: 2, offset: Offset(0, 1))]),
-      margin: EdgeInsets.only(top: 20),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.4), blurRadius: 2, spreadRadius: 2, offset: Offset(0, 1))]),
+      margin: EdgeInsets.only(top: 10),
       padding: EdgeInsets.symmetric(vertical: 5),
       width: MediaQuery.of(context).size.width,
       child: Row(

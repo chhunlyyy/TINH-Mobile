@@ -21,6 +21,8 @@ dependencies:
   flutter_easyrefresh: ^2.2.1
   path_provider:
   carousel_slider: ^4.0.0
+  simple_animations: ^3.0.1
+ 
 
 dev_dependencies:
   flutter_test:
