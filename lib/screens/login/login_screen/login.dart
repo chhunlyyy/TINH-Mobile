@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tinh/screens/login/Screens/login/components/cancel_button.dart';
-import 'package:tinh/screens/login/Screens/login/components/login_form.dart';
-import 'package:tinh/screens/login/Screens/login/components/register_form.dart';
 
-import '../../constants.dart';
+import 'package:tinh/screens/login/constants.dart';
+
+import 'components/cancel_button.dart';
+import 'components/login_form.dart';
+import 'components/register_form.dart';
 
 class LoginScreen extends StatefulWidget {
   @override

@@ -33,7 +33,7 @@ class LoginForm extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'ស្វាគមន៍ត្រឡប់មកវិញ',
+                  'សូមស្វាគមន៍',
                   style: TextStyle(fontSize: 24),
                 ),
                 Container(
