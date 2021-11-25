@@ -69,20 +69,24 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                   )),
 
               // Cancel Button
-              CancelButton(
-                isLogin: isLogin,
-                animationDuration: animationDuration,
-                size: size,
-                animationController: animationController,
-                tapEvent: isLogin
-                    ? () {}
-                    : () {
-                        // returning null to disable the button
-                        animationController.reverse();
-                        setState(() {
-                          isLogin = !isLogin;
-                        });
-                      },
+
+              Visibility(
+                visible: !isLogin,
+                child: CancelButton(
+                  isLogin: isLogin,
+                  animationDuration: animationDuration,
+                  size: size,
+                  animationController: animationController,
+                  tapEvent: isLogin
+                      ? () {}
+                      : () {
+                          // returning null to disable the button
+                          animationController.reverse();
+                          setState(() {
+                            isLogin = !isLogin;
+                          });
+                        },
+                ),
               ),
 
               // Login Form

@@ -29,8 +29,7 @@ class TinhApp extends StatelessWidget {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             home: Scaffold(
-              // body: SplashScreen(),
-              body: LoginScreen(),
+              body: SplashScreen(),
             ),
           );
         },

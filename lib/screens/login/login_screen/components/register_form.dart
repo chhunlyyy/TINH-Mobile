@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tinh/const/animated_button.dart';
+import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/screens/login/components/rounded_button.dart';
 import 'package:tinh/screens/login/components/rounded_input.dart';
 import 'package:tinh/screens/login/components/rounded_password_input.dart';
@@ -48,7 +50,14 @@ class RegisterForm extends StatelessWidget {
                   RoundedInput(icon: Icons.face_rounded, hint: 'ឈ្មោះ'),
                   RoundedPasswordInput(hint: 'ពាក្យសម្ងាត់'),
                   SizedBox(height: 10),
-                  RoundedButton(title: 'បង្កើតគណនី'),
+                  AnimatedButton(
+                    isShowShadow: true,
+                    backgroundColor: ColorsConts.primaryColor,
+                    width: MediaQuery.of(context).size.width * .8,
+                    hegith: 55,
+                    title: 'បង្កើតគណនី',
+                    onTap: () {},
+                  ),
                   SizedBox(height: 10),
                 ],
               ),

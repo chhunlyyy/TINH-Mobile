@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tinh/const/animated_button.dart';
+import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/screens/login/components/rounded_button.dart';
 import 'package:tinh/screens/login/components/rounded_input.dart';
 import 'package:tinh/screens/login/components/rounded_password_input.dart';
@@ -43,7 +45,14 @@ class LoginForm extends StatelessWidget {
                 RoundedInput(icon: Icons.phone, hint: 'លេខទូរស័ព្ទ'),
                 RoundedPasswordInput(hint: 'ពាក្យសម្ងាត់'),
                 SizedBox(height: 10),
-                RoundedButton(title: 'ចូល'),
+                AnimatedButton(
+                  isShowShadow: true,
+                  backgroundColor: ColorsConts.primaryColor,
+                  width: MediaQuery.of(context).size.width * .8,
+                  hegith: 55,
+                  title: 'ចូល',
+                  onTap: () {},
+                ),
                 SizedBox(height: 10),
               ],
             ),
