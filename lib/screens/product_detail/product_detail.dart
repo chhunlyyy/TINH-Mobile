@@ -60,15 +60,18 @@ class _ProductDetailState extends State<ProductDetail> {
 
   Widget _addToCartWidget() {
     return Container(
-      decoration: BoxDecoration(color: ColorsConts.primaryColor, borderRadius: BorderRadius.only(topLeft: Radius.circular(50))),
-      width: MediaQuery.of(context).size.width,
-      height: 90,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _totalPriceWidget(),
-          _addToCartButtonWidget(),
-        ],
+      color: Colors.white,
+      child: Container(
+        decoration: BoxDecoration(color: ColorsConts.primaryColor, borderRadius: BorderRadius.only(topLeft: Radius.circular(50))),
+        width: MediaQuery.of(context).size.width,
+        height: 90,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            _totalPriceWidget(),
+            _addToCartButtonWidget(),
+          ],
+        ),
       ),
     );
   }

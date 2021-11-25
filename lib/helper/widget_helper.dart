@@ -48,6 +48,7 @@ class WidgetHelper {
   static Widget appBar(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.only(top: 10),
       height: 60,
       child: Row(
         children: [

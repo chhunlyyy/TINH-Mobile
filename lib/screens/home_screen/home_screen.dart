@@ -122,6 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
           _productModelList!.clear();
         } else {
           body = Container(
+            margin: EdgeInsets.only(top: 10),
             height: _height,
             width: _width,
             child: EasyRefresh(
