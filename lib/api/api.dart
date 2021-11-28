@@ -5,4 +5,6 @@ class HttApi {
   static const String API_PRODUCT_BY_CATEGORY = '/product';
 
   static const String API_USER_CHECK_TOKEN = '/check-token';
+  static const String API_USER_REGISTER = '/register';
+  static const String API_USER_LOGIN = '/login';
 }

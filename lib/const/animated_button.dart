@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 /// Animated Scale Button
-class AnimatedButton extends StatefulWidget {
+class CustomeAnimatedButton extends StatefulWidget {
   final String title;
   final dynamic onTap;
   final bool isShowShadow;
@@ -16,7 +16,7 @@ class AnimatedButton extends StatefulWidget {
   final double? width;
   final double? hegith;
 
-  const AnimatedButton({
+  const CustomeAnimatedButton({
     required this.title,
     required this.onTap,
     required this.isShowShadow,
@@ -33,10 +33,10 @@ class AnimatedButton extends StatefulWidget {
   });
 
   @override
-  _AnimatedButtonState createState() => _AnimatedButtonState();
+  _CustomeAnimatedButtonState createState() => _CustomeAnimatedButtonState();
 }
 
-class _AnimatedButtonState extends State<AnimatedButton> with SingleTickerProviderStateMixin {
+class _CustomeAnimatedButtonState extends State<CustomeAnimatedButton> with SingleTickerProviderStateMixin {
   double? _scale;
   late AnimationController _controller;
 
