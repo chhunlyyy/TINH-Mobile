@@ -5,6 +5,7 @@ import 'package:tinh/store/home_screen/home_screen_store.dart';
 import 'package:tinh/store/product/product_store.dart';
 import 'package:tinh/store/product_detail_store/product_detail_store.dart';
 import 'package:tinh/store/search_filter/search_filter_store.dart';
+import 'package:tinh/store/user/user_store.dart';
 import 'package:tinh/store/user_service/user_service_store.dart';
 part 'main_store.g.dart';
 
@@ -17,6 +18,7 @@ abstract class _MainStore with Store {
   late ProductDetailStore productDetailStore;
   late CategoryStore categoryStore;
   late UserServiceStore userServiceStore;
+  late UserStore userStore;
   void init() async {
     productStore = ProductStore();
     searchFilterStore = SearchFilterStore();
@@ -24,6 +26,7 @@ abstract class _MainStore with Store {
     productDetailStore = ProductDetailStore();
     categoryStore = CategoryStore();
     userServiceStore = UserServiceStore();
+    userStore = UserStore();
   }
 
   _MainStore() {

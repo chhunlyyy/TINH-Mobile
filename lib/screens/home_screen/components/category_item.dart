@@ -3,11 +3,13 @@ import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/category/category_model.dart';
 import 'package:tinh/screens/list_product_by_category/list_product_by_category.dart';
+import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class CategoryItem extends StatelessWidget {
+  final MainStore mainStore;
   final CategoryModel categoryModel;
-  const CategoryItem({Key? key, required this.categoryModel}) : super(key: key);
+  const CategoryItem({Key? key, required this.categoryModel, required this.mainStore}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +18,7 @@ class CategoryItem extends StatelessWidget {
         onTap: () => NavigationHelper.push(
             context,
             ListProductbyCategory(
+              mainStore: mainStore,
               categoryModel: categoryModel,
             )),
         child: Container(

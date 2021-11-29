@@ -10,8 +10,9 @@ import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class ListProductbyCategory extends StatefulWidget {
+  final MainStore mainStore;
   final CategoryModel categoryModel;
-  const ListProductbyCategory({Key? key, required this.categoryModel}) : super(key: key);
+  const ListProductbyCategory({Key? key, required this.categoryModel, required this.mainStore}) : super(key: key);
 
   @override
   _ListProductbyCategoryState createState() => _ListProductbyCategoryState();
@@ -28,8 +29,11 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
 
   @override
   void initState() {
-    _mainStore.homeScreenStore.changeLoading();
-    _getData(false);
+    if (this.mounted) {
+      _mainStore = widget.mainStore;
+      _mainStore.homeScreenStore.changeLoading();
+      _getData(false);
+    }
     // TODO: implement initState
     super.initState();
   }
@@ -88,7 +92,7 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
                   padding: EdgeInsets.all(1.0),
                   childAspectRatio: 8 / 12.0,
                   children: List<Widget>.generate(_productModelList!.length, (index) {
-                    return GridTile(child: WidgetHelper.animation(index, ProductItem(productModel: _productModelList![index])));
+                    return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _productModelList![index])));
                   }))
               // Container(
               //     child: Column(

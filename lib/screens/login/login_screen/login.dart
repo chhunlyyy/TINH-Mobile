@@ -11,6 +11,8 @@ import 'components/login_form.dart';
 import 'components/register_form.dart';
 
 class LoginScreen extends StatefulWidget {
+  final MainStore _mainStore;
+  LoginScreen(this._mainStore);
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -42,7 +44,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     double viewInset = MediaQuery.of(context).viewInsets.bottom; // we are using this to determine Keyboard is opened or not
     double defaultLoginSize = size.height - (size.height * 0.2);
     double defaultRegisterSize = size.height - (size.height * 0.1);
-    MainStore _mainStore = MainStore();
+
     containerSize = Tween<double>(begin: size.height * 0.1, end: defaultRegisterSize).animate(CurvedAnimation(parent: animationController, curve: Curves.linear));
 
     return Observer(builder: (_) {
@@ -86,15 +88,17 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                         : () {
                             // returning null to disable the button
                             animationController.reverse();
-                            setState(() {
-                              isLogin = !isLogin;
-                            });
+                            if (this.mounted) {
+                              setState(() {
+                                isLogin = !isLogin;
+                              });
+                            }
                           },
                   ),
                 ),
 
                 // Login Form
-                LoginForm(mainStore: _mainStore, isLogin: isLogin, animationDuration: animationDuration, size: size, defaultLoginSize: defaultLoginSize),
+                LoginForm(mainStore: widget._mainStore, isLogin: isLogin, animationDuration: animationDuration, size: size, defaultLoginSize: defaultLoginSize),
 
                 // Register Container
                 AnimatedBuilder(
@@ -112,7 +116,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 ),
 
                 // Register Form
-                RegisterForm(isLogin: isLogin, animationDuration: animationDuration, size: size, defaultLoginSize: defaultRegisterSize),
+                RegisterForm(mainStore: widget._mainStore, isLogin: isLogin, animationDuration: animationDuration, size: size, defaultLoginSize: defaultRegisterSize),
               ],
             ),
           ),
@@ -140,9 +144,11 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               : () {
                   animationController.forward();
 
-                  setState(() {
-                    isLogin = !isLogin;
-                  });
+                  if (this.mounted) {
+                    setState(() {
+                      isLogin = !isLogin;
+                    });
+                  }
                 },
           child: isLogin
               ? Text(

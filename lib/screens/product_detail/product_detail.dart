@@ -1,18 +1,23 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tinh/const/animated_button.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
+import 'package:tinh/models/cart/add_to_cart_model.dart';
 import 'package:tinh/models/product/product_model.dart';
+import 'package:tinh/services/cart/cart_services.dart';
 import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/show_full_scren_image_widget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class ProductDetail extends StatefulWidget {
+  final MainStore mainStore;
   final ProductModel productModel;
-  const ProductDetail({Key? key, required this.productModel}) : super(key: key);
+  const ProductDetail({Key? key, required this.productModel, required this.mainStore}) : super(key: key);
 
   @override
   _ProductDetailState createState() => _ProductDetailState(this.productModel);
@@ -28,10 +33,70 @@ class _ProductDetailState extends State<ProductDetail> {
   late String _priceAfterDiscount;
   RegExp _regex = RegExp(r"([.]*0)(?!.*\d)");
 
+  String _selectedColor = '';
+  String _selectedSize = '';
+
+  void _onAddToCart() {
+    if (_selectedColor == '' || _selectedSize == '') {
+      AwesomeDialog(
+          btnOkColor: ColorsConts.primaryColor,
+          btnOkOnPress: () {},
+          context: context,
+          dialogType: DialogType.WARNING,
+          animType: AnimType.SCALE,
+          body: Container(
+            margin: EdgeInsets.all(10),
+            child: Text(
+              'សូមជ្រើសរើសពណ៌ និងទំហំ',
+              style: TextStyle(fontSize: 20),
+            ),
+          ))
+        ..show();
+    } else {
+      double total = 0;
+      if (_model.discount == '0') {
+        total = _quantity * double.parse(_model.price);
+      } else {
+        total = _quantity * double.parse(_priceAfterDiscount);
+      }
+
+      AddToCartModel _addToCardModel = AddToCartModel(
+          productId: widget.productModel.id.toString(),
+          productName: widget.productModel.productName,
+          productColor: _selectedColor,
+          productPrice: widget.productModel.price,
+          productSize: _selectedSize,
+          total: total.toString(),
+          amount: _quantity.toString(),
+          userId: _mainStore.userStore.userModel.id.toString(),
+          userName: _mainStore.userStore.userModel.name!,
+          userPhone: _mainStore.userStore.userModel.phone!,
+          imageBase64String: _model.images[0]);
+
+      cartServices.addToCart(_addToCardModel.toJson()).then((value) {
+        AwesomeDialog(
+            btnOkColor: value.status == '500' ? Colors.red : Colors.green,
+            btnOkOnPress: () {},
+            context: context,
+            dialogType: value.status == '500' ? DialogType.ERROR : DialogType.SUCCES,
+            animType: AnimType.SCALE,
+            body: Container(
+              margin: EdgeInsets.all(10),
+              child: Text(
+                value.message,
+                style: TextStyle(fontSize: 20),
+              ),
+            ))
+          ..show();
+      });
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    _mainStore = widget.mainStore;
   }
 
   @override
@@ -40,9 +105,11 @@ class _ProductDetailState extends State<ProductDetail> {
     double _discountPrice = double.parse(_model.price.toString()) * _discountPercent;
     _priceAfterDiscount = (double.parse(_model.price.toString()) - _discountPrice).toString().replaceAll(_regex, '');
 
-    return Material(
-      child: SafeArea(child: _buildBody()),
-    );
+    return Observer(builder: (_) {
+      return Material(
+        child: SafeArea(child: _buildBody()),
+      );
+    });
   }
 
   Widget _buildBody() {
@@ -96,21 +163,32 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   Widget _addToCartButtonWidget() {
-    return Container(
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
-        height: 50,
-        width: MediaQuery.of(context).size.width / 3,
-        child: ClipRRect(
-            borderRadius: BorderRadius.circular(50),
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                  onTap: () {},
-                  child: Center(
-                      child: Text(
-                    'បន្ថែមទៅរទេះ',
-                  ))),
-            )));
+    return CustomeAnimatedButton(
+      borderColor: Color(0xffFF5403),
+      backgroundColor: Colors.white,
+      titleColor: Color(0xffFF5403),
+      hegith: 50,
+      width: MediaQuery.of(context).size.width / 3,
+      title: 'បន្ថែមទៅរទេះ',
+      onTap: _onAddToCart,
+      isShowShadow: false,
+    );
+
+    // return Container(
+    //     decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
+    //     height: 50,
+    //     width: MediaQuery.of(context).size.width / 3,
+    //     child: ClipRRect(
+    //         borderRadius: BorderRadius.circular(50),
+    //         child: Material(
+    //           color: Colors.transparent,
+    //           child: InkWell(
+    //               onTap: () {},
+    //               child: Center(
+    //                   child: Text(
+    //                 'បន្ថែមទៅរទេះ',
+    //               ))),
+    //         )));
   }
 
   Widget _priceWidget(String priceAterDiscount) {
@@ -316,6 +394,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         onTap: () {
                           setState(() {
                             _sizeIndex = _model.size.indexOf(size);
+                            _selectedSize = size;
                           });
                         },
                         child: Container(
@@ -373,6 +452,7 @@ class _ProductDetailState extends State<ProductDetail> {
                         onTap: () {
                           setState(() {
                             _colorIndex = _model.colors.indexOf(color);
+                            _selectedColor = color;
                           });
                         },
                         child: Container(
@@ -438,7 +518,7 @@ class _ProductDetailState extends State<ProductDetail> {
             child: CarouselSlider(
               options: CarouselOptions(
                 onPageChanged: (index, reson) {
-                  _mainStore.productDetailStore.changeProductPageCount(index);
+                  widget.mainStore.productDetailStore.changeProductPageCount(index);
                 },
                 enableInfiniteScroll: false,
               ),
@@ -466,7 +546,7 @@ class _ProductDetailState extends State<ProductDetail> {
                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 decoration: BoxDecoration(color: ColorsConts.primaryColor, borderRadius: BorderRadius.circular(20)),
                 child: Text(
-                  _mainStore.productDetailStore.productPageCount.toString() + ' / ' + _model.images.length.toString(),
+                  widget.mainStore.productDetailStore.productPageCount.toString() + ' / ' + _model.images.length.toString(),
                   style: TextStyle(color: Colors.white),
                 )),
           ),

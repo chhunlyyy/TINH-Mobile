@@ -6,7 +6,7 @@ import 'package:tinh/const/animated_button.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
-import 'package:tinh/models/user/user_modeld.dart';
+import 'package:tinh/models/user/user_model.dart';
 import 'package:tinh/screens/home_screen/home_screen.dart';
 import 'package:tinh/screens/login/components/rounded_input.dart';
 import 'package:tinh/screens/login/components/rounded_password_input.dart';
@@ -76,7 +76,7 @@ class _LoginFormState extends State<LoginForm> {
                   ))
                 ..show();
             } else {
-              NavigationHelper.pushReplacement(context, HomeScreen());
+              NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
             }
           });
         });

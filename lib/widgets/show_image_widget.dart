@@ -29,9 +29,11 @@ class _DisplayImageState extends State<DisplayImage> {
 
     fileImg.writeAsBytesSync(List.from(decodedBytes));
 
-    setState(() {
-      isLoading = false;
-    });
+    if (this.mounted) {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
 
   @override

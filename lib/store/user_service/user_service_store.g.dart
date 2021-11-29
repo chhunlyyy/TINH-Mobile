@@ -28,11 +28,11 @@ mixin _$UserServiceStore on _UserServiceStore, Store {
       ActionController(name: '_UserServiceStore');
 
   @override
-  void changeMessageToUser(bool isMessage) {
+  void changeMessageToUser(bool isMessageCondition) {
     final _$actionInfo = _$_UserServiceStoreActionController.startAction(
         name: '_UserServiceStore.changeMessageToUser');
     try {
-      return super.changeMessageToUser(isMessage);
+      return super.changeMessageToUser(isMessageCondition);
     } finally {
       _$_UserServiceStoreActionController.endAction(_$actionInfo);
     }

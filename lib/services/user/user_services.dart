@@ -3,15 +3,16 @@ import 'package:tinh/api/api.dart';
 import 'package:tinh/http/http_api_service.dart';
 import 'package:tinh/http/http_config.dart';
 import 'package:tinh/models/message/message_model.dart';
-import 'package:tinh/models/user/user_modeld.dart';
+import 'package:tinh/models/user/user_model.dart';
 import 'package:tinh/store/main/main_store.dart';
 
 class UserServices {
-  Future<String> checkUserToken(String token) async {
+  Future<String> checkUserToken(String token, MainStore mainStore) async {
     String status = '';
     try {
       Map<String, dynamic> params = {'token': token};
       return await httpApiService.get(HttApi.API_USER_CHECK_TOKEN, params, new Options(headers: HttpConfig.headers)).then((value) {
+        mainStore.userStore.setUserModel(UserModel.fromJson(value.data[0]['userInfo']));
         return value.data[0]['status'].toString();
       });
     } catch (e) {
@@ -35,6 +36,8 @@ class UserServices {
       return await httpApiService.post(HttApi.API_USER_LOGIN, postData, {}, new Options(headers: HttpConfig.headers)).then((value) {
         if (value.data[0]['status'] != '200') {
           mainStore.userServiceStore.changeMessageToUser(true);
+          mainStore.userStore.setUserModel(UserModel.fromJson(value.data[0]['userInfo'][0]));
+
           return MessageModel.fromJson(value.data[0]);
         } else {
           mainStore.userServiceStore.changeMessageToUser(false);

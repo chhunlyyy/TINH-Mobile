@@ -48,7 +48,9 @@ class _CustomeAnimatedButtonState extends State<CustomeAnimatedButton> with Sing
       lowerBound: 0.0,
       upperBound: 0.1,
     )..addListener(() {
-        setState(() {});
+        if (this.mounted) {
+          setState(() {});
+        }
       });
     super.initState();
   }

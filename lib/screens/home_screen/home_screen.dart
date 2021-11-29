@@ -15,6 +15,9 @@ import 'package:tinh/store/main/main_store.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
+  final MainStore mainStore;
+  HomeScreen(this.mainStore);
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -23,7 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late double _width;
   late double _height;
   TextEditingController _searchController = TextEditingController();
-
+  MainStore _mainStore = MainStore();
   List<ProductModel>? _productModelList = [];
   List<ProductModel>? _searchProductList = [];
   List<CategoryModel>? _categoryModelList = [];
@@ -33,8 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int _searchPageSize = 5;
   ScrollController _scrollController = ScrollController();
   int _searchPageIndex = 0;
-
-  MainStore _mainStore = MainStore();
 
   void _onSearch(String text) {
     if (_searchController.text.isEmpty) {
@@ -78,6 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    _mainStore = widget.mainStore;
     _mainStore.homeScreenStore.changeLoading();
 
     _getData();
@@ -205,10 +208,10 @@ class _HomeScreenState extends State<HomeScreen> {
             childAspectRatio: 8 / 12.0,
             children: _searchController.text.isEmpty
                 ? List<Widget>.generate(_productModelList!.length, (index) {
-                    return GridTile(child: WidgetHelper.animation(index, ProductItem(productModel: _productModelList![index])));
+                    return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _productModelList![index])));
                   })
                 : List<Widget>.generate(_searchProductList!.length, (index) {
-                    return GridTile(child: WidgetHelper.animation(index, ProductItem(productModel: _searchProductList![index])));
+                    return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _searchProductList![index])));
                   }),
           )
         // Container(
@@ -227,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Widget> _departmentItemList = [];
 
     _categoryModelList?.forEach((categoryModel) {
-      _departmentItemList.add(CategoryItem(categoryModel: categoryModel));
+      _departmentItemList.add(CategoryItem(mainStore: _mainStore, categoryModel: categoryModel));
     });
 
     return !_mainStore.categoryStore.isShowAllCategory

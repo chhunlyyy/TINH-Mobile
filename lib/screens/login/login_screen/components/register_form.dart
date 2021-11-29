@@ -11,6 +11,7 @@ import 'package:tinh/screens/login/components/rounded_password_input.dart';
 import 'package:tinh/screens/login/login_screen/components/login_form.dart';
 import 'package:tinh/screens/login/login_screen/login.dart';
 import 'package:tinh/services/user/user_services.dart';
+import 'package:tinh/store/main/main_store.dart';
 
 class RegisterForm extends StatelessWidget {
   const RegisterForm({
@@ -19,12 +20,14 @@ class RegisterForm extends StatelessWidget {
     required this.animationDuration,
     required this.size,
     required this.defaultLoginSize,
+    required this.mainStore,
   }) : super(key: key);
 
   final bool isLogin;
   final Duration animationDuration;
   final Size size;
   final double defaultLoginSize;
+  final MainStore mainStore;
 
   @override
   Widget build(BuildContext context) {
@@ -91,7 +94,7 @@ class RegisterForm extends StatelessWidget {
                       ))
                     ..show();
                   Future.delayed(Duration(seconds: 3)).whenComplete(() {
-                    NavigationHelper.pushReplacement(context, LoginScreen());
+                    NavigationHelper.pushReplacement(context, LoginScreen(mainStore));
                   });
                 }
               });
