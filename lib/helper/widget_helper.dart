@@ -82,4 +82,10 @@ class WidgetHelper {
       ),
     );
   }
+
+  static Widget noDataFound() {
+    return Center(
+      child: Text('រកមិនឃើញទិន្នន័យ'),
+    );
+  }
 }

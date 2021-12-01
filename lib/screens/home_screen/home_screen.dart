@@ -27,24 +27,24 @@ class _HomeScreenState extends State<HomeScreen> {
   late double _height;
   TextEditingController _searchController = TextEditingController();
   MainStore _mainStore = MainStore();
-  List<ProductModel>? _productModelList = [];
+  List<ProductModel> _productModelList = [];
   List<ProductModel>? _searchProductList = [];
   List<CategoryModel>? _categoryModelList = [];
   int _cartNum = 0;
   int _productPageIndex = 0;
-  int _productPageSize = 5;
-  int _searchPageSize = 5;
+  int _productPageSize = 6;
+  int _searchPageSize = 6;
   ScrollController _scrollController = ScrollController();
   int _searchPageIndex = 0;
 
   void _onSearch(String text) {
     if (_searchController.text.isEmpty) {
-      _productModelList!.clear();
-      _productPageSize = 5;
+      _productModelList.clear();
+      _productPageSize = 6;
       _productPageIndex = 0;
       _mainStore.productStore.loadData(pageIndex: _productPageIndex, pageSize: _productPageSize);
     } else {
-      _searchPageSize = 5;
+      _searchPageSize = 6;
       _searchProductList!.clear();
       _mainStore.productStore.search(name: text, pageIndex: _searchPageIndex, pageSize: _searchPageSize);
     }
@@ -53,10 +53,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _getData() async {
     _mainStore.categoryStore.loadData();
 
-    _productModelList!.clear();
+    _productModelList.clear();
     _productPageIndex = 0;
     if (_searchController.text.isEmpty) {
-      _productPageSize = 5;
+      _productPageSize = 6;
       _productPageIndex = 0;
       _mainStore.productStore.loadData(pageIndex: _productPageIndex, pageSize: _productPageSize);
     } else {
@@ -113,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }
           } else {
             for (var item in observableProductFuture.value!) {
-              _productModelList!.add(item);
+              _productModelList.add(item);
             }
           }
         }
@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
         if (_mainStore.homeScreenStore.isLoading) {
           body = WidgetHelper.loadingWidget(context);
-          _productModelList!.clear();
+          _productModelList.clear();
         } else {
           body = Container(
             margin: EdgeInsets.only(top: 10),
@@ -198,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _productWidget() {
-    return _productModelList != null
+    return _productModelList.isNotEmpty
         ? GridView.count(
             controller: _scrollController,
             physics: const NeverScrollableScrollPhysics(),
@@ -207,23 +207,14 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.all(1.0),
             childAspectRatio: 8 / 12.0,
             children: _searchController.text.isEmpty
-                ? List<Widget>.generate(_productModelList!.length, (index) {
-                    return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _productModelList![index])));
+                ? List<Widget>.generate(_productModelList.length, (index) {
+                    return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _productModelList[index])));
                   })
                 : List<Widget>.generate(_searchProductList!.length, (index) {
                     return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _searchProductList![index])));
                   }),
           )
-        // Container(
-        //     child: Column(
-        //       crossAxisAlignment: CrossAxisAlignment.start,
-        //       mainAxisAlignment: MainAxisAlignment.center,
-        //       children: _productModelList!.map((productmodel) {
-        //         return WidgetHelper.animation(_productModelList!.indexOf(productmodel), ProductItem(productModel: productmodel));
-        //       }).toList(),
-        //     ),
-        //   )
-        : Container();
+        : WidgetHelper.noDataFound();
   }
 
   Widget _categoryWidget() {

@@ -20,22 +20,27 @@ class ListProductbyCategory extends StatefulWidget {
 
 class _ListProductbyCategoryState extends State<ListProductbyCategory> {
   MainStore _mainStore = MainStore();
-  List<ProductModel>? _productModelList;
-  bool _isOnRefres = false;
-  Future<void> _getData(bool isRefresh) async {
-    _isOnRefres = isRefresh;
-    await _mainStore.productStore.loadProductByCategory(pageSize: 5, pageIndex: 0, categoryId: widget.categoryModel.id);
+  int pageSize = 6;
+  int pageIndex = 0;
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () async {
+      await widget.mainStore.productStore.loadProductByCategory(
+        pageSize: pageSize,
+        pageIndex: pageIndex,
+        categoryId: widget.categoryModel.id,
+      );
+    });
+    // TODO: implement initState
+    super.initState();
+    _mainStore = widget.mainStore;
   }
 
   @override
-  void initState() {
-    if (this.mounted) {
-      _mainStore = widget.mainStore;
-      _mainStore.homeScreenStore.changeLoading();
-      _getData(false);
-    }
-    // TODO: implement initState
-    super.initState();
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _mainStore.productStore.productModelList.clear();
   }
 
   @override
@@ -50,61 +55,62 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
   }
 
   Widget _buildBody() {
-    Widget _content = WidgetHelper.loadingWidget(context);
-
-    if (!_mainStore.homeScreenStore.isLoading) {
-      _content = Container(
-        child: Column(
-          children: [
-            WidgetHelper.appBar(context),
-            _titleWidget(),
-            SizedBox(height: 5),
-            Expanded(child: _productWidget()),
-          ],
-        ),
-      );
-    }
-
-    return _content;
+    return Container(
+      child: Column(
+        children: [
+          WidgetHelper.appBar(context),
+          _titleWidget(),
+          SizedBox(height: 5),
+          Expanded(child: _productWidget()),
+        ],
+      ),
+    );
   }
 
   Widget _productWidget() {
-    Future.delayed(Duration(seconds: _isOnRefres ? 1 : 0)).whenComplete(() {
-      if (this.mounted) {
-        setState(() {
-          _productModelList = _mainStore.productStore.observableFutureProduct!.value;
-        });
-      }
-    });
+    Widget _content = WidgetHelper.loadingWidget(context);
 
-    return Container(
-      height: MediaQuery.of(context).size.width,
-      width: MediaQuery.of(context).size.height,
-      child: EasyRefresh(
-          header: BallPulseHeader(color: ColorsConts.primaryColor),
-          onLoad: () async {},
-          onRefresh: () => _getData(true),
-          child: _productModelList != null
-              ? GridView.count(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  padding: EdgeInsets.all(1.0),
-                  childAspectRatio: 8 / 12.0,
-                  children: List<Widget>.generate(_productModelList!.length, (index) {
-                    return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _productModelList![index])));
-                  }))
-              // Container(
-              //     child: Column(
-              //       crossAxisAlignment: CrossAxisAlignment.start,
-              //       mainAxisAlignment: MainAxisAlignment.center,
-              //       children: _productModelList!.map((productmodel) {
-              //         return WidgetHelper.animation(_productModelList!.indexOf(productmodel), ProductItem(productModel: productmodel));
-              //       }).toList(),
-              //     ),
-              //   )
-              : Container()),
-    );
+    if (!_mainStore.productStore.isLoading) {
+      _content = _mainStore.productStore.productModelList.isNotEmpty
+          ? Container(
+              height: MediaQuery.of(context).size.width,
+              width: MediaQuery.of(context).size.height,
+              child: EasyRefresh(
+                  header: BallPulseHeader(color: ColorsConts.primaryColor),
+                  onLoad: () async {
+                    pageIndex = pageIndex + pageSize;
+                    await widget.mainStore.productStore.loadProductByCategory(
+                      pageSize: pageSize,
+                      pageIndex: pageIndex,
+                      categoryId: widget.categoryModel.id,
+                    );
+                  },
+                  onRefresh: () {
+                    pageSize = 6;
+                    pageIndex = 0;
+                    _mainStore.productStore.productModelList.clear();
+                    return widget.mainStore.productStore.loadProductByCategory(
+                      pageSize: pageSize,
+                      pageIndex: pageIndex,
+                      categoryId: widget.categoryModel.id,
+                    );
+                  },
+                  child: _mainStore.productStore.productModelList.isNotEmpty
+                      ? GridView.count(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          crossAxisCount: 2,
+                          padding: EdgeInsets.all(1.0),
+                          childAspectRatio: 8 / 12.0,
+                          children: List<Widget>.generate(_mainStore.productStore.productModelList.length, (index) {
+                            return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _mainStore.productStore.productModelList[index])));
+                          }))
+                      : Container()),
+            )
+          : WidgetHelper.noDataFound();
+    }
+
+    return _content;
   }
 
   Widget _titleWidget() {
