@@ -136,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
               topLeft: Radius.circular(100),
               topRight: Radius.circular(100),
             ),
-            color: kBackgroundColor),
+            color: Color(0xffF0F1F5)),
         alignment: Alignment.center,
         child: GestureDetector(
           onTap: !isLogin

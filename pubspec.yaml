@@ -24,6 +24,8 @@ dependencies:
   simple_animations: ^3.0.1
   device_info: 
   awesome_dialog: ^2.1.1
+  uuid: ^3.0.5
+  lottie: ^1.2.1
 
 dev_dependencies:
   flutter_test:
@@ -34,6 +36,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/images/
+    - assets/lottie/
+
 
   uses-material-design: true
 

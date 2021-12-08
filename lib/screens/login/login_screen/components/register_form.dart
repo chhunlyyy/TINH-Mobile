@@ -1,5 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:tinh/const/animated_button.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/device_infor.dart';
@@ -127,7 +128,8 @@ class RegisterForm extends StatelessWidget {
                   Container(
                     width: MediaQuery.of(context).size.width,
                     height: MediaQuery.of(context).size.height / 3,
-                    child: Image.asset('assets/images/shooping2.png'),
+                    // child: Image.asset('assets/images/shooping2.png'),
+                    child: Lottie.asset('assets/lottie/register-lottie.json'),
                   ),
                   RoundedInput(
                     isPhoneInput: true,

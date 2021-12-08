@@ -1,6 +1,7 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mobx/mobx.dart';
 import 'package:tinh/const/animated_button.dart';
 import 'package:tinh/const/colors_conts.dart';
@@ -106,7 +107,8 @@ class _LoginFormState extends State<LoginForm> {
                   ),
                   Container(
                     height: MediaQuery.of(context).size.height / 3,
-                    child: Image.asset('assets/images/shooping-img.png'),
+                    // child: Image.asset('assets/images/shooping-img.png'),
+                    child: Lottie.asset('assets/lottie/login-lottie.json'),
                   ),
                   RoundedInput(
                     isPhoneInput: true,
