@@ -3,44 +3,41 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/widget_helper.dart';
-import 'package:tinh/models/category/category_model.dart';
-import 'package:tinh/models/product/product_model.dart';
+import 'package:tinh/models/phone_brand/phone_brand_model.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
 import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
-class ListProductbyCategory extends StatefulWidget {
-  final MainStore mainStore;
-  final CategoryModel categoryModel;
-  const ListProductbyCategory({Key? key, required this.categoryModel, required this.mainStore}) : super(key: key);
+class ListPhoneByCategory extends StatefulWidget {
+  final PhoneBrandModel phoneBrandModel;
+  const ListPhoneByCategory({Key? key, required this.phoneBrandModel}) : super(key: key);
 
   @override
-  _ListProductbyCategoryState createState() => _ListProductbyCategoryState();
+  _ListPhoneByCategoryState createState() => _ListPhoneByCategoryState();
 }
 
-class _ListProductbyCategoryState extends State<ListProductbyCategory> {
+class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
   MainStore _mainStore = MainStore();
   int pageSize = 6;
   int pageIndex = 0;
   @override
   void initState() {
     Future.delayed(Duration.zero, () async {
-      await widget.mainStore.productStore.loadProductByCategory(
+      await _mainStore.phoneProductStore.loadPhoneByBrand(
         pageSize: pageSize,
         pageIndex: pageIndex,
-        categoryId: widget.categoryModel.id,
+        brandId: widget.phoneBrandModel.id,
       );
     });
     // TODO: implement initState
     super.initState();
-    _mainStore = widget.mainStore;
   }
 
   @override
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    _mainStore.productStore.productModelList.clear();
+    _mainStore.phoneProductStore.phoneProductModelList.clear();
   }
 
   @override
@@ -70,8 +67,8 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
   Widget _productWidget() {
     Widget _content = WidgetHelper.loadingWidget(context);
 
-    if (!_mainStore.productStore.isLoading) {
-      _content = _mainStore.productStore.productModelList.isNotEmpty
+    if (!_mainStore.phoneProductStore.isLoading) {
+      _content = _mainStore.phoneProductStore.phoneProductModelList.isNotEmpty
           ? Container(
               height: MediaQuery.of(context).size.width,
               width: MediaQuery.of(context).size.height,
@@ -79,31 +76,31 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
                   header: BallPulseHeader(color: ColorsConts.primaryColor),
                   onLoad: () async {
                     pageIndex = pageIndex + pageSize;
-                    await widget.mainStore.productStore.loadProductByCategory(
+                    await _mainStore.phoneProductStore.loadPhoneByBrand(
                       pageSize: pageSize,
                       pageIndex: pageIndex,
-                      categoryId: widget.categoryModel.id,
+                      brandId: widget.phoneBrandModel.id,
                     );
                   },
                   onRefresh: () {
                     pageSize = 6;
                     pageIndex = 0;
-                    _mainStore.productStore.productModelList.clear();
-                    return widget.mainStore.productStore.loadProductByCategory(
+                    _mainStore.phoneProductStore.phoneProductModelList.clear();
+                    return _mainStore.phoneProductStore.loadPhoneByBrand(
                       pageSize: pageSize,
                       pageIndex: pageIndex,
-                      categoryId: widget.categoryModel.id,
+                      brandId: widget.phoneBrandModel.id,
                     );
                   },
-                  child: _mainStore.productStore.productModelList.isNotEmpty
+                  child: _mainStore.phoneProductStore.phoneProductModelList.isNotEmpty
                       ? GridView.count(
                           physics: const NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
                           crossAxisCount: 2,
                           padding: EdgeInsets.all(1.0),
                           childAspectRatio: 8 / 12.0,
-                          children: List<Widget>.generate(_mainStore.productStore.productModelList.length, (index) {
-                            return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _mainStore.productStore.productModelList[index])));
+                          children: List<Widget>.generate(_mainStore.phoneProductStore.phoneProductModelList.length, (index) {
+                            return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
                           }))
                       : Container()),
             )
@@ -126,9 +123,9 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
             width: 50,
             height: 50,
             child: DisplayImage(
-              imageString: widget.categoryModel.images[0],
+              imageString: widget.phoneBrandModel.images[0],
               imageBorderRadius: 0,
-              boxFit: BoxFit.cover,
+              boxFit: BoxFit.fill,
             ),
           ),
           Container(
@@ -136,7 +133,7 @@ class _ListProductbyCategoryState extends State<ListProductbyCategory> {
             height: 50,
             alignment: Alignment.center,
             child: Text(
-              widget.categoryModel.names,
+              widget.phoneBrandModel.name,
               style: TextStyle(fontSize: 20),
             ),
           )

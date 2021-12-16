@@ -1,16 +1,11 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:mobx/mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinh/helper/widget_helper.dart';
-import 'package:tinh/models/category/category_model.dart';
-import 'package:tinh/models/product/product_model.dart';
-import 'package:tinh/screens/home_screen/components/category_item.dart';
+import 'package:tinh/screens/home_screen/components/phone_brand_item.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
-import 'package:tinh/screens/home_screen/components/search_filter_dialog.dart';
 import 'package:tinh/store/main/main_store.dart';
 
 // ignore: must_be_immutable
@@ -27,62 +22,44 @@ class _HomeScreenState extends State<HomeScreen> {
   late double _height;
   TextEditingController _searchController = TextEditingController();
   MainStore _mainStore = MainStore();
-  List<ProductModel> _productModelList = [];
-  List<ProductModel>? _searchProductList = [];
-  List<CategoryModel>? _categoryModelList = [];
-  int _cartNum = 0;
-  int _productPageIndex = 0;
-  int _productPageSize = 6;
-  int _searchPageSize = 6;
+
   ScrollController _scrollController = ScrollController();
-  int _searchPageIndex = 0;
+
+  int _pageSize = 5;
+  int _pageIndex = 0;
 
   void _onSearch(String text) {
-    if (_searchController.text.isEmpty) {
-      _productModelList.clear();
-      _productPageSize = 6;
-      _productPageIndex = 0;
-      _mainStore.productStore.loadData(pageIndex: _productPageIndex, pageSize: _productPageSize);
+    if (_searchController.text.isNotEmpty) {
+      _mainStore.phoneProductStore.phoneProductModelList.clear();
+      _mainStore.phoneProductStore.search(phoneName: text);
     } else {
-      _searchPageSize = 6;
-      _searchProductList!.clear();
-      _mainStore.productStore.search(name: text, pageIndex: _searchPageIndex, pageSize: _searchPageSize);
+      _mainStore.phoneProductStore.phoneProductModelList.clear();
+      _mainStore.phoneProductStore.loadData(pageSize: 5, pageIndex: 0);
     }
   }
 
   Future<void> _getData() async {
-    _mainStore.categoryStore.loadData();
-
-    _productModelList.clear();
-    _productPageIndex = 0;
-    if (_searchController.text.isEmpty) {
-      _productPageSize = 6;
-      _productPageIndex = 0;
-      _mainStore.productStore.loadData(pageIndex: _productPageIndex, pageSize: _productPageSize);
-    } else {
-      _searchPageSize = 5;
-      _searchPageIndex = 0;
-      _searchProductList!.clear();
-      _mainStore.productStore.search(name: _searchController.text, pageIndex: _searchPageIndex, pageSize: _searchPageSize);
-    }
+    _pageIndex = 0;
+    _pageSize = 5;
+    _mainStore.phoneBrandStore.phoneBrandList.clear();
+    _mainStore.phoneProductStore.phoneProductModelList.clear();
+    return Future.delayed(Duration.zero, () async {
+      _mainStore.phoneBrandStore.loadData();
+      _mainStore.phoneProductStore.loadData(pageSize: _pageSize, pageIndex: _pageIndex);
+    });
   }
 
   Future<void> _onLoad() {
-    if (_searchController.text.isEmpty) {
-      return _mainStore.productStore.loadData(pageSize: _productPageSize, pageIndex: _productPageIndex += _productPageSize);
-    } else {
-      return _mainStore.productStore.search(name: _searchController.text, pageSize: _searchPageSize, pageIndex: _searchPageSize += _searchPageSize);
-    }
+    return Future.delayed(Duration.zero, () async {
+      _mainStore.phoneProductStore.loadData(pageSize: _pageSize, pageIndex: _pageIndex += _pageSize);
+    });
   }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
     _mainStore = widget.mainStore;
-    _mainStore.homeScreenStore.changeLoading();
-
     _getData();
   }
 
@@ -101,58 +78,63 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBody() {
     Widget body = WidgetHelper.loadingWidget(context);
     return Observer(builder: (_) {
-      final observableProductFuture = _mainStore.productStore.observableFutureProduct;
-      final observableCategoryFuture = _mainStore.categoryStore.observableFutureCategory;
-      if (observableProductFuture != null && observableCategoryFuture != null) {
-        if (observableProductFuture.value != null && observableCategoryFuture.value != null) {
-          if (_searchController.text.isNotEmpty) {
-            for (var item in observableProductFuture.value!) {
-              if (!_searchProductList!.contains(item)) {
-                _searchProductList!.add(item);
-              }
-            }
-          } else {
-            for (var item in observableProductFuture.value!) {
-              _productModelList.add(item);
-            }
-          }
-        }
-
-        _categoryModelList = observableCategoryFuture.value;
-
-        if (_mainStore.homeScreenStore.isLoading) {
-          body = WidgetHelper.loadingWidget(context);
-          _productModelList.clear();
-        } else {
-          body = Container(
-            margin: EdgeInsets.only(top: 10),
-            height: _height,
-            width: _width,
-            child: EasyRefresh(
-              header: BallPulseHeader(color: ColorsConts.primaryColor),
-              onLoad: _onLoad,
-              onRefresh: _getData,
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(child: _searchWidget()),
-                      _cartWidget(),
-                    ],
-                  ),
-                  _categoryLabel(),
-                  _categoryWidget(),
-                  _productLabel(),
-                  _productWidget(),
-                ],
-              ),
+      if (_mainStore.phoneProductStore.isLoading && _mainStore.phoneBrandStore.isLoading) {
+        body = WidgetHelper.loadingWidget(context);
+      } else {
+        body = Container(
+          margin: EdgeInsets.only(top: 10),
+          height: _height,
+          width: _width,
+          child: EasyRefresh(
+            header: BallPulseHeader(color: ColorsConts.primaryColor),
+            onLoad: _onLoad,
+            onRefresh: _getData,
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    Expanded(child: _searchWidget()),
+                    _searchButton(true),
+                    _searchButton(false),
+                  ],
+                ),
+                _categoryLabel(),
+                _phoneBrandWidget(),
+                _productLabel(),
+                _productWidget(),
+              ],
             ),
-          );
-        }
+          ),
+        );
       }
 
       return body;
     });
+  }
+
+  Widget _searchButton(bool isSearch) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 5),
+      child: AnimatedButton(
+        isFixedHeight: false,
+        width: 80,
+        height: 40,
+        color: isSearch ? Colors.blue : Colors.deepOrange,
+        pressEvent: () {
+          if (isSearch) {
+            if (_searchController.text.isNotEmpty && _searchController.text != ' ') {
+              _onSearch(_searchController.text);
+            }
+          } else {
+            _searchController.text = '';
+            _mainStore.phoneProductStore.phoneProductModelList.clear();
+            _mainStore.phoneProductStore.loadData(pageSize: 5, pageIndex: 0);
+          }
+        },
+        borderRadius: BorderRadius.circular(5),
+        text: isSearch ? 'ស្វែងរក' : 'បោះបង់',
+      ),
+    );
   }
 
   Widget _productLabel() {
@@ -186,9 +168,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           GestureDetector(
-            onTap: () => _mainStore.categoryStore.changeCategoryDisplay(),
+            onTap: () => _mainStore.phoneBrandStore.changeCategoryDisplay(),
             child: Text(
-              !_mainStore.categoryStore.isShowAllCategory ? 'មើលទាំងអស់' : 'បង្រួម',
+              !_mainStore.phoneBrandStore.isShowAllCategory ? 'មើលទាំងអស់' : 'បង្រួម',
               style: TextStyle(color: ColorsConts.primaryColor, fontSize: 15),
             ),
           )
@@ -198,7 +180,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _productWidget() {
-    return _productModelList.isNotEmpty
+    return _mainStore.phoneProductStore.phoneProductModelList.isNotEmpty
         ? GridView.count(
             controller: _scrollController,
             physics: const NeverScrollableScrollPhysics(),
@@ -206,25 +188,20 @@ class _HomeScreenState extends State<HomeScreen> {
             crossAxisCount: 2,
             padding: EdgeInsets.all(1.0),
             childAspectRatio: 8 / 12.0,
-            children: _searchController.text.isEmpty
-                ? List<Widget>.generate(_productModelList.length, (index) {
-                    return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _productModelList[index])));
-                  })
-                : List<Widget>.generate(_searchProductList!.length, (index) {
-                    return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _searchProductList![index])));
-                  }),
-          )
+            children: List<Widget>.generate(_mainStore.phoneProductStore.phoneProductModelList.length, (index) {
+              return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
+            }))
         : WidgetHelper.noDataFound();
   }
 
-  Widget _categoryWidget() {
+  Widget _phoneBrandWidget() {
     List<Widget> _departmentItemList = [];
 
-    _categoryModelList?.forEach((categoryModel) {
-      _departmentItemList.add(CategoryItem(mainStore: _mainStore, categoryModel: categoryModel));
+    _mainStore.phoneBrandStore.phoneBrandList.forEach((phoneBrandModel) {
+      _departmentItemList.add(PhoneBrandItem(mainStore: _mainStore, phoneBrandModel: phoneBrandModel));
     });
 
-    return !_mainStore.categoryStore.isShowAllCategory
+    return !_mainStore.phoneBrandStore.isShowAllCategory
         ? Container(
             margin: EdgeInsets.only(top: 10),
             width: _width,
@@ -250,68 +227,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ));
   }
 
-  Widget _cartWidget() {
-    return Container(
-      margin: EdgeInsets.only(right: 10),
-      width: 40,
-      height: 40,
-      decoration: BoxDecoration(color: Colors.white, border: Border.all(color: ColorsConts.primaryColor, width: .5), shape: BoxShape.circle, boxShadow: [
-        BoxShadow(
-          color: Colors.grey.withOpacity(.7),
-          blurRadius: 3,
-          spreadRadius: .5,
-          offset: Offset(0, 2),
-        )
-      ]),
-      child: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(top: 16, left: 8),
-            child: Icon(
-              FontAwesomeIcons.shoppingCart,
-              size: 18,
-              color: ColorsConts.primaryColor,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 15, top: 2),
-            child: Text(
-              _cartNum.toString(),
-              style: TextStyle(color: Colors.red, fontSize: 14),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
   Widget _searchWidget() {
     return Container(
+      alignment: Alignment.center,
       decoration: BoxDecoration(color: Colors.grey.withOpacity(.2), borderRadius: BorderRadius.circular(5)),
       width: _width,
       height: 40,
       margin: EdgeInsets.only(left: 10, right: 10),
       child: TextFormField(
-        onChanged: (String text) {
-          _onSearch(text);
-        },
         controller: _searchController,
         style: TextStyle(color: ColorsConts.primaryColor),
         cursorColor: ColorsConts.primaryColor,
         decoration: InputDecoration(
-            contentPadding: EdgeInsets.zero,
-            hintText: _mainStore.searchFilterStore.radioValue == 1 ? 'ស្វែងរកតាមឈ្មោះទំនិញ' : 'ស្វែងរកតាមប្រភេទទំនិញ',
+            contentPadding: new EdgeInsets.only(top: 0),
+            hintText: 'ស្វែងរក',
             border: InputBorder.none,
-            // suffixIcon: InkWell(
-            //   onTap: () {
-            //     showSearchFilterDialog(context, _mainStore);
-            //   },
-            //   child: Icon(
-            //     Icons.filter_list_outlined,
-            //     size: 26,
-            //     color: ColorsConts.primaryColor,
-            //   ),
-            // ),
             prefixIcon: Icon(
               Icons.search,
               size: 26,

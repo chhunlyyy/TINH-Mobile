@@ -5,8 +5,7 @@ import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/home_screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
-import 'package:tinh/screens/login/login_screen/login.dart';
-import 'package:tinh/services/user/user_services.dart';
+
 import 'package:tinh/store/main/main_store.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -15,15 +14,7 @@ class SplashScreen extends StatelessWidget {
     MainStore _mainStore = MainStore();
     void navigate(BuildContext context) {
       Future.delayed(Duration(seconds: 2)).whenComplete(() async {
-        await DeviceInfoHelper.getDivceId().then((token) async {
-          await userServices.checkUserToken(token, _mainStore).then((value) {
-            if (value == '200') {
-              NavigationHelper.pushReplacement(context, HomeScreen(_mainStore));
-            } else {
-              NavigationHelper.pushReplacement(context, LoginScreen(_mainStore));
-            }
-          });
-        });
+        NavigationHelper.pushReplacement(context, HomeScreen(_mainStore));
       });
     }
 

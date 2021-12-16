@@ -6,6 +6,8 @@ A new Flutter project.
 ## GENARATE STORE
 flutter packages pub run build_runner build watch
 
+flutter packages pub run build_runner build --delete-conflicting-outputs
+
 
 ## Getting Started
 
