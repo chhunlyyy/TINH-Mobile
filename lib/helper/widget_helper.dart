@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:lottie/lottie.dart';
 import 'package:tinh/const/colors_conts.dart';
 
 class WidgetHelper {
@@ -85,7 +86,12 @@ class WidgetHelper {
 
   static Widget noDataFound() {
     return Center(
-      child: Text('រកមិនឃើញទិន្នន័យ'),
+      child: Column(
+        children: [
+          Lottie.asset('assets/lottie/data-not-found.json'),
+          Text('រកមិនឃើញទិន្នន័យ', style: TextStyle(color: Colors.red, fontSize: 24)),
+        ],
+      ),
     );
   }
 }
