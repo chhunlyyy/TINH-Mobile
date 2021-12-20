@@ -13,10 +13,15 @@ abstract class _PhoneProductStore with Store {
 
   @action
   Future<void> loadData({required int pageSize, required pageIndex}) async {
+    if (phoneProductModelList.isEmpty) {
+      isLoading = true;
+    }
+
     await phoneProductServices.getAllPhone(pageIndex: pageIndex, pageSize: pageSize).then((value) {
       for (var pro in value) {
         phoneProductModelList.add(pro);
       }
+    }).whenComplete(() {
       isLoading = false;
     });
   }
@@ -26,10 +31,27 @@ abstract class _PhoneProductStore with Store {
     if (phoneProductModelList.isEmpty) {
       isLoading = true;
     }
+
     await phoneProductServices.getAllPhoneByBrand(pageIndex: pageIndex, pageSize: pageSize, brandId: brandId).then((value) {
       for (var pro in value) {
         phoneProductModelList.add(pro);
       }
+    }).whenComplete(() {
+      isLoading = false;
+    });
+  }
+
+  @action
+  Future<void> loadPhoneByCategory({required int pageSize, required pageIndex, required brandId, required categoryId}) async {
+    if (phoneProductModelList.isEmpty) {
+      isLoading = true;
+    }
+
+    await phoneProductServices.getAllPhoneByCategory(pageIndex: pageIndex, pageSize: pageSize, brandId: brandId, categoryId: categoryId).then((value) {
+      for (var pro in value) {
+        phoneProductModelList.add(pro);
+      }
+    }).whenComplete(() {
       isLoading = false;
     });
   }

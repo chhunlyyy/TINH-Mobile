@@ -3,6 +3,8 @@ class HttApi {
   static const String API_PHONE_PRODUCT = '/all-phone';
   static const String API_SEARCH_PHONE = '/search-phone';
   static const String API_PHONE_BY_BRAND = '/phone-by-brand';
+  static const String API_PHONE_BY_CATEGORY = '/phone-by-category';
+  static const String API_PHONE_CATEGORY = '/phone-category';
 
   static const String API_USER_CHECK_TOKEN = '/check-token';
   static const String API_USER_REGISTER = '/register';

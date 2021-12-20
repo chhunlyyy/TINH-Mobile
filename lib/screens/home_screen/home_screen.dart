@@ -39,8 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _getData() async {
+    setState(() {});
     _pageIndex = 0;
     _pageSize = 5;
+    _searchController.text = '';
     _mainStore.phoneBrandStore.phoneBrandList.clear();
     _mainStore.phoneProductStore.phoneProductModelList.clear();
     return Future.delayed(Duration.zero, () async {
@@ -78,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBody() {
     Widget body = WidgetHelper.loadingWidget(context);
     return Observer(builder: (_) {
-      if (_mainStore.phoneProductStore.isLoading && _mainStore.phoneBrandStore.isLoading) {
+      if (_mainStore.phoneProductStore.isLoading || _mainStore.phoneBrandStore.isLoading) {
         body = WidgetHelper.loadingWidget(context);
       } else {
         body = Container(
@@ -126,9 +128,11 @@ class _HomeScreenState extends State<HomeScreen> {
               _onSearch(_searchController.text);
             }
           } else {
-            _searchController.text = '';
-            _mainStore.phoneProductStore.phoneProductModelList.clear();
-            _mainStore.phoneProductStore.loadData(pageSize: 5, pageIndex: 0);
+            if (_searchController.text.isNotEmpty && _searchController.text != ' ') {
+              _searchController.text = '';
+              _mainStore.phoneProductStore.phoneProductModelList.clear();
+              _mainStore.phoneProductStore.loadData(pageSize: 5, pageIndex: 0);
+            }
           }
         },
         borderRadius: BorderRadius.circular(5),
@@ -180,7 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _productWidget() {
-    return _mainStore.phoneProductStore.phoneProductModelList.isNotEmpty
+    return _mainStore.phoneProductStore.phoneProductModelList.isNotEmpty && _mainStore.phoneBrandStore.isLoading == false
         ? GridView.count(
             controller: _scrollController,
             physics: const NeverScrollableScrollPhysics(),
