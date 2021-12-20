@@ -44,9 +44,10 @@ mixin _$PhoneProductStore on _PhoneProductStore, Store {
   final _$loadDataAsyncAction = AsyncAction('_PhoneProductStore.loadData');
 
   @override
-  Future<void> loadData({required int pageSize, required dynamic pageIndex}) {
-    return _$loadDataAsyncAction
-        .run(() => super.loadData(pageSize: pageSize, pageIndex: pageIndex));
+  Future<void> loadData(
+      {required int pageSize, required dynamic pageIndex, required int isNew}) {
+    return _$loadDataAsyncAction.run(() =>
+        super.loadData(pageSize: pageSize, pageIndex: pageIndex, isNew: isNew));
   }
 
   final _$loadPhoneByBrandAsyncAction =
@@ -69,12 +70,14 @@ mixin _$PhoneProductStore on _PhoneProductStore, Store {
       {required int pageSize,
       required dynamic pageIndex,
       required dynamic brandId,
-      required dynamic categoryId}) {
+      required dynamic categoryId,
+      required int isNew}) {
     return _$loadPhoneByCategoryAsyncAction.run(() => super.loadPhoneByCategory(
         pageSize: pageSize,
         pageIndex: pageIndex,
         brandId: brandId,
-        categoryId: categoryId));
+        categoryId: categoryId,
+        isNew: isNew));
   }
 
   final _$searchAsyncAction = AsyncAction('_PhoneProductStore.search');

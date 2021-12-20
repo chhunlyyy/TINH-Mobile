@@ -1,7 +1,4 @@
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:tinh/const/colors_conts.dart';
-import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 // ignore: must_be_immutable

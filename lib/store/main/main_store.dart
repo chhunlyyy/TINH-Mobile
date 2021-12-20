@@ -1,5 +1,4 @@
 import 'package:mobx/mobx.dart';
-import 'package:tinh/models/phone_product/phone_product_model.dart';
 import 'package:tinh/store/department/department_store.dart';
 import 'package:tinh/store/home_screen/home_screen_store.dart';
 import 'package:tinh/store/phone_brand/phone_brand_store.dart';

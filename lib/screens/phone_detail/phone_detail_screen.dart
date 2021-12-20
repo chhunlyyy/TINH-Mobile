@@ -30,7 +30,7 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                WidgetHelper.appBar(context),
+                WidgetHelper.appBar(context, ''),
                 _imageWidget(),
                 _nameLabel(),
                 SizedBox(height: 10),
@@ -89,7 +89,7 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
                 ),
               ),
               Visibility(
-                visible: widget.phoneProductModel.isNew == 1 && isShowSecondhandWidget,
+                visible: widget.phoneProductModel.isNew == 0 && isShowSecondhandWidget,
                 child: Container(
                   margin: EdgeInsets.all(5),
                   child: Align(

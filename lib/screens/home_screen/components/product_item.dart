@@ -66,7 +66,7 @@ class ProductItem extends StatelessWidget {
                       ),
                     ),
                     Visibility(
-                      visible: productModel.isNew == 1,
+                      visible: productModel.isNew == 0,
                       child: Container(
                         margin: EdgeInsets.all(5),
                         child: Align(

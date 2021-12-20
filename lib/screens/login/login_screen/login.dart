@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:mobx/mobx.dart';
-
 import 'package:tinh/screens/login/constants.dart';
 import 'package:tinh/store/main/main_store.dart';
 

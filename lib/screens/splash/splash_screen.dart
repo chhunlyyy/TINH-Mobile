@@ -1,6 +1,5 @@
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
-import 'package:tinh/helper/device_infor.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/home_screen/home_screen.dart';
 import 'package:flutter/material.dart';

@@ -3,10 +3,12 @@ import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:flutter/material.dart';
+import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/department/department_model.dart';
 import 'package:tinh/screens/home_screen/components/phone_brand_item.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
+import 'package:tinh/screens/second_hand/second_hand_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
 
 // ignore: must_be_immutable
@@ -26,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   ScrollController _scrollController = ScrollController();
 
-  int _pageSize = 5;
+  int _pageSize = 6;
   int _pageIndex = 0;
 
   void _onSearch(String text) {
@@ -35,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _mainStore.phoneProductStore.search(phoneName: text);
     } else {
       _mainStore.phoneProductStore.phoneProductModelList.clear();
-      _mainStore.phoneProductStore.loadData(pageSize: 5, pageIndex: 0);
+      _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
     }
   }
 
@@ -46,25 +48,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Future<void> _getData() async {
     setState(() {});
     _pageIndex = 0;
-    _pageSize = 5;
+    _pageSize = 6;
     _searchController.text = '';
     _mainStore.phoneBrandStore.phoneBrandList.clear();
     _mainStore.phoneProductStore.phoneProductModelList.clear();
     return Future.delayed(Duration.zero, () async {
       _mainStore.phoneBrandStore.loadData();
-      _mainStore.phoneProductStore.loadData(pageSize: _pageSize, pageIndex: _pageIndex);
+      _mainStore.phoneProductStore.loadData(pageSize: _pageSize, pageIndex: _pageIndex, isNew: 1);
     });
   }
 
   Future<void> _onLoad() {
     return Future.delayed(Duration.zero, () async {
-      _mainStore.phoneProductStore.loadData(pageSize: _pageSize, pageIndex: _pageIndex += _pageSize);
+      _mainStore.phoneProductStore.loadData(pageSize: _pageSize, pageIndex: _pageIndex += _pageSize, isNew: 1);
     });
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _mainStore = widget.mainStore;
     _getDepartment();
@@ -143,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
             if (_searchController.text.isNotEmpty && _searchController.text != ' ') {
               _searchController.text = '';
               _mainStore.phoneProductStore.phoneProductModelList.clear();
-              _mainStore.phoneProductStore.loadData(pageSize: 5, pageIndex: 0);
+              _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
             }
           }
         },
@@ -174,12 +175,31 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _departmentItem(DepartmentModel departmentModel) {
     return Container(
       margin: EdgeInsets.all(5),
-      padding: EdgeInsets.all(8),
-      decoration: BoxDecoration(color: ColorsConts.primaryColor, borderRadius: BorderRadius.circular(5)),
-      child: Center(
-        child: Text(
-          departmentModel.name,
-          style: TextStyle(color: Colors.white),
+      decoration: BoxDecoration(
+          color: ColorsConts.primaryColor,
+          borderRadius: BorderRadius.circular(5),
+          border: Border.all(color: Colors.white),
+          boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.4), offset: Offset(1, 0), spreadRadius: 1, blurRadius: 0)]),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: () {
+              if (departmentModel.id == 1) {
+                NavigationHelper.push(context, SecondHandScreen());
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Center(
+                child: Text(
+                  departmentModel.name,
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );

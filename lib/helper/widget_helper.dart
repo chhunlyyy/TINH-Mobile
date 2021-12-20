@@ -1,4 +1,3 @@
-import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -47,7 +46,7 @@ class WidgetHelper {
     );
   }
 
-  static Widget appBar(BuildContext context) {
+  static Widget appBar(BuildContext context, String title) {
     return Container(
       width: MediaQuery.of(context).size.width,
       margin: EdgeInsets.only(top: 10),
@@ -78,7 +77,13 @@ class WidgetHelper {
             height: 60,
             decoration: BoxDecoration(color: Colors.grey.withOpacity(.1), shape: BoxShape.circle),
           ),
-          Expanded(child: Container())
+          Expanded(
+              child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 50),
+              child: Text(title, style: TextStyle(color: ColorsConts.primaryColor, fontSize: 22)),
+            ),
+          ))
         ],
       ),
     );

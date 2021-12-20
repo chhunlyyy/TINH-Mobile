@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:mobx/mobx.dart';
 import 'package:tinh/models/user/user_model.dart';
 

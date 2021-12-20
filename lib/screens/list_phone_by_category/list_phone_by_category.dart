@@ -32,6 +32,7 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
       );
     } else {
       await _mainStore.phoneProductStore.loadPhoneByCategory(
+        isNew: 1,
         pageSize: pageSize,
         pageIndex: pageIndex,
         brandId: widget.phoneBrandModel.id,
@@ -52,13 +53,11 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
   void initState() {
     _loadPhone();
     _loadPhoneCategory();
-    // TODO: implement initState
     super.initState();
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     _mainStore.phoneProductStore.phoneProductModelList.clear();
   }
@@ -123,7 +122,7 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
                   header: BallPulseHeader(color: ColorsConts.primaryColor),
                   onLoad: () async {
                     pageIndex = pageIndex + pageSize;
-                    _loadPhone();
+                    await _loadPhone();
                   },
                   onRefresh: () {
                     pageSize = 6;
