@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:flutter/material.dart';
 import 'package:tinh/helper/widget_helper.dart';
+import 'package:tinh/models/department/department_model.dart';
 import 'package:tinh/screens/home_screen/components/phone_brand_item.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
 import 'package:tinh/store/main/main_store.dart';
@@ -38,6 +39,10 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> _getDepartment() async {
+    await _mainStore.departmentStore.loadData();
+  }
+
   Future<void> _getData() async {
     setState(() {});
     _pageIndex = 0;
@@ -62,6 +67,7 @@ class _HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     _mainStore = widget.mainStore;
+    _getDepartment();
     _getData();
   }
 
@@ -100,7 +106,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     _searchButton(false),
                   ],
                 ),
-                _categoryLabel(),
+                _departmentLabel(),
+                _departmentWidget(),
+                _phoneBrandLabel(),
                 _phoneBrandWidget(),
                 _productLabel(),
                 _productWidget(),
@@ -112,6 +120,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
       return body;
     });
+  }
+
+  Widget departmentItem(DepartmentModel departmentModel) {
+    return Text(departmentModel.name);
   }
 
   Widget _searchButton(bool isSearch) {
@@ -149,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Expanded(
             child: Text(
-              'ផលិតផលទាំងអស់',
+              'ផលិតផលទូរស័ព្ទទាំងអស់',
               style: TextStyle(fontSize: 18),
             ),
           ),
@@ -159,7 +171,52 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _categoryLabel() {
+  Widget _departmentItem(DepartmentModel departmentModel) {
+    return Container(
+      margin: EdgeInsets.all(5),
+      padding: EdgeInsets.all(8),
+      decoration: BoxDecoration(color: ColorsConts.primaryColor, borderRadius: BorderRadius.circular(5)),
+      child: Center(
+        child: Text(
+          departmentModel.name,
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    );
+  }
+
+  Widget _departmentWidget() {
+    List<Widget> _departmentItemList = [];
+
+    _mainStore.departmentStore.departmentList.forEach((departmentModel) {
+      _departmentItemList.add(_departmentItem(departmentModel));
+    });
+
+    return !_mainStore.departmentStore.isShowAllCategory
+        ? Container(
+            margin: EdgeInsets.only(top: 10),
+            height: 80,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: _departmentItemList.map((child) {
+                return WidgetHelper.animation(_departmentItemList.indexOf(child), child);
+              }).toList(),
+            ),
+          )
+        : Container(
+            margin: EdgeInsets.only(top: 20, left: 5, right: 5),
+            child: GridView.count(
+              childAspectRatio: 1.2,
+              shrinkWrap: true,
+              crossAxisCount: 4,
+              physics: new NeverScrollableScrollPhysics(),
+              children: _departmentItemList.map((child) {
+                return WidgetHelper.animation(_departmentItemList.indexOf(child), child);
+              }).toList(),
+            ));
+  }
+
+  Widget _departmentLabel() {
     return Container(
       margin: EdgeInsets.only(left: 10, right: 10, top: 20),
       width: _width,
@@ -168,6 +225,30 @@ class _HomeScreenState extends State<HomeScreen> {
           Expanded(
             child: Text(
               'ប្រភេទផលិតផល',
+              style: TextStyle(fontSize: 18),
+            ),
+          ),
+          GestureDetector(
+            onTap: () => _mainStore.departmentStore.changeCategoryDisplay(),
+            child: Text(
+              !_mainStore.departmentStore.isShowAllCategory ? 'មើលទាំងអស់' : 'បង្រួម',
+              style: TextStyle(color: ColorsConts.primaryColor, fontSize: 15),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _phoneBrandLabel() {
+    return Container(
+      margin: EdgeInsets.only(left: 10, right: 10, top: 20),
+      width: _width,
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'ម៉ាកផលិតផល',
               style: TextStyle(fontSize: 18),
             ),
           ),

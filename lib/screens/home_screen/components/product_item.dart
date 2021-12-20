@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tinh/const/colors_conts.dart';
+import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/models/phone_product/phone_product_model.dart';
+import 'package:tinh/screens/phone_detail/phone_detail_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
@@ -22,12 +24,11 @@ class ProductItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Material(
           child: InkWell(
-            // onTap: () => NavigationHelper.push(
-            //     context,
-            //     ProductDetail(
-            //       mainStore: mainStore,
-            //       productModel: productModel,
-            //     )),
+            onTap: () => NavigationHelper.push(
+                context,
+                PhoneDetailScreen(
+                  phoneProductModel: productModel,
+                )),
             child: Column(
               children: [
                 Stack(
@@ -57,6 +58,27 @@ class ProductItem extends StatelessWidget {
                               alignment: Alignment.center,
                               child: Text(
                                 productModel.storage[0].discount.toString() + '%',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Visibility(
+                      visible: productModel.isNew == 1,
+                      child: Container(
+                        margin: EdgeInsets.all(5),
+                        child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Container(
+                            width: 70,
+                            margin: EdgeInsets.all(5),
+                            decoration: BoxDecoration(color: Colors.red, border: Border.all(color: Colors.white, width: 2)),
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'មួយទឹក',
                                 style: TextStyle(color: Colors.white),
                               ),
                             ),

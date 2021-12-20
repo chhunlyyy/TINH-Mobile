@@ -1,5 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'package:tinh/models/phone_product/phone_product_model.dart';
+import 'package:tinh/store/department/department_store.dart';
 import 'package:tinh/store/home_screen/home_screen_store.dart';
 import 'package:tinh/store/phone_brand/phone_brand_store.dart';
 import 'package:tinh/store/phone_category/phone_category_store.dart';
@@ -21,6 +22,7 @@ abstract class _MainStore with Store {
   late UserServiceStore userServiceStore;
   late UserStore userStore;
   late PhoneCategoryStore phoneCategoryStore;
+  late DepartmentStore departmentStore;
   void init() async {
     phoneProductStore = PhoneProductStore();
     searchFilterStore = SearchFilterStore();
@@ -30,6 +32,7 @@ abstract class _MainStore with Store {
     userServiceStore = UserServiceStore();
     userStore = UserStore();
     phoneCategoryStore = PhoneCategoryStore();
+    departmentStore = DepartmentStore();
   }
 
   _MainStore() {

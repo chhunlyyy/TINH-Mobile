@@ -10,6 +10,7 @@ String phoneProductModelToJson(PhoneProductModel data) => json.encode(data.toJso
 
 class PhoneProductModel {
   PhoneProductModel({
+    required this.isNew,
     required this.id,
     required this.name,
     required this.isWarranty,
@@ -30,6 +31,7 @@ class PhoneProductModel {
   String imageIdRef;
   int categoryId;
   int brandId;
+  int isNew;
   List<String> images;
   List<String> colors;
   List<Detail> detail;
@@ -39,6 +41,7 @@ class PhoneProductModel {
         id: json["id"],
         name: json["name"],
         isWarranty: json["is_warranty"],
+        isNew: json["is_new"],
         warrantyPeriod: json["warranty_period"],
         imageIdRef: json["image_id_ref"],
         categoryId: json["category_id"],
@@ -53,6 +56,7 @@ class PhoneProductModel {
         "id": id,
         "name": name,
         "is_warranty": isWarranty,
+        "is_new": isNew,
         "warranty_period": warrantyPeriod,
         "image_id_ref": imageIdRef,
         "category_id": categoryId,

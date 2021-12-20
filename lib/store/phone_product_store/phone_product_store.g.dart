@@ -61,6 +61,22 @@ mixin _$PhoneProductStore on _PhoneProductStore, Store {
         pageSize: pageSize, pageIndex: pageIndex, brandId: brandId));
   }
 
+  final _$loadPhoneByCategoryAsyncAction =
+      AsyncAction('_PhoneProductStore.loadPhoneByCategory');
+
+  @override
+  Future<void> loadPhoneByCategory(
+      {required int pageSize,
+      required dynamic pageIndex,
+      required dynamic brandId,
+      required dynamic categoryId}) {
+    return _$loadPhoneByCategoryAsyncAction.run(() => super.loadPhoneByCategory(
+        pageSize: pageSize,
+        pageIndex: pageIndex,
+        brandId: brandId,
+        categoryId: categoryId));
+  }
+
   final _$searchAsyncAction = AsyncAction('_PhoneProductStore.search');
 
   @override
