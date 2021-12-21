@@ -24,20 +24,26 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
     return Observer(builder: (_) {
       return Material(
           child: SafeArea(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                WidgetHelper.appBar(context, ''),
-                _imageWidget(),
-                _nameLabel(),
-                SizedBox(height: 10),
-                _detailWidget(),
-              ],
+        child: Column(
+          children: [
+            WidgetHelper.appBar(context, ''),
+            Expanded(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      _imageWidget(),
+                      _nameLabel(),
+                      SizedBox(height: 10),
+                      _detailWidget(),
+                    ],
+                  ),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       ));
     });

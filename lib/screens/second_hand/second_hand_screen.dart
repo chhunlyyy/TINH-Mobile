@@ -109,7 +109,7 @@ class _SecondHandScreenState extends State<SecondHandScreen> {
   }
 
   Widget _productWidget() {
-    Widget content = WidgetHelper.loadingWidget(context);
+    Widget content = WidgetHelper.loadingWidget(context, MediaQuery.of(context).size.height);
 
     if (!_mainStore.phoneProductStore.isLoading) {
       content = _mainStore.phoneProductStore.phoneProductModelList.isNotEmpty

@@ -5,10 +5,10 @@ import 'package:lottie/lottie.dart';
 import 'package:tinh/const/colors_conts.dart';
 
 class WidgetHelper {
-  static Widget loadingWidget(BuildContext context) {
+  static Widget loadingWidget(BuildContext context, double height) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+      height: height,
       child: Center(
         child: Container(
           width: 100,

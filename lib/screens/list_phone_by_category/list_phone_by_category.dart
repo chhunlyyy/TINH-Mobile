@@ -111,7 +111,7 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
   }
 
   Widget _productWidget() {
-    Widget _content = WidgetHelper.loadingWidget(context);
+    Widget _content = WidgetHelper.loadingWidget(context, MediaQuery.of(context).size.height);
 
     if (!_mainStore.phoneProductStore.isLoading) {
       _content = _mainStore.phoneProductStore.phoneProductModelList.isNotEmpty
