@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/department/department_model.dart';
+import 'package:tinh/screens/categories/categories_screen.dart';
 import 'package:tinh/screens/home_screen/components/phone_brand_item.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
 import 'package:tinh/screens/second_hand/second_hand_screen.dart';
@@ -181,6 +182,8 @@ class _HomeScreenState extends State<HomeScreen> {
             onTap: () {
               if (departmentModel.id == 1) {
                 NavigationHelper.push(context, SecondHandScreen());
+              } else if (departmentModel.id == 2) {
+                NavigationHelper.push(context, CategoriesScreen(title: departmentModel.name));
               }
             },
             child: Padding(

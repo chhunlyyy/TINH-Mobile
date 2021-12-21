@@ -6,6 +6,7 @@ class HttApi {
   static const String API_PHONE_BY_CATEGORY = '/phone-by-category';
   static const String API_PHONE_CATEGORY = '/phone-category';
   static const String API_DEPARTMENT = '/department';
+  static const String API_CATEGORIES = '/categories';
 
   static const String API_USER_CHECK_TOKEN = '/check-token';
   static const String API_USER_REGISTER = '/register';

@@ -40,6 +40,8 @@ class WidgetHelper {
     return AnimationConfiguration.staggeredList(
       position: index,
       child: SlideAnimation(
+        delay: Duration(milliseconds: 80),
+        duration: Duration(milliseconds: 500),
         verticalOffset: 100.0,
         child: FadeInAnimation(child: child),
       ),
