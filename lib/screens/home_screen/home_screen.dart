@@ -34,7 +34,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onSearch(String text) {
     _mainStore.phoneProductStore.phoneProductModelList.clear();
-    _mainStore.phoneProductStore.search(phoneName: text);
+    _pageSize = 6;
+    _pageIndex = 0;
+    _mainStore.phoneProductStore.search(phoneName: text, pageSize: _pageSize, pageIndex: _pageIndex);
   }
 
   Future<void> _getData() async {
@@ -88,7 +90,14 @@ class _HomeScreenState extends State<HomeScreen> {
         width: _width,
         child: EasyRefresh(
           header: BallPulseHeader(color: ColorsConts.primaryColor),
-          onLoad: _onLoad,
+          onLoad: () async {
+            if (_searchController.text != '') {
+              await _onLoad();
+            } else {
+              _pageIndex = _pageSize + _pageIndex;
+              _mainStore.phoneProductStore.search(phoneName: _searchController.text, pageSize: _pageSize, pageIndex: _pageIndex);
+            }
+          },
           onRefresh: _getData,
           child: Column(
             children: [
@@ -130,9 +139,11 @@ class _HomeScreenState extends State<HomeScreen> {
               _onSearch(_searchController.text);
             }
           } else {
-            _searchController.text = '';
-            _mainStore.phoneProductStore.phoneProductModelList.clear();
-            _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
+            if (_searchController.text != '') {
+              _searchController.text = '';
+              _mainStore.phoneProductStore.phoneProductModelList.clear();
+              _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
+            }
           }
         },
         borderRadius: BorderRadius.circular(5),
@@ -315,6 +326,12 @@ class _HomeScreenState extends State<HomeScreen> {
       height: 40,
       margin: EdgeInsets.only(left: 10, right: 10),
       child: TextFormField(
+        onChanged: (text) {
+          if (text == '') {
+            _mainStore.phoneProductStore.phoneProductModelList.clear();
+            _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
+          }
+        },
         controller: _searchController,
         style: TextStyle(color: ColorsConts.primaryColor),
         cursorColor: ColorsConts.primaryColor,

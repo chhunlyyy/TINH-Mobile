@@ -83,8 +83,12 @@ mixin _$PhoneProductStore on _PhoneProductStore, Store {
   final _$searchAsyncAction = AsyncAction('_PhoneProductStore.search');
 
   @override
-  Future<void> search({required String phoneName}) {
-    return _$searchAsyncAction.run(() => super.search(phoneName: phoneName));
+  Future<void> search(
+      {required String phoneName,
+      required int pageIndex,
+      required int pageSize}) {
+    return _$searchAsyncAction.run(() => super.search(
+        phoneName: phoneName, pageIndex: pageIndex, pageSize: pageSize));
   }
 
   @override

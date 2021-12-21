@@ -41,10 +41,12 @@ class PhoneProductServices {
     }
   }
 
-  Future<List<PhoneProductModel>> searchPhone(String phoneName) async {
+  Future<List<PhoneProductModel>> searchPhone({required String phoneName, required int pageSize, required int pageIndex}) async {
     try {
       Map<String, dynamic> params = {
         'phone_name': phoneName,
+        'pageSize': pageSize,
+        'pageIndex': pageIndex,
       };
       return await httpApiService.get(HttApi.API_SEARCH_PHONE, params, new Options(headers: HttpConfig.headers)).then((value) {
         return List<PhoneProductModel>.from(value.data.map((x) => PhoneProductModel.fromJson(x)));

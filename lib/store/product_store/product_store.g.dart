@@ -50,6 +50,21 @@ mixin _$ProductStore on _ProductStore, Store {
         categoryId: categoryId, pageSize: pageSize, pageIndex: pageIndex));
   }
 
+  final _$searchProductAsyncAction = AsyncAction('_ProductStore.searchProduct');
+
+  @override
+  Future<void> searchProduct(
+      {required int categoryId,
+      required int pageSize,
+      required dynamic pageIndex,
+      required String name}) {
+    return _$searchProductAsyncAction.run(() => super.searchProduct(
+        categoryId: categoryId,
+        pageSize: pageSize,
+        pageIndex: pageIndex,
+        name: name));
+  }
+
   @override
   String toString() {
     return '''

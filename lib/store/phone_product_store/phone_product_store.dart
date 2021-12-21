@@ -57,11 +57,11 @@ abstract class _PhoneProductStore with Store {
   }
 
   @action
-  Future<void> search({required String phoneName}) async {
+  Future<void> search({required String phoneName, required int pageIndex, required int pageSize}) async {
     if (phoneProductModelList.isEmpty) {
       isLoading = true;
     }
-    await phoneProductServices.searchPhone(phoneName).then((value) {
+    await phoneProductServices.searchPhone(phoneName: phoneName, pageIndex: pageIndex, pageSize: pageSize).then((value) {
       for (var pro in value) {
         phoneProductModelList.add(pro);
       }
