@@ -33,13 +33,8 @@ class _HomeScreenState extends State<HomeScreen> {
   int _pageIndex = 0;
 
   void _onSearch(String text) {
-    if (_searchController.text.isNotEmpty) {
-      _mainStore.phoneProductStore.phoneProductModelList.clear();
-      _mainStore.phoneProductStore.search(phoneName: text);
-    } else {
-      _mainStore.phoneProductStore.phoneProductModelList.clear();
-      _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
-    }
+    _mainStore.phoneProductStore.phoneProductModelList.clear();
+    _mainStore.phoneProductStore.search(phoneName: text);
   }
 
   Future<void> _getData() async {
@@ -135,11 +130,9 @@ class _HomeScreenState extends State<HomeScreen> {
               _onSearch(_searchController.text);
             }
           } else {
-            if (_searchController.text.isNotEmpty && _searchController.text != ' ') {
-              _searchController.text = '';
-              _mainStore.phoneProductStore.phoneProductModelList.clear();
-              _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
-            }
+            _searchController.text = '';
+            _mainStore.phoneProductStore.phoneProductModelList.clear();
+            _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
           }
         },
         borderRadius: BorderRadius.circular(5),
@@ -327,7 +320,7 @@ class _HomeScreenState extends State<HomeScreen> {
         cursorColor: ColorsConts.primaryColor,
         decoration: InputDecoration(
             contentPadding: new EdgeInsets.only(top: 0),
-            hintText: 'ស្វែងរក',
+            hintText: 'ស្វែងរកទូរស័ព្ទ',
             border: InputBorder.none,
             prefixIcon: Icon(
               Icons.search,

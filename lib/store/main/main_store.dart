@@ -6,6 +6,7 @@ import 'package:tinh/store/phone_brand/phone_brand_store.dart';
 import 'package:tinh/store/phone_category/phone_category_store.dart';
 import 'package:tinh/store/phone_product_store/phone_product_store.dart';
 import 'package:tinh/store/product_detail_store/product_detail_store.dart';
+import 'package:tinh/store/product_store/product_store.dart';
 import 'package:tinh/store/search_filter/search_filter_store.dart';
 import 'package:tinh/store/user/user_store.dart';
 import 'package:tinh/store/user_service/user_service_store.dart';
@@ -24,6 +25,7 @@ abstract class _MainStore with Store {
   late PhoneCategoryStore phoneCategoryStore;
   late DepartmentStore departmentStore;
   late CategoriesStore categoriesStore;
+  late ProductStore productStore;
   void init() async {
     phoneProductStore = PhoneProductStore();
     searchFilterStore = SearchFilterStore();
@@ -35,6 +37,7 @@ abstract class _MainStore with Store {
     phoneCategoryStore = PhoneCategoryStore();
     departmentStore = DepartmentStore();
     categoriesStore = CategoriesStore();
+    productStore = ProductStore();
   }
 
   _MainStore() {

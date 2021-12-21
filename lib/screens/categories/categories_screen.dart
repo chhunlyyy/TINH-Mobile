@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
+import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/categories/categories_model.dart';
+import 'package:tinh/screens/product/product_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
@@ -83,7 +85,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         borderRadius: BorderRadius.circular(20),
         child: Material(
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              NavigationHelper.push(context, ProductScreen(categoriesModel: categoriesModel));
+            },
             child: Column(
               children: [
                 Stack(
