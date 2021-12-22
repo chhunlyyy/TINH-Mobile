@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "851467659404",
+    "project_id": "tinh-bffd7",
+    "storage_bucket": "tinh-bffd7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:851467659404:android:753e7fd42a5275a9b0b3a9",
+        "android_client_info": {
+          "package_name": "com.example.TINH_Mobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "851467659404-hs5td6e1kt2uvlbgl8mn2t39hf61fs3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAnIYM8jBLZV_DJ6gNjAiH6hCv04_t829M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "851467659404-hs5td6e1kt2uvlbgl8mn2t39hf61fs3t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

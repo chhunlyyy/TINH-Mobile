@@ -1,5 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tinh/http/http_config.dart';
-import 'package:tinh/http/http_get_base_url.dart';
 import 'package:dio/dio.dart';
 
 class HttpApiService {
@@ -74,44 +74,18 @@ class HttpApiService {
     // }
   }
 
-  // Setup Interceptor
-  // void _setupInterceptors() {
-  //   _dio.interceptors.add(InterceptorsWrapper(onRequest: (RequestOptions options) {
-  //     print("--> RequestOptions:");
-  //     print("--> ${options.method} ${options.path}");
-  //     print("--> Headers: ${options.headers}");
-  //     print("--> Datas: ${options.data}");
-  //     print("--> QueryParams: ${options.queryParameters}");
-  //     print("--> Content type: ${options.contentType}");
-  //     print("<-- END RequestOptions");
-  //     return options;
-  //   }, onResponse: (Response response) {
-  //     print("--> Response:");
-  //     print("<-- ${response.statusCode} ${response.request.method} ${response.request.path}");
-  //     //String responseAsString = response.data.toString();
-  //     print(response.data);
-  //     print("<-- END Response HTTP");
-  //     return response; // continue
-  //   }, onError: (DioError e) {
-  //     print("--> Request/Response ERROR:");
-  //     // The request was made and the server responded with a status code
-  //     // that falls out of the range of 2xx and is also not 304.
-  //     if (e.response != null) {
-  //       print(e.response.data);
-  //       print(e.response.headers);
-  //       print(e.response.request);
-  //     } else {
-  //       // Something happened in setting up or sending the request that triggered an Error
-  //       print(e.request);
-  //       print(e.message);
-  //     }
-  //     print("--> End Request/Response ERROR");
-  //     return e; //continue
-  //   }));
-  // }
-
+  var url = '';
   String _buildUrl(String endPoint) {
-    return httpGetBaseUrl.get + endPoint;
+    return url + endPoint;
+  }
+
+  Future<void> initUrl() async {
+    var collection = FirebaseFirestore.instance.collection('BASE-URL');
+    var querySnapshot = await collection.get();
+    for (var queryDocumentSnapshot in querySnapshot.docs) {
+      Map<String, dynamic> data = queryDocumentSnapshot.data();
+      url = data['URL'] + '/api';
+    }
   }
 }
 

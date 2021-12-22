@@ -1,12 +1,18 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
-
+import 'package:firebase_core/firebase_core.dart';
+import 'package:tinh/http/http_api_service.dart';
 import 'package:tinh/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:tinh/store/main/main_store.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  await httpApiService.initUrl();
+
   runApp(TinhApp());
 }
 

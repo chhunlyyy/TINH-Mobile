@@ -11,6 +11,7 @@ class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     MainStore _mainStore = MainStore();
+
     void navigate(BuildContext context) {
       Future.delayed(Duration(seconds: 2)).whenComplete(() async {
         NavigationHelper.pushReplacement(context, HomeScreen(_mainStore));
