@@ -41,7 +41,7 @@ class _ProductScreenState extends State<ProductScreen> {
     return Observer(
       builder: (_) {
         return Material(
-          child: SafeArea(child: _buildBody()),
+          child: SafeArea(child: GestureDetector(onTap: () => FocusScope.of(context).requestFocus(new FocusNode()), child: _buildBody())),
         );
       },
     );
@@ -96,10 +96,12 @@ class _ProductScreenState extends State<ProductScreen> {
         pressEvent: () {
           if (isSearch) {
             if (_searchController.text.isNotEmpty && _searchController.text != ' ') {
+              FocusScope.of(context).requestFocus(new FocusNode());
               _onSearch(_searchController.text);
             }
           } else {
             if (_searchController.text != '') {
+              FocusScope.of(context).requestFocus(new FocusNode());
               _searchController.text = '';
               _mainStore.productStore.productModelList.clear();
               _mainStore.productStore.loadData(pageSize: 6, pageIndex: 0, categoryId: widget.categoriesModel.id);

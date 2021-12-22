@@ -78,7 +78,10 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: _buildBody(),
+        child: GestureDetector(
+          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+          child: _buildBody(),
+        ),
       ),
     );
   }
@@ -137,10 +140,12 @@ class _HomeScreenState extends State<HomeScreen> {
         pressEvent: () {
           if (isSearch) {
             if (_searchController.text.isNotEmpty && _searchController.text != ' ') {
+              FocusScope.of(context).requestFocus(new FocusNode());
               _onSearch(_searchController.text);
             }
           } else {
             if (_searchController.text != '') {
+              FocusScope.of(context).requestFocus(new FocusNode());
               _searchController.text = '';
               _mainStore.phoneProductStore.phoneProductModelList.clear();
               _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
@@ -219,7 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return _mainStore.departmentStore.departmentList.isNotEmpty
         ? Container(
             margin: EdgeInsets.only(top: 10),
-            height: 65,
+            height: 80,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: _departmentItemList.map((child) {
