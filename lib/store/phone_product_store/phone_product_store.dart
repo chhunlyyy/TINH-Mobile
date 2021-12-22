@@ -10,7 +10,6 @@ abstract class _PhoneProductStore with Store {
   bool isLoading = true;
   @observable
   List<PhoneProductModel> phoneProductModelList = [];
-
   @action
   Future<void> loadData({required int pageSize, required pageIndex, required int isNew}) async {
     if (phoneProductModelList.isEmpty) {
@@ -18,6 +17,21 @@ abstract class _PhoneProductStore with Store {
     }
 
     await phoneProductServices.getAllPhone(pageIndex: pageIndex, pageSize: pageSize, isNew: isNew).then((value) {
+      for (var pro in value) {
+        phoneProductModelList.add(pro);
+      }
+    }).whenComplete(() {
+      isLoading = false;
+    });
+  }
+
+  @action
+  Future<void> getDiscountPhone({required int pageSize, required pageIndex}) async {
+    if (phoneProductModelList.isEmpty) {
+      isLoading = true;
+    }
+
+    await phoneProductServices.getDiscountPhone(pageIndex: pageIndex, pageSize: pageSize).then((value) {
       for (var pro in value) {
         phoneProductModelList.add(pro);
       }

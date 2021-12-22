@@ -17,6 +17,18 @@ class ProductServices {
     }
   }
 
+  Future<List<ProductModel>> getDiscountProduct({int pageSize = 10, int pageIndex = 0}) async {
+    try {
+      Map<String, dynamic> params = {'pageSize': pageSize, 'pageIndex': pageIndex};
+      return await httpApiService.get(HttApi.API_DISCOUNT_PRODUCT, params, new Options(headers: HttpConfig.headers)).then((value) {
+        return List<ProductModel>.from(value.data.map((x) => ProductModel.fromJson(x)));
+      });
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
   Future<List<ProductModel>> searchProduct({required int pageSize, required int pageIndex, required int categoryId, required String name}) async {
     try {
       Map<String, dynamic> params = {'pageSize': pageSize, 'pageIndex': pageIndex, 'category_id': categoryId, 'name': name};

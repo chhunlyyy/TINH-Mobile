@@ -9,6 +9,8 @@ class HttApi {
   static const String API_CATEGORIES = '/categories';
   static const String API_PRODUCT_BY_CATEGORY = '/product-by-category';
   static const String API_SEARCH_PRODUCT = '/search-product';
+  static const String API_DISCOUNT_PHONE = '/discount-phone';
+  static const String API_DISCOUNT_PRODUCT = '/discount-product';
 
   static const String API_USER_CHECK_TOKEN = '/check-token';
   static const String API_USER_REGISTER = '/register';

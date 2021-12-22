@@ -27,6 +27,20 @@ abstract class _ProductStore with Store {
   }
 
   @action
+  Future<void> getDiscountProduct({required int pageSize, required pageIndex}) async {
+    if (productModelList.isEmpty) {
+      isLoading = true;
+    }
+    await productServices.getDiscountProduct(pageIndex: pageIndex, pageSize: pageSize).then((value) {
+      for (var product in value) {
+        productModelList.add(product);
+      }
+    }).whenComplete(() {
+      isLoading = false;
+    });
+  }
+
+  @action
   Future<void> searchProduct({required int categoryId, required int pageSize, required pageIndex, required String name}) async {
     if (productModelList.isEmpty) {
       isLoading = true;

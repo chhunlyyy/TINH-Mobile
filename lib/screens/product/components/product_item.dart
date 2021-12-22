@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tinh/const/colors_conts.dart';
+import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/models/product/product_model.dart';
+import 'package:tinh/screens/product/components/product_detail.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class ProductItem extends StatelessWidget {
@@ -20,14 +22,16 @@ class ProductItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         child: Material(
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              NavigationHelper.push(context, ProductDetail(productModel: productModel));
+            },
             child: Column(
               children: [
                 Stack(
                   children: [
                     Container(
                         width: MediaQuery.of(context).size.width / 2,
-                        height: 230,
+                        height: 210,
                         child: DisplayImage(
                           boxFit: BoxFit.fitHeight,
                           imageBorderRadius: 20,
@@ -62,7 +66,7 @@ class ProductItem extends StatelessWidget {
                 SizedBox(height: 10),
                 Text(
                   productModel.name,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 10),

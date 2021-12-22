@@ -17,6 +17,18 @@ class PhoneProductServices {
     }
   }
 
+  Future<List<PhoneProductModel>> getDiscountPhone({int pageSize = 10, int pageIndex = 0}) async {
+    try {
+      Map<String, dynamic> params = {'pageSize': pageSize, 'pageIndex': pageIndex};
+      return await httpApiService.get(HttApi.API_DISCOUNT_PHONE, params, new Options(headers: HttpConfig.headers)).then((value) {
+        return List<PhoneProductModel>.from(value.data.map((x) => PhoneProductModel.fromJson(x)));
+      });
+    } catch (e) {
+      print(e);
+      return [];
+    }
+  }
+
   Future<List<PhoneProductModel>> getAllPhoneByBrand({int pageSize = 10, int pageIndex = 0, required int brandId}) async {
     try {
       Map<String, dynamic> params = {'pageSize': pageSize, 'pageIndex': pageIndex, 'brand_id': brandId};

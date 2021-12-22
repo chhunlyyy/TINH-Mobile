@@ -1,3 +1,7 @@
+// To parse this JSON data, do
+//
+//     final productModel = productModelFromJson(jsonString);
+
 import 'dart:convert';
 
 ProductModel productModelFromJson(String str) => ProductModel.fromJson(json.decode(str));
@@ -12,6 +16,8 @@ class ProductModel {
     required this.price,
     required this.discount,
     required this.priceAfterDiscount,
+    required this.isWarranty,
+    required this.warrantyPeriod,
     required this.imageIdRef,
     required this.images,
     required this.colors,
@@ -24,6 +30,8 @@ class ProductModel {
   int price;
   int discount;
   int priceAfterDiscount;
+  int isWarranty;
+  String warrantyPeriod;
   String imageIdRef;
   List<String> images;
   List<String> colors;
@@ -36,6 +44,8 @@ class ProductModel {
         price: json["price"],
         discount: json["discount"],
         priceAfterDiscount: json["price_after_discount"],
+        isWarranty: json["is_warranty"],
+        warrantyPeriod: json["warranty_period"],
         imageIdRef: json["image_id_ref"],
         images: List<String>.from(json["images"].map((x) => x)),
         colors: List<String>.from(json["colors"].map((x) => x)),
@@ -49,6 +59,8 @@ class ProductModel {
         "price": price,
         "discount": discount,
         "price_after_discount": priceAfterDiscount,
+        "is_warranty": isWarranty,
+        "warranty_period": warrantyPeriod,
         "image_id_ref": imageIdRef,
         "images": List<dynamic>.from(images.map((x) => x)),
         "colors": List<dynamic>.from(colors.map((x) => x)),

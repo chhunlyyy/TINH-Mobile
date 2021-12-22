@@ -7,6 +7,7 @@ import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/department/department_model.dart';
 import 'package:tinh/screens/categories/categories_screen.dart';
+import 'package:tinh/screens/discount/discount_screen.dart';
 import 'package:tinh/screens/home_screen/components/phone_brand_item.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
 import 'package:tinh/screens/second_hand/second_hand_screen.dart';
@@ -170,8 +171,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _departmentItem(DepartmentModel departmentModel) {
+  Widget _departmentItem(DepartmentModel departmentModel, int length) {
     return Container(
+      width: MediaQuery.of(context).size.width / length - 12,
       margin: EdgeInsets.all(5),
       decoration: BoxDecoration(
           color: ColorsConts.primaryColor,
@@ -188,6 +190,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 NavigationHelper.push(context, SecondHandScreen());
               } else if (departmentModel.id == 2) {
                 NavigationHelper.push(context, CategoriesScreen(title: departmentModel.name));
+              } else if (departmentModel.id == 3) {
+                NavigationHelper.push(context, DiscountScreen(title: departmentModel.name));
               }
             },
             child: Padding(
@@ -209,7 +213,7 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Widget> _departmentItemList = [];
 
     _mainStore.departmentStore.departmentList.forEach((departmentModel) {
-      _departmentItemList.add(_departmentItem(departmentModel));
+      _departmentItemList.add(_departmentItem(departmentModel, _mainStore.departmentStore.departmentList.length));
     });
 
     return _mainStore.departmentStore.departmentList.isNotEmpty
