@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/login/login_screen/login.dart';
+import 'package:tinh/store/main/main_store.dart';
 
 class DrawerMenuScreen extends StatelessWidget {
-  const DrawerMenuScreen({Key? key}) : super(key: key);
+  final MainStore mainStore;
+  const DrawerMenuScreen({Key? key, required this.mainStore}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class DrawerMenuScreen extends StatelessWidget {
         children: [
           _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () {}),
           SizedBox(height: 20),
-          _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen())),
+          !mainStore.isShopOwner ? _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen(mainStore))) : _drawerItem(context, 'ចាកចេញ', Icons.logout, () {}),
         ],
       ),
     );

@@ -9,10 +9,10 @@ import 'package:tinh/store/main/main_store.dart';
 class UserServices {
   Future<String> checkUserToken(String token, MainStore mainStore) async {
     String status = '';
+
     try {
       Map<String, dynamic> params = {'token': token};
       return await httpApiService.get(HttApi.API_USER_CHECK_TOKEN, params, new Options(headers: HttpConfig.headers)).then((value) {
-        mainStore.userStore.setUserModel(UserModel.fromJson(value.data[0]['userInfo']));
         return value.data[0]['status'].toString();
       });
     } catch (e) {
@@ -31,17 +31,15 @@ class UserServices {
     }
   }
 
-  Future<dynamic> login(Map<String, dynamic> postData, MainStore mainStore) async {
+  Future<dynamic> login(Map<String, dynamic> postData) async {
     try {
       return await httpApiService.post(HttApi.API_USER_LOGIN, postData, {}, new Options(headers: HttpConfig.headers)).then((value) {
         if (value.data[0]['status'] != '200') {
-          mainStore.userServiceStore.changeMessageToUser(true);
-          mainStore.userStore.setUserModel(UserModel.fromJson(value.data[0]['userInfo'][0]));
-
           return MessageModel.fromJson(value.data[0]);
         } else {
-          mainStore.userServiceStore.changeMessageToUser(false);
-          return UserModel.fromJson(value.data[0]['userInfo'][0]);
+          MainStore mainStore = MainStore();
+          mainStore.changeUserStatus(true);
+          return MessageModel(status: '200', message: 'success');
         }
       });
     } catch (e) {

@@ -11,7 +11,8 @@ import 'components/login_form.dart';
 import 'components/register_form.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen();
+  MainStore mainStore;
+  LoginScreen(this.mainStore);
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -131,7 +132,13 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 ),
 
                 // Login Form
-                LoginForm(isLogin: isLogin, animationDuration: animationDuration, size: size, defaultLoginSize: defaultLoginSize),
+                LoginForm(
+                  isLogin: isLogin,
+                  animationDuration: animationDuration,
+                  size: size,
+                  defaultLoginSize: defaultLoginSize,
+                  mainStore: widget.mainStore,
+                ),
 
                 // Register Container
                 // AnimatedBuilder(

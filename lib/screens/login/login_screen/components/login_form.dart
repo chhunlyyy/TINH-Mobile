@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tinh/const/animated_button.dart';
 import 'package:tinh/const/colors_conts.dart';
+import 'package:tinh/helper/device_infor.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/home_screen/home_screen.dart';
 import 'package:tinh/screens/login/components/rounded_input.dart';
@@ -14,6 +15,7 @@ import 'package:tinh/store/main/main_store.dart';
 class LoginForm extends StatefulWidget {
   const LoginForm({
     Key? key,
+    required this.mainStore,
     required this.isLogin,
     required this.animationDuration,
     required this.size,
@@ -23,6 +25,7 @@ class LoginForm extends StatefulWidget {
   final Duration animationDuration;
   final Size size;
   final double defaultLoginSize;
+  final MainStore mainStore;
 
   @override
   State<LoginForm> createState() => _LoginFormState();
@@ -53,29 +56,31 @@ class _LoginFormState extends State<LoginForm> {
         Map<String, dynamic> postData = {
           'phone': _phoneController.text,
           'password': _passwordController.text,
+          'token': await DeviceInfoHelper.getDivceId(),
         };
-        // Future.delayed(Duration.zero, () async {
-        //   await userServices.login(postData, widget.mainStore).then((value) {
-        //     if (widget.mainStore.userServiceStore.isMessage) {
-        //       AwesomeDialog(
-        //           btnOkColor: value.status == '500' ? Colors.red : ColorsConts.primaryColor,
-        //           btnOkOnPress: () {},
-        //           context: context,
-        //           dialogType: value.status == '500' ? DialogType.ERROR : DialogType.WARNING,
-        //           animType: AnimType.SCALE,
-        //           body: Container(
-        //             margin: EdgeInsets.all(10),
-        //             child: Text(
-        //               value.message,
-        //               style: TextStyle(fontSize: 16),
-        //             ),
-        //           ))
-        //         ..show();
-        //     } else {
-        //       NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
-        //     }
-        //   });
-        // });
+        Future.delayed(Duration.zero, () async {
+          await userServices.login(postData).then((value) {
+            if (value.status != '200') {
+              AwesomeDialog(
+                  btnOkColor: value.status == '500' ? Colors.red : ColorsConts.primaryColor,
+                  btnOkOnPress: () {},
+                  context: context,
+                  dialogType: value.status == '500' ? DialogType.ERROR : DialogType.WARNING,
+                  animType: AnimType.SCALE,
+                  body: Container(
+                    margin: EdgeInsets.all(10),
+                    child: Text(
+                      value.message,
+                      style: TextStyle(fontSize: 16),
+                    ),
+                  ))
+                ..show();
+            } else {
+              widget.mainStore.changeUserStatus(true);
+              NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
+            }
+          });
+        });
       }
     }).whenComplete(() {});
   }

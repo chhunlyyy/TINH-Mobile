@@ -82,7 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Material(
         child: WidgetHelper.drawer(
             context: context,
-            menuScreen: DrawerMenuScreen(),
+            menuScreen: DrawerMenuScreen(
+              mainStore: _mainStore,
+            ),
             mainScreen: Scaffold(
               body: SafeArea(
                 child: GestureDetector(

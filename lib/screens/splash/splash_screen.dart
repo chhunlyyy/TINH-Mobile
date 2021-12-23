@@ -1,9 +1,11 @@
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
+import 'package:tinh/helper/device_infor.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/home_screen/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:tinh/services/user/user_services.dart';
 
 import 'package:tinh/store/main/main_store.dart';
 
@@ -12,8 +14,21 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     MainStore _mainStore = MainStore();
 
+    Future<void> checkUserLogin() async {
+      await DeviceInfoHelper.getDivceId().then((token) async {
+        await userServices.checkUserToken(token, _mainStore).then((value) {
+          if (value == '200') {
+            _mainStore.changeUserStatus(true);
+          } else {
+            _mainStore.changeUserStatus(false);
+          }
+        });
+      });
+    }
+
     void navigate(BuildContext context) {
       Future.delayed(Duration(seconds: 2)).whenComplete(() async {
+        await checkUserLogin();
         NavigationHelper.pushReplacement(context, HomeScreen(_mainStore));
       });
     }

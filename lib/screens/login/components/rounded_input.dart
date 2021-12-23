@@ -13,7 +13,6 @@ class RoundedInput extends StatelessWidget {
   Widget build(BuildContext context) {
     return InputContainer(
         child: TextField(
-      keyboardType: isPhoneInput ? TextInputType.number : TextInputType.text,
       controller: textEditingController,
       cursorColor: kPrimaryColor,
       decoration: InputDecoration(
