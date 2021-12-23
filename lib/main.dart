@@ -11,8 +11,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  await httpApiService.initUrl();
-
   runApp(TinhApp());
 }
 

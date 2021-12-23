@@ -35,7 +35,7 @@ class ProductItem extends StatelessWidget {
                   children: [
                     Container(
                         width: MediaQuery.of(context).size.width / 2,
-                        height: 230,
+                        height: 200,
                         child: DisplayImage(
                           boxFit: BoxFit.fitHeight,
                           imageBorderRadius: 20,
@@ -91,7 +91,7 @@ class ProductItem extends StatelessWidget {
                 SizedBox(height: 10),
                 Text(
                   productModel.name,
-                  maxLines: 1,
+                  maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
                 SizedBox(height: 10),

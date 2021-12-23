@@ -31,7 +31,7 @@ class ProductItem extends StatelessWidget {
                   children: [
                     Container(
                         width: MediaQuery.of(context).size.width / 2,
-                        height: 210,
+                        height: 190,
                         child: DisplayImage(
                           boxFit: BoxFit.fitHeight,
                           imageBorderRadius: 20,

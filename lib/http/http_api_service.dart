@@ -24,7 +24,7 @@ class HttpApiService {
   /// Handy method to make http GET request, which is a alias of [Dio.request].
   Future get(String endpoint, Map<String, dynamic>? queryParams, Options options) async {
     //try {
-    String urlEndpoint = _buildUrl(endpoint);
+    String urlEndpoint = await _buildUrl(endpoint);
     Response response = await _dio.get(urlEndpoint, queryParameters: queryParams, options: options);
     return response;
     // } on DioError catch (e) {
@@ -35,7 +35,7 @@ class HttpApiService {
   /// Handy method to make http POST request, which is a alias of  [Dio.request].
   Future post(String endpoint, dynamic postData, Map<String, dynamic> queryParams, Options options) async {
     // try {
-    String urlEndpoint = _buildUrl(endpoint);
+    String urlEndpoint = await _buildUrl(endpoint);
     Response response = await _dio.post(urlEndpoint, data: postData, queryParameters: queryParams, options: options);
     return response;
     //
@@ -44,7 +44,7 @@ class HttpApiService {
   /// Handy method to make http PUT request, which is a alias of  [Dio.request].
   Future put(String endpoint, dynamic putData, Map<String, dynamic> queryParams, Options options) async {
     //try {
-    String urlEndpoint = _buildUrl(endpoint);
+    String urlEndpoint = await _buildUrl(endpoint);
     Response response = await _dio.put(urlEndpoint, data: putData, queryParameters: queryParams, options: options);
     return response;
     // } on DioError catch (e) {
@@ -54,7 +54,7 @@ class HttpApiService {
 
   Future patch(String endpoint, dynamic putData, Map<String, dynamic> queryParams, Options options) async {
     //try {
-    String urlEndpoint = _buildUrl(endpoint);
+    String urlEndpoint = await _buildUrl(endpoint);
     Response response = await _dio.patch(urlEndpoint, data: putData, queryParameters: queryParams, options: options);
     return response;
     // } on DioError catch (e) {
@@ -65,7 +65,7 @@ class HttpApiService {
   /// Handy method to make http DELETE request, which is a alias of  [Dio.request].
   Future delete(String endpoint, dynamic deleteData, Map<String, dynamic> queryParams, Options options) async {
     //try {
-    String urlEndpoint = _buildUrl(endpoint);
+    String urlEndpoint = await _buildUrl(endpoint);
     Response response = await _dio.delete(urlEndpoint, data: deleteData, queryParameters: queryParams, options: options);
     return response;
     // } on DioError catch (e) {
@@ -75,17 +75,14 @@ class HttpApiService {
   }
 
   var url = '';
-  String _buildUrl(String endPoint) {
-    return url + endPoint;
-  }
-
-  Future<void> initUrl() async {
+  Future<String> _buildUrl(String endPoint) async {
     var collection = FirebaseFirestore.instance.collection('BASE-URL');
     var querySnapshot = await collection.get();
     for (var queryDocumentSnapshot in querySnapshot.docs) {
       Map<String, dynamic> data = queryDocumentSnapshot.data();
       url = data['URL'] + '/api';
     }
+    return url + endPoint;
   }
 }
 
