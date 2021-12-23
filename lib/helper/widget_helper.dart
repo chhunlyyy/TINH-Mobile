@@ -1,10 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:lottie/lottie.dart';
 import 'package:tinh/const/colors_conts.dart';
 
 class WidgetHelper {
+  static Widget drawer({required BuildContext context, required Widget menuScreen, required Widget mainScreen, required ZoomDrawerController controller}) {
+    return ZoomDrawer(
+        backgroundColor: Colors.white54,
+        showShadow: true,
+        borderRadius: 24,
+        angle: -1,
+        slideWidth: MediaQuery.of(context).size.width * .65,
+        openCurve: Curves.fastOutSlowIn,
+        closeCurve: Curves.bounceIn,
+        style: DrawerStyle.Style1,
+        controller: controller,
+        menuScreen: menuScreen,
+        mainScreen: mainScreen);
+  }
+
   static Widget loadingWidget(BuildContext context, double height) {
     return Container(
       width: MediaQuery.of(context).size.width,

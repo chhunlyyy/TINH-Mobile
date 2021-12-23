@@ -1,6 +1,8 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/screens/login/constants.dart';
 import 'package:tinh/store/main/main_store.dart';
 
@@ -9,8 +11,7 @@ import 'components/login_form.dart';
 import 'components/register_form.dart';
 
 class LoginScreen extends StatefulWidget {
-  final MainStore _mainStore;
-  LoginScreen(this._mainStore);
+  LoginScreen();
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
@@ -27,6 +28,27 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
 
     animationController = AnimationController(vsync: this, duration: animationDuration);
+
+    Future.delayed(Duration.zero).whenComplete(() {
+      AwesomeDialog(
+          dismissOnTouchOutside: false,
+          context: context,
+          dialogType: DialogType.WARNING,
+          borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+          width: MediaQuery.of(context).size.width,
+          buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+          headerAnimationLoop: false,
+          animType: AnimType.BOTTOMSLIDE,
+          desc: 'មុខងារនេះសម្រាប់តែម្ចាស់ហាងតែប៉ុន្នោះ !! \nតើអ្នកពិតជាម្ចាស់ហាងមែនទេ ?',
+          showCloseIcon: false,
+          btnCancelOnPress: () {
+            Navigator.pop(context);
+          },
+          btnOkOnPress: () {},
+          btnCancelText: 'មិនមែនទេ',
+          btnOkText: 'មែន')
+        ..show();
+    });
   }
 
   @override
@@ -67,6 +89,19 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                     top: -50,
                     left: -50,
                     child: Container(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 50),
+                        child: GestureDetector(
+                          onTap: () => Navigator.pop(context),
+                          child: Center(
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 35,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                       width: 180,
                       height: 180,
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(100), color: kPrimaryColor),
@@ -96,25 +131,25 @@ class _LoginScreenState extends State<LoginScreen> with SingleTickerProviderStat
                 ),
 
                 // Login Form
-                LoginForm(mainStore: widget._mainStore, isLogin: isLogin, animationDuration: animationDuration, size: size, defaultLoginSize: defaultLoginSize),
+                LoginForm(isLogin: isLogin, animationDuration: animationDuration, size: size, defaultLoginSize: defaultLoginSize),
 
                 // Register Container
-                AnimatedBuilder(
-                  animation: animationController,
-                  builder: (context, child) {
-                    if (viewInset == 0 && isLogin) {
-                      return buildRegisterContainer();
-                    } else if (!isLogin) {
-                      return buildRegisterContainer();
-                    }
+                // AnimatedBuilder(
+                //   animation: animationController,
+                //   builder: (context, child) {
+                //     if (viewInset == 0 && isLogin) {
+                //       return buildRegisterContainer();
+                //     } else if (!isLogin) {
+                //       return buildRegisterContainer();
+                //     }
 
-                    // Returning empty container to hide the widget
-                    return Container();
-                  },
-                ),
+                //     // Returning empty container to hide the widget
+                //     return Container();
+                //   },
+                // ),
 
                 // Register Form
-                RegisterForm(mainStore: widget._mainStore, isLogin: isLogin, animationDuration: animationDuration, size: size, defaultLoginSize: defaultRegisterSize),
+                // RegisterForm(mainStore: widget._mainStore, isLogin: isLogin, animationDuration: animationDuration, size: size, defaultLoginSize: defaultRegisterSize),
               ],
             ),
           ),

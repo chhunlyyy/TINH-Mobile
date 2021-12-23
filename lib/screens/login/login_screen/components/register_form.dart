@@ -92,7 +92,7 @@ class RegisterForm extends StatelessWidget {
                       ))
                     ..show();
                   Future.delayed(Duration(seconds: 3)).whenComplete(() {
-                    NavigationHelper.pushReplacement(context, LoginScreen(mainStore));
+                    // NavigationHelper.pushReplacement(context, LoginScreen(mainStore));
                   });
                 }
               });

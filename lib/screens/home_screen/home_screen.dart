@@ -8,10 +8,12 @@ import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/department/department_model.dart';
 import 'package:tinh/screens/categories/categories_screen.dart';
 import 'package:tinh/screens/discount/discount_screen.dart';
+import 'package:tinh/screens/home_screen/components/drawer_menu_scree.dart';
 import 'package:tinh/screens/home_screen/components/phone_brand_item.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
 import 'package:tinh/screens/second_hand/second_hand_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 
 // ignore: must_be_immutable
 class HomeScreen extends StatefulWidget {
@@ -29,6 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   MainStore _mainStore = MainStore();
 
   ScrollController _scrollController = ScrollController();
+  ZoomDrawerController _drawerController = ZoomDrawerController();
 
   int _pageSize = 6;
   int _pageIndex = 0;
@@ -76,14 +79,19 @@ class _HomeScreenState extends State<HomeScreen> {
     _width = MediaQuery.of(context).size.width;
     _height = MediaQuery.of(context).size.height;
 
-    return Scaffold(
-      body: SafeArea(
-        child: GestureDetector(
-          onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
-          child: _buildBody(),
-        ),
-      ),
-    );
+    return Material(
+        child: WidgetHelper.drawer(
+            context: context,
+            menuScreen: DrawerMenuScreen(),
+            mainScreen: Scaffold(
+              body: SafeArea(
+                child: GestureDetector(
+                  onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+                  child: _buildBody(),
+                ),
+              ),
+            ),
+            controller: _drawerController));
   }
 
   Widget _buildBody() {
@@ -104,7 +112,25 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           onRefresh: _getData,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Row(
+                children: [
+                  _drawerButton(),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 50),
+                      child: Center(
+                        child: Text(
+                          'ទិញ-TINH',
+                          style: TextStyle(color: ColorsConts.primaryColor, fontSize: 22, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: 15),
               Row(
                 children: [
                   Expanded(child: _searchWidget()),
@@ -123,6 +149,23 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
     });
+  }
+
+  Widget _drawerButton() {
+    return GestureDetector(
+      onTap: () {
+        _drawerController.toggle?.call();
+      },
+      child: Container(
+        margin: EdgeInsets.only(left: 5),
+        height: 40,
+        child: Icon(
+          Icons.more_horiz_rounded,
+          size: 50,
+          color: ColorsConts.primaryColor,
+        ),
+      ),
+    );
   }
 
   Widget departmentItem(DepartmentModel departmentModel) {
@@ -345,12 +388,12 @@ class _HomeScreenState extends State<HomeScreen> {
         style: TextStyle(color: ColorsConts.primaryColor),
         cursorColor: ColorsConts.primaryColor,
         decoration: InputDecoration(
-            contentPadding: new EdgeInsets.only(top: 0),
+            contentPadding: new EdgeInsets.only(top: 2),
             hintText: 'ស្វែងរកទូរស័ព្ទ',
             border: InputBorder.none,
             prefixIcon: Icon(
               Icons.search,
-              size: 26,
+              size: 25,
               color: ColorsConts.primaryColor,
             )),
       ),

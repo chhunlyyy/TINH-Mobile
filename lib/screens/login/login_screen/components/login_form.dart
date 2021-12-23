@@ -14,13 +14,11 @@ import 'package:tinh/store/main/main_store.dart';
 class LoginForm extends StatefulWidget {
   const LoginForm({
     Key? key,
-    required this.mainStore,
     required this.isLogin,
     required this.animationDuration,
     required this.size,
     required this.defaultLoginSize,
   }) : super(key: key);
-  final MainStore mainStore;
   final bool isLogin;
   final Duration animationDuration;
   final Size size;
@@ -56,28 +54,28 @@ class _LoginFormState extends State<LoginForm> {
           'phone': _phoneController.text,
           'password': _passwordController.text,
         };
-        Future.delayed(Duration.zero, () async {
-          await userServices.login(postData, widget.mainStore).then((value) {
-            if (widget.mainStore.userServiceStore.isMessage) {
-              AwesomeDialog(
-                  btnOkColor: value.status == '500' ? Colors.red : ColorsConts.primaryColor,
-                  btnOkOnPress: () {},
-                  context: context,
-                  dialogType: value.status == '500' ? DialogType.ERROR : DialogType.WARNING,
-                  animType: AnimType.SCALE,
-                  body: Container(
-                    margin: EdgeInsets.all(10),
-                    child: Text(
-                      value.message,
-                      style: TextStyle(fontSize: 16),
-                    ),
-                  ))
-                ..show();
-            } else {
-              NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
-            }
-          });
-        });
+        // Future.delayed(Duration.zero, () async {
+        //   await userServices.login(postData, widget.mainStore).then((value) {
+        //     if (widget.mainStore.userServiceStore.isMessage) {
+        //       AwesomeDialog(
+        //           btnOkColor: value.status == '500' ? Colors.red : ColorsConts.primaryColor,
+        //           btnOkOnPress: () {},
+        //           context: context,
+        //           dialogType: value.status == '500' ? DialogType.ERROR : DialogType.WARNING,
+        //           animType: AnimType.SCALE,
+        //           body: Container(
+        //             margin: EdgeInsets.all(10),
+        //             child: Text(
+        //               value.message,
+        //               style: TextStyle(fontSize: 16),
+        //             ),
+        //           ))
+        //         ..show();
+        //     } else {
+        //       NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
+        //     }
+        //   });
+        // });
       }
     }).whenComplete(() {});
   }
@@ -98,10 +96,7 @@ class _LoginFormState extends State<LoginForm> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'សូមស្វាគមន៍',
-                    style: TextStyle(fontSize: 24),
-                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height / 10),
                   Container(
                     height: MediaQuery.of(context).size.height / 3,
                     // child: Image.asset('assets/images/shooping-img.png'),
