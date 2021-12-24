@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
+import 'package:tinh/screens/about_us/about_us_screen.dart';
 import 'package:tinh/screens/login/login_screen/login.dart';
 import 'package:tinh/screens/logout/logout_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
@@ -20,7 +21,7 @@ class DrawerMenuScreen extends StatelessWidget {
       color: ColorsConts.primaryColor,
       child: Column(
         children: [
-          _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () {}),
+          _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () => NavigationHelper.push(context, AboutUsScreen())),
           SizedBox(height: 15),
           !mainStore.userStore.isShopOwner
               ? _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen(mainStore)))
