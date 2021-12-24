@@ -87,52 +87,55 @@ class _LoginFormState extends State<LoginForm> {
 
   @override
   Widget build(BuildContext context) {
-    return Observer(builder: (_) {
-      return AnimatedOpacity(
-        opacity: widget.isLogin ? 1.0 : 0.0,
-        duration: widget.animationDuration * 4,
-        child: Align(
-          alignment: Alignment.center,
-          child: Container(
-            width: widget.size.width,
-            height: widget.defaultLoginSize,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(height: MediaQuery.of(context).size.height / 10),
-                  Container(
-                    height: MediaQuery.of(context).size.height / 3,
-                    // child: Image.asset('assets/images/shooping-img.png'),
-                    child: Lottie.asset('assets/lottie/login-lottie.json'),
-                  ),
-                  RoundedInput(
-                    isPhoneInput: true,
-                    icon: Icons.phone,
-                    hint: 'លេខទូរស័ព្ទ',
-                    textEditingController: _phoneController,
-                  ),
-                  RoundedPasswordInput(
-                    hint: 'ពាក្យសម្ងាត់',
-                    controller: _passwordController,
-                  ),
-                  SizedBox(height: 10),
-                  CustomeAnimatedButton(
-                    isShowShadow: true,
-                    backgroundColor: ColorsConts.primaryColor,
-                    width: MediaQuery.of(context).size.width * .8,
-                    hegith: 55,
-                    title: 'ចូល',
-                    onTap: _onLogin,
-                  ),
-                  SizedBox(height: 10),
-                ],
+    return GestureDetector(
+      onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
+      child: Observer(builder: (_) {
+        return AnimatedOpacity(
+          opacity: widget.isLogin ? 1.0 : 0.0,
+          duration: widget.animationDuration * 4,
+          child: Align(
+            alignment: Alignment.center,
+            child: Container(
+              width: widget.size.width,
+              height: widget.defaultLoginSize,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(height: MediaQuery.of(context).size.height / 10),
+                    Container(
+                      height: MediaQuery.of(context).size.height / 3,
+                      // child: Image.asset('assets/images/shooping-img.png'),
+                      child: Lottie.asset('assets/lottie/login-lottie.json'),
+                    ),
+                    RoundedInput(
+                      isPhoneInput: true,
+                      icon: Icons.phone,
+                      hint: 'លេខទូរស័ព្ទ',
+                      textEditingController: _phoneController,
+                    ),
+                    RoundedPasswordInput(
+                      hint: 'ពាក្យសម្ងាត់',
+                      controller: _passwordController,
+                    ),
+                    SizedBox(height: 10),
+                    CustomeAnimatedButton(
+                      isShowShadow: true,
+                      backgroundColor: ColorsConts.primaryColor,
+                      width: MediaQuery.of(context).size.width * .8,
+                      hegith: 55,
+                      title: 'ចូល',
+                      onTap: _onLogin,
+                    ),
+                    SizedBox(height: 10),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
-      );
-    });
+        );
+      }),
+    );
   }
 }

@@ -23,7 +23,6 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
   }
 
   Widget _buildBody(BuildContext context) {
-    final String _phoneNumber = '0962030870';
     return Column(
       children: [
         WidgetHelper.appBar(context, 'អំពីយើង'),
