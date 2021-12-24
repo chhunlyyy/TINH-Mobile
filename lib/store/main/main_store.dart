@@ -26,7 +26,7 @@ abstract class _MainStore with Store {
   late DepartmentStore departmentStore;
   late CategoriesStore categoriesStore;
   late ProductStore productStore;
-  late bool isShopOwner;
+
   void init() async {
     phoneProductStore = PhoneProductStore();
     searchFilterStore = SearchFilterStore();
@@ -39,10 +39,6 @@ abstract class _MainStore with Store {
     departmentStore = DepartmentStore();
     categoriesStore = CategoriesStore();
     productStore = ProductStore();
-  }
-
-  void changeUserStatus(bool shopOwner) {
-    isShopOwner = shopOwner;
   }
 
   _MainStore() {

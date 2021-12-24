@@ -76,7 +76,7 @@ class _LoginFormState extends State<LoginForm> {
                   ))
                 ..show();
             } else {
-              widget.mainStore.changeUserStatus(true);
+              widget.mainStore.userStore.changeUserStatus(true);
               NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
             }
           });

@@ -60,43 +60,43 @@ class RegisterForm extends StatelessWidget {
               'token': token,
               'isLogIn': '1',
             };
-            Future.delayed(Duration.zero, () async {
-              await userServices.registerAccount(postData).then((value) {
-                if (value.status != '200') {
-                  AwesomeDialog(
-                      btnOkColor: value.status == '500' ? Colors.red : ColorsConts.primaryColor,
-                      btnOkOnPress: () {},
-                      context: context,
-                      dialogType: value.status == '500' ? DialogType.ERROR : DialogType.WARNING,
-                      animType: AnimType.SCALE,
-                      body: Container(
-                        margin: EdgeInsets.all(10),
-                        child: Text(
-                          value.message,
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ))
-                    ..show();
-                } else {
-                  AwesomeDialog(
-                      dismissOnTouchOutside: false,
-                      context: context,
-                      dialogType: DialogType.SUCCES,
-                      animType: AnimType.SCALE,
-                      body: Container(
-                        margin: EdgeInsets.all(10),
-                        child: Text(
-                          value.message,
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ))
-                    ..show();
-                  Future.delayed(Duration(seconds: 3)).whenComplete(() {
-                    // NavigationHelper.pushReplacement(context, LoginScreen(mainStore));
-                  });
-                }
-              });
-            });
+            // Future.delayed(Duration.zero, () async {
+            //   await userServices.registerAccount(postData).then((value) {
+            //     if (value.status != '200') {
+            //       AwesomeDialog(
+            //           btnOkColor: value.status == '500' ? Colors.red : ColorsConts.primaryColor,
+            //           btnOkOnPress: () {},
+            //           context: context,
+            //           dialogType: value.status == '500' ? DialogType.ERROR : DialogType.WARNING,
+            //           animType: AnimType.SCALE,
+            //           body: Container(
+            //             margin: EdgeInsets.all(10),
+            //             child: Text(
+            //               value.message,
+            //               style: TextStyle(fontSize: 20),
+            //             ),
+            //           ))
+            //         ..show();
+            //     } else {
+            //       AwesomeDialog(
+            //           dismissOnTouchOutside: false,
+            //           context: context,
+            //           dialogType: DialogType.SUCCES,
+            //           animType: AnimType.SCALE,
+            //           body: Container(
+            //             margin: EdgeInsets.all(10),
+            //             child: Text(
+            //               value.message,
+            //               style: TextStyle(fontSize: 20),
+            //             ),
+            //           ))
+            //         ..show();
+            //       Future.delayed(Duration(seconds: 3)).whenComplete(() {
+            //         // NavigationHelper.pushReplacement(context, LoginScreen(mainStore));
+            //       });
+            //     }
+            //   });
+            // });
           }
         });
       }).whenComplete(() {});

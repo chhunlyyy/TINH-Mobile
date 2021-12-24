@@ -1,7 +1,9 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/login/login_screen/login.dart';
+import 'package:tinh/screens/logout/logout_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
 
 class DrawerMenuScreen extends StatelessWidget {
@@ -11,16 +13,18 @@ class DrawerMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
       alignment: Alignment.centerLeft,
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       color: ColorsConts.primaryColor,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () {}),
-          SizedBox(height: 20),
-          !mainStore.isShopOwner ? _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen(mainStore))) : _drawerItem(context, 'ចាកចេញ', Icons.logout, () {}),
+          SizedBox(height: 15),
+          !mainStore.userStore.isShopOwner
+              ? _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen(mainStore)))
+              : _drawerItem(context, 'ចាកចេញ', Icons.logout, () => NavigationHelper.push(context, LogOutScreen(mainStore: mainStore))),
         ],
       ),
     );
@@ -43,12 +47,12 @@ class DrawerMenuScreen extends StatelessWidget {
                 Icon(
                   iconData,
                   color: Colors.white,
-                  size: 45,
+                  size: 30,
                 ),
-                SizedBox(width: 20),
+                SizedBox(width: 10),
                 Text(
                   text,
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: TextStyle(color: Colors.white, fontSize: 18),
                 ),
               ],
             ),

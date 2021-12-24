@@ -9,6 +9,14 @@ abstract class _UserStore with Store {
   @observable
   late UserModel userModel = UserModel();
 
+  @observable
+  bool isShopOwner = false;
+
+  @action
+  void changeUserStatus(bool shopOwner) {
+    isShopOwner = shopOwner;
+  }
+
   @action
   void setUserModel(UserModel model) {
     userModel = model;

@@ -18,9 +18,9 @@ class SplashScreen extends StatelessWidget {
       await DeviceInfoHelper.getDivceId().then((token) async {
         await userServices.checkUserToken(token, _mainStore).then((value) {
           if (value == '200') {
-            _mainStore.changeUserStatus(true);
+            _mainStore.userStore.changeUserStatus(true);
           } else {
-            _mainStore.changeUserStatus(false);
+            _mainStore.userStore.changeUserStatus(false);
           }
         });
       });

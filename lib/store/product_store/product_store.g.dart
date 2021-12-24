@@ -50,6 +50,16 @@ mixin _$ProductStore on _ProductStore, Store {
         categoryId: categoryId, pageSize: pageSize, pageIndex: pageIndex));
   }
 
+  final _$getDiscountProductAsyncAction =
+      AsyncAction('_ProductStore.getDiscountProduct');
+
+  @override
+  Future<void> getDiscountProduct(
+      {required int pageSize, required dynamic pageIndex}) {
+    return _$getDiscountProductAsyncAction.run(() =>
+        super.getDiscountProduct(pageSize: pageSize, pageIndex: pageIndex));
+  }
+
   final _$searchProductAsyncAction = AsyncAction('_ProductStore.searchProduct');
 
   @override

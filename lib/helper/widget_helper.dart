@@ -11,7 +11,7 @@ class WidgetHelper {
         backgroundColor: Colors.white54,
         showShadow: true,
         borderRadius: 24,
-        angle: -1,
+        angle: -10,
         slideWidth: MediaQuery.of(context).size.width * .65,
         openCurve: Curves.fastOutSlowIn,
         closeCurve: Curves.bounceIn,

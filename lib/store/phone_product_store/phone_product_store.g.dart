@@ -50,6 +50,16 @@ mixin _$PhoneProductStore on _PhoneProductStore, Store {
         super.loadData(pageSize: pageSize, pageIndex: pageIndex, isNew: isNew));
   }
 
+  final _$getDiscountPhoneAsyncAction =
+      AsyncAction('_PhoneProductStore.getDiscountPhone');
+
+  @override
+  Future<void> getDiscountPhone(
+      {required int pageSize, required dynamic pageIndex}) {
+    return _$getDiscountPhoneAsyncAction.run(
+        () => super.getDiscountPhone(pageSize: pageSize, pageIndex: pageIndex));
+  }
+
   final _$loadPhoneByBrandAsyncAction =
       AsyncAction('_PhoneProductStore.loadPhoneByBrand');
 

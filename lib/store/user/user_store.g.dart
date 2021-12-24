@@ -24,7 +24,33 @@ mixin _$UserStore on _UserStore, Store {
     });
   }
 
+  final _$isShopOwnerAtom = Atom(name: '_UserStore.isShopOwner');
+
+  @override
+  bool get isShopOwner {
+    _$isShopOwnerAtom.reportRead();
+    return super.isShopOwner;
+  }
+
+  @override
+  set isShopOwner(bool value) {
+    _$isShopOwnerAtom.reportWrite(value, super.isShopOwner, () {
+      super.isShopOwner = value;
+    });
+  }
+
   final _$_UserStoreActionController = ActionController(name: '_UserStore');
+
+  @override
+  void changeUserStatus(bool shopOwner) {
+    final _$actionInfo = _$_UserStoreActionController.startAction(
+        name: '_UserStore.changeUserStatus');
+    try {
+      return super.changeUserStatus(shopOwner);
+    } finally {
+      _$_UserStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setUserModel(UserModel model) {
@@ -40,7 +66,8 @@ mixin _$UserStore on _UserStore, Store {
   @override
   String toString() {
     return '''
-userModel: ${userModel}
+userModel: ${userModel},
+isShopOwner: ${isShopOwner}
     ''';
   }
 }

@@ -8,7 +8,7 @@ import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/department/department_model.dart';
 import 'package:tinh/screens/categories/categories_screen.dart';
 import 'package:tinh/screens/discount/discount_screen.dart';
-import 'package:tinh/screens/home_screen/components/drawer_menu_scree.dart';
+import 'package:tinh/screens/home_screen/components/drawer_menu_screen.dart';
 import 'package:tinh/screens/home_screen/components/phone_brand_item.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
 import 'package:tinh/screens/second_hand/second_hand_screen.dart';
