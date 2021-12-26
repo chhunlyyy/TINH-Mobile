@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/about_us/about_us_screen.dart';
+import 'package:tinh/screens/add_phone_form/add_phone_form_screen.dart';
 import 'package:tinh/screens/login/login_screen/login.dart';
 import 'package:tinh/screens/logout/logout_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
@@ -21,8 +22,19 @@ class DrawerMenuScreen extends StatelessWidget {
       color: ColorsConts.primaryColor,
       child: Column(
         children: [
+          mainStore.userStore.isShopOwner
+              ? _drawerItem(
+                  context,
+                  'បន្ថែមទូរស័ព្ទ',
+                  Icons.add,
+                  () => NavigationHelper.push(
+                      context,
+                      AddPhoneFormScreen(
+                        mainStore: mainStore,
+                      )))
+              : SizedBox.shrink(),
+          mainStore.userStore.isShopOwner ? _drawerItem(context, 'បន្ថែមផលិតផលផ្សេងៗ', Icons.add, () {}) : SizedBox.shrink(),
           _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () => NavigationHelper.push(context, AboutUsScreen())),
-          SizedBox(height: 15),
           !mainStore.userStore.isShopOwner
               ? _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen(mainStore)))
               : _drawerItem(context, 'ចាកចេញ', Icons.logout, () => NavigationHelper.push(context, LogOutScreen(mainStore: mainStore))),
@@ -33,6 +45,8 @@ class DrawerMenuScreen extends StatelessWidget {
 
   Widget _drawerItem(BuildContext context, String text, IconData iconData, Function onTap) {
     return Container(
+      height: 60,
+      margin: EdgeInsets.symmetric(vertical: 10),
       width: MediaQuery.of(context).size.width,
       color: Colors.grey.withOpacity(.5),
       child: Material(
@@ -53,7 +67,7 @@ class DrawerMenuScreen extends StatelessWidget {
                 SizedBox(width: 10),
                 Text(
                   text,
-                  style: TextStyle(color: Colors.white, fontSize: 18),
+                  style: TextStyle(color: Colors.white, fontSize: 16),
                 ),
               ],
             ),
