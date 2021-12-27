@@ -47,6 +47,8 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   int _storageLength = 1;
   List<TextEditingController> _storageControllerList = List.generate(1, (index) => TextEditingController());
   List<TextEditingController> _priceControllerList = List.generate(1, (index) => TextEditingController());
+  List<TextEditingController> _discountControllerList = List.generate(1, (index) => TextEditingController());
+  List<TextEditingController> _priceAfterDiscountControllerList = List.generate(1, (index) => TextEditingController());
   /* */
   /* phone storage post data */
   int _detailLength = 1;
@@ -211,7 +213,8 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
       child: Column(
         children: [
           Column(
-            children: List.generate(_storageLength, (index) => storageItem(_storageControllerList[index], _priceControllerList[index], index)),
+            children: List.generate(
+                _storageLength, (index) => storageItem(_storageControllerList[index], _priceControllerList[index], _discountControllerList[index], _priceAfterDiscountControllerList[index], index)),
           ),
           TextButton(
               onPressed: () {
@@ -219,6 +222,8 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
                   _storageLength++;
                   _storageControllerList.add(TextEditingController());
                   _priceControllerList.add(TextEditingController());
+                  _discountControllerList.add(TextEditingController());
+                  _priceAfterDiscountControllerList.add(TextEditingController());
                 });
               },
               child: Text('បន្ថែមទំហំនិងតម្លៃ'))
@@ -302,21 +307,28 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
     );
   }
 
-  Widget storageItem(TextEditingController storageController, TextEditingController priceController, int index) {
+  Widget storageItem(
+      TextEditingController storageController, TextEditingController priceController, TextEditingController discountController, TextEditingController priceAfterDiscountController, int index) {
     return Column(
       children: [
         _devicederLine(index),
         Row(
           children: [
             Expanded(
-              child: Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: _buildTextInput('ទំហំទូរស័ព្ទ', storageController),
+                  Row(
+                    children: [
+                      Expanded(child: _buildTextInput('ទំហំទូរស័ព្ទ', storageController)),
+                      Expanded(child: _buildTextInput('តម្លៃទូរស័ព្ទ', priceController)),
+                    ],
                   ),
-                  Expanded(
-                    child: _buildTextInput('តម្លៃទូរស័ព្ទ', priceController),
-                  ),
+                  Row(
+                    children: [
+                      Expanded(child: _buildTextInput('បញ្ចុះតម្លៃ %', discountController)),
+                      Expanded(child: _buildTextInput('តម្លៃក្រោយបញ្ចុះ', priceAfterDiscountController)),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -327,6 +339,8 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
                     if (_storageLength > 1) {
                       setState(() {
                         _storageLength--;
+                        _priceAfterDiscountControllerList.removeAt(index);
+                        _discountControllerList.removeAt(index);
                         _storageControllerList.removeAt(index);
                         _priceControllerList.removeAt(index);
                       });
@@ -670,13 +684,6 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 15),
-          child: Text(
-            label,
-            style: TextStyle(fontSize: 15),
-          ),
-        ),
         Container(
           alignment: Alignment.center,
           decoration: BoxDecoration(color: Colors.grey.withOpacity(.2), borderRadius: BorderRadius.circular(5)),
@@ -686,15 +693,16 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
             maxLines: null,
             controller: textEditingController,
             decoration: InputDecoration(
+              filled: true,
+              fillColor: Colors.white.withOpacity(.5),
+              labelText: label,
+              labelStyle: TextStyle(color: Colors.grey),
               focusedBorder: OutlineInputBorder(
                 borderSide: BorderSide(
                   color: Color(0xffD98C00),
                 ),
               ),
-              contentPadding: new EdgeInsets.only(
-                left: 10,
-              ),
-              hintText: label,
+              contentPadding: new EdgeInsets.only(left: 10, top: 15, bottom: 15, right: 10),
               border: InputBorder.none,
             ),
           ),
