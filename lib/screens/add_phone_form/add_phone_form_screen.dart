@@ -7,6 +7,7 @@ import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/device_infor.dart';
 import 'package:tinh/helper/file_picker_widget.dart';
 import 'package:tinh/helper/widget_helper.dart';
+import 'package:tinh/services/image/image_service.dart';
 import 'package:tinh/store/main/main_store.dart';
 import 'package:uuid/uuid.dart';
 
@@ -34,7 +35,7 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   final String _cagtegoryImageIdRef = Uuid().v1();
   String? _categoryImage;
   /* */
-  /* Phone  Category Post Data */
+  /* Phone  brand Post Data */
   TextEditingController _phoneBrandController = TextEditingController();
   final String _brandImageIdRef = Uuid().v1();
   String? _brandImage;
@@ -56,7 +57,6 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   List<TextEditingController> _detailDescControllerList = List.generate(1, (index) => TextEditingController());
   /* */
   /* phone image */
-
   List<File> phoneImage = [];
   /* */
 
@@ -65,6 +65,63 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   MainStore _mainStore = MainStore();
   List<File> categoryAttachmentsList = [];
   List<File> brandAttachmentsList = [];
+
+  void _errorDialog() {
+    AwesomeDialog(
+      dismissOnTouchOutside: false,
+      context: context,
+      dialogType: DialogType.ERROR,
+      borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+      width: MediaQuery.of(context).size.width,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      desc: 'មានបញ្ហាក្នុងពេលបញ្ចូលទិន្នន័យ',
+      showCloseIcon: false,
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {},
+    )..show();
+  }
+
+  void _successDialog(bool isAlertDialog) {
+    AwesomeDialog(
+      dismissOnTouchOutside: false,
+      context: context,
+      dialogType: isAlertDialog ? DialogType.INFO : DialogType.SUCCES,
+      borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+      width: MediaQuery.of(context).size.width,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      desc: isAlertDialog ? 'សូមបញ្ចូលរាល់ទិន្នន័យទាំងអស់' : 'បញ្ចូលទិន្នន័យបានជោគជ័យ',
+      showCloseIcon: false,
+      btnOkOnPress: isAlertDialog ? () {} : null,
+    )..show();
+  }
+
+  void _onInsertCategory() {
+    if (_phoneCategoryController.text.isNotEmpty) {
+      imageService.insertImage(categoryAttachmentsList, _cagtegoryImageIdRef);
+      // Map<String, dynamic> postData = {'name': _phoneCategoryController.text, 'image_id_ref': _cagtegoryImageIdRef};
+      // _mainStore.phoneCategoryStore.insetCategory(postData).then((value) {
+      //   if (value == '200') {
+      //     _mainStore.phoneCategoryStore.phoneCategoryModelList.clear();
+      //     _mainStore.phoneCategoryStore.loadData().whenComplete(() {
+      //       _phoneCategoryController.text = '';
+      //       _successDialog(false);
+      //       Future.delayed(Duration(seconds: 2)).whenComplete(() {
+      //         Navigator.pop(context);
+      //         Navigator.pop(context);
+      //       });
+      //     });
+      //   } else {
+      //     _errorDialog();
+      //   }
+      // });
+    } else {
+      _successDialog(true);
+    }
+  }
 
   void _addBottomSheet(bool isCategory) {
     showModalBottomSheet<void>(
@@ -129,6 +186,7 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
                 _detailWidget(),
                 _imageWidget(),
                 _saveButton(),
+                SizedBox(height: 20),
               ],
             ),
           ),
@@ -428,7 +486,11 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: AnimatedButton(
-                    pressEvent: () {},
+                    pressEvent: () {
+                      if (isCategory) {
+                        _onInsertCategory();
+                      }
+                    },
                     text: 'បន្ថែម',
                   ),
                 )
@@ -556,38 +618,40 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
             )
           ],
         ),
-        SingleChildScrollView(
-          child: _mainStore.phoneCategoryStore.phoneCategoryModelList.isNotEmpty
-              ? Center(
-                  child: Column(
-                      children: _mainStore.phoneCategoryStore.phoneCategoryModelList.map((e) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            _categoryId = e.id;
-                            _categoryName = e.name;
-                            Navigator.pop(context);
-                          });
-                        },
-                        child: Container(
-                            height: 50,
-                            width: MediaQuery.of(context).size.width,
-                            decoration: BoxDecoration(
-                              color: Colors.grey.withOpacity(.2),
-                            ),
-                            child: Center(
-                              child: Text(
-                                e.name,
-                                style: TextStyle(fontSize: 15),
+        Expanded(
+          child: SingleChildScrollView(
+            child: _mainStore.phoneCategoryStore.phoneCategoryModelList.isNotEmpty
+                ? Center(
+                    child: Column(
+                        children: _mainStore.phoneCategoryStore.phoneCategoryModelList.map((e) {
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              _categoryId = e.id;
+                              _categoryName = e.name;
+                              Navigator.pop(context);
+                            });
+                          },
+                          child: Container(
+                              height: 50,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(.2),
                               ),
-                            )),
-                      ),
-                    );
-                  }).toList()),
-                )
-              : SizedBox.shrink(),
+                              child: Center(
+                                child: Text(
+                                  e.name,
+                                  style: TextStyle(fontSize: 15),
+                                ),
+                              )),
+                        ),
+                      );
+                    }).toList()),
+                  )
+                : SizedBox.shrink(),
+          ),
         ),
       ],
     );

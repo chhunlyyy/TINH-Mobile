@@ -15,6 +15,17 @@ class PhoneCategoryService {
       return [];
     }
   }
+
+  Future<String> addPhoneCategory(Map<String, dynamic> postData) async {
+    try {
+      return await httpApiService.post(HttApi.API_INSERT_PHONE_CATEGORY, postData, {}, new Options(headers: HttpConfig.headers)).then((value) {
+        return value.data[0]['status'];
+      });
+    } catch (e) {
+      print(e);
+      return '402';
+    }
+  }
 }
 
 PhoneCategoryService phoneCategoryService = PhoneCategoryService();

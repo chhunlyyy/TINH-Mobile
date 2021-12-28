@@ -33,7 +33,7 @@ class HttpApiService {
   }
 
   /// Handy method to make http POST request, which is a alias of  [Dio.request].
-  Future post(String endpoint, dynamic postData, Map<String, dynamic> queryParams, Options options) async {
+  Future post(String endpoint, dynamic postData, Map<String, dynamic>? queryParams, Options options) async {
     // try {
     String urlEndpoint = await _buildUrl(endpoint);
     Response response = await _dio.post(urlEndpoint, data: postData, queryParameters: queryParams, options: options);

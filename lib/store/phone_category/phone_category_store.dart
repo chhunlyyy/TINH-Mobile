@@ -16,4 +16,14 @@ abstract class _PhoneCategoryStore with Store {
       phoneCategoryModelList.addAll(value);
     });
   }
+
+  @action
+  Future<String> insetCategory(Map<String, dynamic> postData) async {
+    String status = '';
+    await phoneCategoryService.addPhoneCategory(postData).then((value) {
+      status = value;
+    });
+
+    return status;
+  }
 }
