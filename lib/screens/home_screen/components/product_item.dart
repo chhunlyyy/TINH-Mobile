@@ -4,6 +4,7 @@ import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/models/phone_product/phone_product_model.dart';
 import 'package:tinh/screens/phone_detail/phone_detail_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
+import 'package:tinh/widgets/placholder_image_wdiget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class ProductItem extends StatelessWidget {
@@ -33,17 +34,23 @@ class ProductItem extends StatelessWidget {
               children: [
                 Stack(
                   children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        height: 200,
-                        child: DisplayImage(
-                          boxFit: BoxFit.fitHeight,
-                          imageBorderRadius: 20,
-                          imageString: productModel.images[0],
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                        )),
+                    productModel.images.isNotEmpty
+                        ? Container(
+                            width: MediaQuery.of(context).size.width / 2,
+                            height: 200,
+                            child: DisplayImage(
+                              boxFit: BoxFit.fitHeight,
+                              imageBorderRadius: 20,
+                              imageString: productModel.images[0],
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                            ))
+                        : Container(
+                            width: MediaQuery.of(context).size.width / 2,
+                            height: 200,
+                            child: PlaceholderImageWidget(),
+                          ),
                     Visibility(
                       visible: productModel.storage[0].discount != 0,
                       child: Container(

@@ -3,6 +3,7 @@ import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/models/product/product_model.dart';
 import 'package:tinh/screens/product/components/product_detail.dart';
+import 'package:tinh/widgets/placholder_image_wdiget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class ProductItem extends StatelessWidget {
@@ -32,11 +33,13 @@ class ProductItem extends StatelessWidget {
                     Container(
                         width: MediaQuery.of(context).size.width / 2,
                         height: 190,
-                        child: DisplayImage(
-                          boxFit: BoxFit.fitHeight,
-                          imageBorderRadius: 20,
-                          imageString: productModel.images[0],
-                        ),
+                        child: productModel.images.isNotEmpty
+                            ? DisplayImage(
+                                boxFit: BoxFit.fitHeight,
+                                imageBorderRadius: 20,
+                                imageString: productModel.images[0],
+                              )
+                            : PlaceholderImageWidget(),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20),
                         )),

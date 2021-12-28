@@ -263,29 +263,31 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
         Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height / 3,
-            child: CarouselSlider(
-              options: CarouselOptions(
-                onPageChanged: (index, reson) {
-                  setState(() {
-                    _imagePageCount = index + 1;
-                  });
-                },
-                enableInfiniteScroll: false,
-              ),
-              items: widget.phoneProductModel.images
-                  .map((item) => InkWell(
-                        onTap: () => NavigationHelper.push(context, ShowFullScreenImageWidget(image: item)),
-                        child: Container(
-                          margin: EdgeInsets.all(5),
-                          child: DisplayImage(
-                            imageString: item,
-                            imageBorderRadius: 0,
-                            boxFit: BoxFit.contain,
-                          ),
-                        ),
-                      ))
-                  .toList(),
-            )),
+            child: widget.phoneProductModel.images.isNotEmpty
+                ? CarouselSlider(
+                    options: CarouselOptions(
+                      onPageChanged: (index, reson) {
+                        setState(() {
+                          _imagePageCount = index + 1;
+                        });
+                      },
+                      enableInfiniteScroll: false,
+                    ),
+                    items: widget.phoneProductModel.images
+                        .map((item) => InkWell(
+                              onTap: () => NavigationHelper.push(context, ShowFullScreenImageWidget(image: item)),
+                              child: Container(
+                                margin: EdgeInsets.all(5),
+                                child: DisplayImage(
+                                  imageString: item,
+                                  imageBorderRadius: 0,
+                                  boxFit: BoxFit.contain,
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                  )
+                : Container()),
         Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height / 3,

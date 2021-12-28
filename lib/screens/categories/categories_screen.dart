@@ -6,6 +6,7 @@ import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/categories/categories_model.dart';
 import 'package:tinh/screens/product/product_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
+import 'package:tinh/widgets/placholder_image_wdiget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class CategoriesScreen extends StatefulWidget {
@@ -92,17 +93,19 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               children: [
                 Stack(
                   children: [
-                    Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        height: 150,
-                        child: DisplayImage(
-                          boxFit: BoxFit.fitHeight,
-                          imageBorderRadius: 20,
-                          imageString: categoriesModel.images[0],
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                        )),
+                    categoriesModel.images.isNotEmpty
+                        ? Container(
+                            width: MediaQuery.of(context).size.width / 2,
+                            height: 150,
+                            child: DisplayImage(
+                              boxFit: BoxFit.fitHeight,
+                              imageBorderRadius: 20,
+                              imageString: categoriesModel.images[0],
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                            ))
+                        : PlaceholderImageWidget(),
                   ],
                 ),
                 SizedBox(height: 20),

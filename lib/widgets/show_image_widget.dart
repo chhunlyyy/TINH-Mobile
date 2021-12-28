@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:tinh/http/http_get_base_url.dart';
-import 'package:tinh/store/main/main_store.dart';
 
 class DisplayImage extends StatefulWidget {
   final BoxFit boxFit;
@@ -18,7 +17,10 @@ class _DisplayImageState extends State<DisplayImage> {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(widget.imageBorderRadius),
-        image: DecorationImage(image: Image.network(baseUrl + widget.imageString).image, fit: widget.boxFit),
+        image: DecorationImage(
+          image: Image.network(baseUrl + widget.imageString).image,
+          fit: widget.boxFit,
+        ),
       ),
     );
   }

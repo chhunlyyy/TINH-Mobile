@@ -105,7 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: EasyRefresh(
           header: BallPulseHeader(color: ColorsConts.primaryColor),
           onLoad: () async {
-            if (_searchController.text != '') {
+            if (_searchController.text == '') {
               await _onLoad();
             } else {
               _pageIndex = _pageSize + _pageIndex;

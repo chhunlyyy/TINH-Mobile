@@ -7,6 +7,7 @@ import 'package:tinh/models/phone_brand/phone_brand_model.dart';
 import 'package:tinh/models/phone_category/phone_category_model.dart';
 import 'package:tinh/screens/home_screen/components/product_item.dart';
 import 'package:tinh/store/main/main_store.dart';
+import 'package:tinh/widgets/placholder_image_wdiget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class ListPhoneByCategory extends StatefulWidget {
@@ -198,11 +199,13 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
                     Container(
                       width: 50,
                       height: 50,
-                      child: DisplayImage(
-                        imageString: widget.phoneBrandModel.images[0],
-                        imageBorderRadius: 0,
-                        boxFit: BoxFit.fill,
-                      ),
+                      child: widget.phoneBrandModel.images.isNotEmpty
+                          ? DisplayImage(
+                              imageString: widget.phoneBrandModel.images[0],
+                              imageBorderRadius: 0,
+                              boxFit: BoxFit.fill,
+                            )
+                          : PlaceholderImageWidget(),
                     ),
                     Container(
                       margin: EdgeInsets.only(left: 20),
