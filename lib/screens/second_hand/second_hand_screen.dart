@@ -182,11 +182,14 @@ class _SecondHandScreenState extends State<SecondHandScreen> {
             ],
           ),
           SizedBox(height: 15),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: _mainStore.phoneCategoryStore.phoneCategoryModelList.map((e) {
-              return _categoryItem(e, _mainStore.phoneCategoryStore.phoneCategoryModelList.length);
-            }).toList(),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: _mainStore.phoneCategoryStore.phoneCategoryModelList.map((e) {
+                return _categoryItem(e, _mainStore.phoneCategoryStore.phoneCategoryModelList.length);
+              }).toList(),
+            ),
           )
         ],
       ),
@@ -194,26 +197,29 @@ class _SecondHandScreenState extends State<SecondHandScreen> {
   }
 
   Widget _categoryItem(PhoneCategoryModel phoneCategoryModel, int size) {
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _pageSize = 6;
-          _pageIndex = 0;
-          categoryIndex = phoneCategoryModel.id;
-          _mainStore.phoneProductStore.phoneProductModelList.clear();
-          _loadPhone();
-        });
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          Text(
-            phoneCategoryModel.name,
-            style: TextStyle(color: categoryIndex == phoneCategoryModel.id ? ColorsConts.primaryColor : Colors.grey),
-          ),
-          SizedBox(height: 5),
-          Container(width: MediaQuery.of(context).size.width / size, height: 1, color: categoryIndex == phoneCategoryModel.id ? ColorsConts.primaryColor : Colors.white)
-        ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: InkWell(
+        onTap: () {
+          setState(() {
+            _pageSize = 6;
+            _pageIndex = 0;
+            categoryIndex = phoneCategoryModel.id;
+            _mainStore.phoneProductStore.phoneProductModelList.clear();
+            _loadPhone();
+          });
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Text(
+              phoneCategoryModel.name,
+              style: TextStyle(color: categoryIndex == phoneCategoryModel.id ? ColorsConts.primaryColor : Colors.grey),
+            ),
+            SizedBox(height: 5),
+            Container(width: MediaQuery.of(context).size.width / size, height: 1, color: categoryIndex == phoneCategoryModel.id ? ColorsConts.primaryColor : Colors.white)
+          ],
+        ),
       ),
     );
   }

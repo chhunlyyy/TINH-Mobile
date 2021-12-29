@@ -99,25 +99,53 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
     )..show();
   }
 
+  void _onInsertbrand() {
+    if (_phoneBrandController.text.isNotEmpty) {
+      imageService.insertImage(brandAttachmentsList, _brandImageIdRef).whenComplete(() {
+        Map<String, dynamic> postData = {'name': _phoneBrandController.text, 'image_id_ref': _brandImageIdRef};
+        _mainStore.phoneBrandStore.insetbrand(postData).then((value) {
+          if (value == '200') {
+            _mainStore.phoneBrandStore.phoneBrandList.clear();
+            _mainStore.phoneBrandStore.loadData().whenComplete(() {
+              _phoneBrandController.text = '';
+              brandAttachmentsList = [];
+              _successDialog(false);
+              Future.delayed(Duration(seconds: 2)).whenComplete(() {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              });
+            });
+          } else {
+            _errorDialog();
+          }
+        });
+      });
+    } else {
+      _successDialog(true);
+    }
+  }
+
   void _onInsertCategory() {
     if (_phoneCategoryController.text.isNotEmpty) {
-      imageService.insertImage(categoryAttachmentsList, _cagtegoryImageIdRef);
-      // Map<String, dynamic> postData = {'name': _phoneCategoryController.text, 'image_id_ref': _cagtegoryImageIdRef};
-      // _mainStore.phoneCategoryStore.insetCategory(postData).then((value) {
-      //   if (value == '200') {
-      //     _mainStore.phoneCategoryStore.phoneCategoryModelList.clear();
-      //     _mainStore.phoneCategoryStore.loadData().whenComplete(() {
-      //       _phoneCategoryController.text = '';
-      //       _successDialog(false);
-      //       Future.delayed(Duration(seconds: 2)).whenComplete(() {
-      //         Navigator.pop(context);
-      //         Navigator.pop(context);
-      //       });
-      //     });
-      //   } else {
-      //     _errorDialog();
-      //   }
-      // });
+      imageService.insertImage(categoryAttachmentsList, _cagtegoryImageIdRef).whenComplete(() {
+        Map<String, dynamic> postData = {'name': _phoneCategoryController.text, 'image_id_ref': _cagtegoryImageIdRef};
+        _mainStore.phoneCategoryStore.insetCategory(postData).then((value) {
+          if (value == '200') {
+            _mainStore.phoneCategoryStore.phoneCategoryModelList.clear();
+            _mainStore.phoneCategoryStore.loadData().whenComplete(() {
+              _phoneCategoryController.text = '';
+              categoryAttachmentsList = [];
+              _successDialog(false);
+              Future.delayed(Duration(seconds: 2)).whenComplete(() {
+                Navigator.pop(context);
+                Navigator.pop(context);
+              });
+            });
+          } else {
+            _errorDialog();
+          }
+        });
+      });
     } else {
       _successDialog(true);
     }
@@ -489,6 +517,8 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
                     pressEvent: () {
                       if (isCategory) {
                         _onInsertCategory();
+                      } else {
+                        _onInsertbrand();
                       }
                     },
                     text: 'បន្ថែម',

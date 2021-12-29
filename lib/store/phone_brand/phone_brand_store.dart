@@ -29,4 +29,14 @@ abstract class _PhoneBrandStore with Store {
   void changeCategoryDisplay() {
     isShowAllCategory = !isShowAllCategory;
   }
+
+  @action
+  Future<String> insetbrand(Map<String, dynamic> postData) async {
+    String status = '';
+    await phoneBrandService.addPhonebrand(postData).then((value) {
+      status = value;
+    });
+
+    return status;
+  }
 }
