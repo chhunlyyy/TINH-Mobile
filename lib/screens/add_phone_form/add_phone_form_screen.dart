@@ -2,12 +2,16 @@ import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/device_infor.dart';
 import 'package:tinh/helper/file_picker_widget.dart';
+import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
+import 'package:tinh/screens/home_screen/home_screen.dart';
 import 'package:tinh/services/image/image_service.dart';
+import 'package:tinh/services/phone_product/insert_phone_service.dart';
 import 'package:tinh/store/main/main_store.dart';
 import 'package:uuid/uuid.dart';
 
@@ -65,6 +69,40 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   MainStore _mainStore = MainStore();
   List<File> categoryAttachmentsList = [];
   List<File> brandAttachmentsList = [];
+
+  bool _checkValidation() {
+    bool result = false;
+
+    bool warrantyValidate = true;
+    if (_isWrranty && _warrantyPeriodController.text.isEmpty) {
+      warrantyValidate = false;
+    }
+
+    if (_nameController.text.isNotEmpty &&
+        warrantyValidate &&
+        _categoryId != null &&
+        _brandId != null &&
+        _colorControllerList[0].text.isNotEmpty &&
+        _storageControllerList[0].text.isNotEmpty &&
+        _priceControllerList[0].text.isNotEmpty &&
+        _priceAfterDiscountControllerList[0].text.isNotEmpty &&
+        _detailNameControllerList[0].text.isNotEmpty &&
+        _detailDescControllerList[0].text.isNotEmpty &&
+        phoneImage.isNotEmpty) {
+      result = true;
+    }
+    return result;
+  }
+
+  void _getPriceAfterDiscount(int index) {
+    String result = '';
+    if (_priceControllerList[index].text != '' && _discountControllerList[index].text != '') {
+      double discountPrice = int.parse(_priceControllerList[index].text) * (int.parse(_discountControllerList[index].text) / 100);
+
+      result = (int.parse(_priceControllerList[index].text) - discountPrice).toString();
+    }
+    _priceAfterDiscountControllerList[index].text = result;
+  }
 
   void _errorDialog() {
     AwesomeDialog(
@@ -175,6 +213,89 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
         });
   }
 
+  Future<void> _onAddColor(String phoneId) async {
+    for (int i = 0; i < _colorLength; i++) {
+      Map<String, dynamic> postData = {'phone_id': phoneId, 'color': _colorControllerList[i].text};
+      await insertPhoneService.insertColor(postData);
+    }
+  }
+
+  Future<void> _onAddDetail(String phoneId) async {
+    for (int i = 0; i < _detailLength; i++) {
+      Map<String, dynamic> postData = {
+        'name': _detailNameControllerList[i].text,
+        'descs': _detailDescControllerList[i].text,
+        'phone_id': phoneId,
+      };
+      await insertPhoneService.insertPhoneDetail(postData);
+    }
+  }
+
+  Future<void> _onAddStorage(String phoneId) async {
+    for (int i = 0; i < _storageLength; i++) {
+      Map<String, dynamic> postData = {
+        'phone_id': phoneId,
+        'storage': _storageControllerList[i].text,
+        'price': _priceControllerList[i].text,
+        'discount': _discountControllerList[i].text,
+        'price_after_discount': _priceAfterDiscountControllerList[i].text,
+      };
+      await insertPhoneService.insertPhoneStorage(postData);
+    }
+  }
+
+  Future<void> _onAddImage(String phoneId) async {
+    await imageService.insertImage(phoneImage, _phoneImageIdRef);
+  }
+
+  void _onInsertPhone() {
+    if (_checkValidation()) {
+      Map<String, dynamic> postData = {
+        'name': _nameController.text,
+        'is_warranty': _isWrranty ? 1 : 0, // 1 is warranty 0 is not warranty
+        'warranty_period': _isWrranty ? _warrantyPeriodController.text : 'No Warranty',
+        'image_id_ref': _phoneImageIdRef,
+        'category_id': _categoryId,
+        'brand_id': _brandId,
+        'is_new': _isNew ? 1 : 0,
+      };
+      Future.delayed(Duration.zero, () async {
+        await insertPhoneService.insertPhoneProduct(postData).then((value) {
+          Future.delayed(Duration.zero, () async {
+            await _onAddColor(value);
+            await _onAddDetail(value);
+            await _onAddStorage(value);
+            await _onAddImage(value);
+          });
+        });
+      }).whenComplete(() {
+        _successDialog(false);
+        AwesomeDialog(
+            dismissOnTouchOutside: false,
+            context: context,
+            dialogType: DialogType.SUCCES,
+            borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+            width: MediaQuery.of(context).size.width,
+            buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+            headerAnimationLoop: false,
+            animType: AnimType.BOTTOMSLIDE,
+            desc: 'ទិន្នន័យបញ្ចូលបានជោគជោយ\n តើអ្នកចង់បញ្ចូលបន្តរ ?',
+            showCloseIcon: false,
+            btnCancelOnPress: () {
+              NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
+            },
+            btnOkOnPress: () {
+              NavigationHelper.pushReplacement(context, AddPhoneFormScreen(mainStore: widget.mainStore));
+            },
+            btnCancelText: 'បោះបង់',
+            btnOkText: 'បញ្ចូលបន្តរ')
+          ..show();
+      });
+    } else {
+      _successDialog(true);
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -203,7 +324,7 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   Widget _buildBody() {
     return Column(
       children: [
-        WidgetHelper.appBar(context, 'បញ្ជូលទូរស័ព្ទ'),
+        _appBar(),
         Expanded(
           child: SingleChildScrollView(
             child: Column(
@@ -223,11 +344,56 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
     );
   }
 
+  Widget _appBar() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.only(top: 10),
+      height: 60,
+      child: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore)),
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Icon(
+                          Icons.arrow_back_ios,
+                          size: 25,
+                          color: ColorsConts.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                )),
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(color: Colors.grey.withOpacity(.1), shape: BoxShape.circle),
+          ),
+          Expanded(
+              child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 50),
+              child: Text('បញ្ជូលទូរស័ព្ទ', style: TextStyle(color: ColorsConts.primaryColor, fontSize: 22)),
+            ),
+          ))
+        ],
+      ),
+    );
+  }
+
   Widget _saveButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       child: AnimatedButton(
-        pressEvent: () {},
+        pressEvent: () {
+          _onInsertPhone();
+        },
         text: 'រក្សាទុក',
       ),
     );
@@ -406,13 +572,13 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
                   Row(
                     children: [
                       Expanded(child: _buildTextInput('ទំហំទូរស័ព្ទ', storageController)),
-                      Expanded(child: _buildTextInput('តម្លៃទូរស័ព្ទ', priceController)),
+                      Expanded(child: _buildTextInput('តម្លៃទូរស័ព្ទ', priceController, hasOnChange: true, index: index, textInputType: TextInputType.number)),
                     ],
                   ),
                   Row(
                     children: [
-                      Expanded(child: _buildTextInput('បញ្ចុះតម្លៃ %', discountController)),
-                      Expanded(child: _buildTextInput('តម្លៃក្រោយបញ្ចុះ', priceAfterDiscountController)),
+                      Expanded(child: _buildTextInput('បញ្ចុះតម្លៃ %', discountController, hasOnChange: true, index: index, textInputType: TextInputType.number)),
+                      Expanded(child: _buildTextInput('តម្លៃក្រោយបញ្ចុះ', priceAfterDiscountController, textInputType: TextInputType.number)),
                     ],
                   )
                 ],
@@ -774,7 +940,7 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
     );
   }
 
-  Widget _buildTextInput(String label, TextEditingController textEditingController) {
+  Widget _buildTextInput(String label, TextEditingController textEditingController, {TextInputType textInputType = TextInputType.text, bool hasOnChange = false, int index = 0}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -784,6 +950,12 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
           width: MediaQuery.of(context).size.width,
           margin: EdgeInsets.all(10),
           child: TextFormField(
+            keyboardType: textInputType,
+            onChanged: (e) {
+              if (hasOnChange) {
+                _getPriceAfterDiscount(index);
+              }
+            },
             maxLines: null,
             controller: textEditingController,
             decoration: InputDecoration(

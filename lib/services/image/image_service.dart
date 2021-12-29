@@ -13,10 +13,8 @@ class ImageService {
     };
 
     if (files.isNotEmpty) {
-      postData['images'] = [];
       for (File file in files) {
-        postData['images'] = [];
-        postData['images'].add(await MultipartFile.fromFile(file.path, filename: basename(file.path)));
+        postData['images'] = await MultipartFile.fromFile(file.path, filename: basename(file.path));
         try {
           return await httpApiService.post(HttApi.API_INSERT_IMAGE, FormData.fromMap(postData), null, new Options(headers: HttpConfig.headers)).then((value) {
             result = value.data[0]['status'];

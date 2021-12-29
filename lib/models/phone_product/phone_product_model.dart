@@ -96,7 +96,7 @@ class Storage {
     required this.priceAfterDiscount,
   });
 
-  int storage;
+  String storage;
   int price;
   int discount;
   int priceAfterDiscount;

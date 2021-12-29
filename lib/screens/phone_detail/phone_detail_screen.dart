@@ -180,7 +180,7 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
             child: Padding(
               padding: const EdgeInsets.only(top: 5),
               child: Text(
-                storage.storage.toString() + " GB",
+                storage.storage,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 18,
