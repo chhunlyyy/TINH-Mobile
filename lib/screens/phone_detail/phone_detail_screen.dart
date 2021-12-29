@@ -229,17 +229,21 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
 
   Widget _nameLabel() {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
       width: MediaQuery.of(context).size.width,
-      height: 50,
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(color: Colors.grey.withOpacity(.3), offset: Offset(0, 1), spreadRadius: 2, blurRadius: 2),
       ]),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            widget.phoneProductModel.name,
-            style: TextStyle(color: ColorsConts.primaryColor, fontSize: 18),
+          Expanded(
+            child: Center(
+              child: Text(
+                widget.phoneProductModel.name,
+                style: TextStyle(color: ColorsConts.primaryColor, fontSize: 18),
+              ),
+            ),
           ),
           SizedBox(width: 10),
           Visibility(
@@ -251,7 +255,8 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
                   child: Text(
                     'ធានា\t' + widget.phoneProductModel.warrantyPeriod,
                     style: TextStyle(color: Colors.white),
-                  )))
+                  ))),
+          SizedBox(width: 10),
         ],
       ),
     );
@@ -278,10 +283,13 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
                               onTap: () => NavigationHelper.push(context, ShowFullScreenImageWidget(image: item)),
                               child: Container(
                                 margin: EdgeInsets.all(5),
-                                child: DisplayImage(
-                                  imageString: item,
-                                  imageBorderRadius: 0,
-                                  boxFit: BoxFit.contain,
+                                child: Hero(
+                                  tag: widget.phoneProductModel.images[widget.phoneProductModel.images.indexOf(item)],
+                                  child: DisplayImage(
+                                    imageString: item,
+                                    imageBorderRadius: 0,
+                                    boxFit: BoxFit.contain,
+                                  ),
                                 ),
                               ),
                             ))

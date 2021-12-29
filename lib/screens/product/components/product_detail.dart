@@ -191,28 +191,35 @@ class _ProductDetailState extends State<ProductDetail> {
   Widget _nameLabel() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 50,
+      padding: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
         BoxShadow(color: Colors.grey.withOpacity(.3), offset: Offset(0, 1), spreadRadius: 2, blurRadius: 2),
       ]),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            widget.productModel.name,
-            style: TextStyle(color: ColorsConts.primaryColor, fontSize: 18),
+          Expanded(
+            child: Center(
+              child: Text(
+                widget.productModel.name,
+                style: TextStyle(color: ColorsConts.primaryColor, fontSize: 18),
+              ),
+            ),
           ),
           SizedBox(width: 10),
           Visibility(
-              visible: widget.productModel.isWarranty == 1,
-              child: Container(
-                  padding: EdgeInsets.only(left: 10, right: 10),
-                  decoration: BoxDecoration(
-                      color: Colors.red, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.5), offset: Offset(0, 1), spreadRadius: 1, blurRadius: 2)]),
-                  child: Text(
-                    'ធានា\t' + widget.productModel.warrantyPeriod,
-                    style: TextStyle(color: Colors.white),
-                  )))
+            visible: widget.productModel.isWarranty == 1,
+            child: Container(
+              padding: EdgeInsets.only(left: 10, right: 10),
+              decoration: BoxDecoration(
+                  color: Colors.red, borderRadius: BorderRadius.circular(20), boxShadow: [BoxShadow(color: Colors.grey.withOpacity(.5), offset: Offset(0, 1), spreadRadius: 1, blurRadius: 2)]),
+              child: Text(
+                'ធានា\t' + widget.productModel.warrantyPeriod,
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          SizedBox(width: 10),
         ],
       ),
     );
@@ -239,10 +246,13 @@ class _ProductDetailState extends State<ProductDetail> {
                               onTap: () => NavigationHelper.push(context, ShowFullScreenImageWidget(image: item)),
                               child: Container(
                                 margin: EdgeInsets.all(5),
-                                child: DisplayImage(
-                                  imageString: item,
-                                  imageBorderRadius: 0,
-                                  boxFit: BoxFit.contain,
+                                child: Hero(
+                                  tag: widget.productModel.images[widget.productModel.images.indexOf(item)],
+                                  child: DisplayImage(
+                                    imageString: item,
+                                    imageBorderRadius: 0,
+                                    boxFit: BoxFit.contain,
+                                  ),
                                 ),
                               ),
                             ))

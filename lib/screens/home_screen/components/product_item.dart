@@ -38,10 +38,13 @@ class ProductItem extends StatelessWidget {
                         ? Container(
                             width: MediaQuery.of(context).size.width / 2,
                             height: 200,
-                            child: DisplayImage(
-                              boxFit: BoxFit.fitHeight,
-                              imageBorderRadius: 20,
-                              imageString: productModel.images[0],
+                            child: Hero(
+                              tag: productModel.images[0],
+                              child: DisplayImage(
+                                boxFit: BoxFit.fitHeight,
+                                imageBorderRadius: 20,
+                                imageString: productModel.images[0],
+                              ),
                             ),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
