@@ -4,6 +4,7 @@ import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/about_us/about_us_screen.dart';
 import 'package:tinh/screens/add_phone_form/add_phone_form_screen.dart';
+import 'package:tinh/screens/add_product_form/add_product_form_screen.dart';
 import 'package:tinh/screens/login/login_screen/login.dart';
 import 'package:tinh/screens/logout/logout_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
@@ -22,18 +23,8 @@ class DrawerMenuScreen extends StatelessWidget {
       color: ColorsConts.primaryColor,
       child: Column(
         children: [
-          mainStore.userStore.isShopOwner
-              ? _drawerItem(
-                  context,
-                  'បន្ថែមទូរស័ព្ទ',
-                  Icons.add,
-                  () => NavigationHelper.push(
-                      context,
-                      AddPhoneFormScreen(
-                        mainStore: mainStore,
-                      )))
-              : SizedBox.shrink(),
-          mainStore.userStore.isShopOwner ? _drawerItem(context, 'បន្ថែមផលិតផលផ្សេងៗ', Icons.add, () {}) : SizedBox.shrink(),
+          mainStore.userStore.isShopOwner ? _drawerItem(context, 'បន្ថែមទូរស័ព្ទ', Icons.add, () => NavigationHelper.push(context, AddPhoneFormScreen(mainStore: mainStore))) : SizedBox.shrink(),
+          mainStore.userStore.isShopOwner ? _drawerItem(context, 'បន្ថែមផលិតផលផ្សេងៗ', Icons.add, () => NavigationHelper.push(context, AddProductFormScreen(mainStore: mainStore))) : SizedBox.shrink(),
           _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () => NavigationHelper.push(context, AboutUsScreen())),
           !mainStore.userStore.isShopOwner
               ? _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen(mainStore)))

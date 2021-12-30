@@ -55,7 +55,7 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   List<TextEditingController> _discountControllerList = List.generate(1, (index) => TextEditingController());
   List<TextEditingController> _priceAfterDiscountControllerList = List.generate(1, (index) => TextEditingController());
   /* */
-  /* phone storage post data */
+  /* phone detail post data */
   int _detailLength = 1;
   List<TextEditingController> _detailNameControllerList = List.generate(1, (index) => TextEditingController());
   List<TextEditingController> _detailDescControllerList = List.generate(1, (index) => TextEditingController());
@@ -164,7 +164,7 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   }
 
   void _onInsertCategory() {
-    if (_phoneCategoryController.text.isNotEmpty) {
+    if (_phoneCategoryController.text.isNotEmpty && categoryAttachmentsList.isNotEmpty) {
       imageService.insertImage(categoryAttachmentsList, _cagtegoryImageIdRef).whenComplete(() {
         Map<String, dynamic> postData = {'name': _phoneCategoryController.text, 'image_id_ref': _cagtegoryImageIdRef};
         _mainStore.phoneCategoryStore.insetCategory(postData).then((value) {

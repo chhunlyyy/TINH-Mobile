@@ -16,4 +16,14 @@ abstract class _CategoriesStore with Store {
       categoriesList.addAll(value);
     });
   }
+
+  @action
+  Future<String> insetCategory(Map<String, dynamic> postData) async {
+    String status = '';
+    await categoriesService.addCategory(postData).then((value) {
+      status = value;
+    });
+
+    return status;
+  }
 }

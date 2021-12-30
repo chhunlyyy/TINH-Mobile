@@ -21,7 +21,10 @@ class HttApi {
   static const String API_INSERT_IMAGE = '/insert-image';
   static const String API_INSERT_PHONE_CATEGORY = '/insert-phone-category';
   static const String API_INSERT_PHONE_BRAND = '/insert-phone-brand';
-
+  static const String API_INSERT_CATEGORY = '/insert-category';
+  static const String API_INSERT_PRODUCT = '/insert-product';
+  static const String API_INSERT_PRODUCT_COLOR = '/insert-product-color';
+  static const String API_INSERT_PRODUCT_DETAIL = '/insert-product-detail';
   //
 
   static const String API_USER_CHECK_TOKEN = '/check-token';
