@@ -895,13 +895,16 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
       margin: EdgeInsets.only(left: 15),
       child: Row(
         children: [
-          Text(
-            isCategory ? 'ប្រភេទទូរស័ព្ទ' : 'ម៉ាក់ទូរស័ព្ទ',
-            style: TextStyle(fontSize: 15),
+          Container(
+            width: MediaQuery.of(context).size.width / 2.8,
+            child: Text(
+              isCategory ? 'ប្រភេទទូរស័ព្ទ' : 'ម៉ាក់ទូរស័ព្ទ',
+              style: TextStyle(fontSize: 15),
+            ),
           ),
-          SizedBox(
-            width: isCategory ? 60 : 77,
-          ),
+          // SizedBox(
+          //   width: isCategory ? 60 : 77,
+          // ),
           Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
