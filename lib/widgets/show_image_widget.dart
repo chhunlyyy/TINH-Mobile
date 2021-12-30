@@ -28,7 +28,7 @@ class _DisplayImageState extends State<DisplayImage> {
 
     return CachedNetworkImage(
       cacheManager: CustomCacheManager(),
-      fit: BoxFit.fill,
+      fit: BoxFit.fitHeight,
       imageUrl: baseUrl + widget.imageString,
       // placeholder: (context, imageUrl) => Image.asset('assets/images/placeholder.jpg'),
       errorWidget: (context, imageUrl, error) => Image.asset('assets/images/placeholder.jpg'),

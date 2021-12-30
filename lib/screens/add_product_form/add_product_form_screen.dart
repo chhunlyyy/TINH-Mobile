@@ -296,7 +296,7 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(height: 10),
-          _buildTextInput('ឈ្មោះទូរស័ព្ទ', _nameController),
+          _buildTextInput('ឈ្មោះផលិតផល', _nameController),
           _buildTextInput('តម្លៃ', _priceController, hasOnChange: true, textInputType: TextInputType.number),
           _buildTextInput('បញ្ចុះតម្លៃ %', _discountController, hasOnChange: true, textInputType: TextInputType.number),
           _buildTextInput('តម្លៃក្រោយបញ្ចុះ', _priceAfterDiscoutnController, hasOnChange: true, textInputType: TextInputType.number),
@@ -446,7 +446,7 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
           children: [
             Expanded(
               child: _buildTextInput(
-                'ពណ៌ទូរស័ព្ទ',
+                'ពណ៌ផលិតផល',
                 controller,
               ),
             ),
@@ -692,7 +692,7 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
           children: [
             SizedBox(width: MediaQuery.of(context).size.width / 6),
             Text(
-              'ប្រភេទទូរស័ព្ទ',
+              'ប្រភេទផលិតផល',
               style: TextStyle(
                 fontSize: 18,
                 color: ColorsConts.primaryColor,
