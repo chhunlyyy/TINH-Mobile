@@ -11,6 +11,7 @@ import 'package:tinh/screens/login/components/rounded_input.dart';
 import 'package:tinh/screens/login/components/rounded_password_input.dart';
 import 'package:tinh/services/user/user_services.dart';
 import 'package:tinh/store/main/main_store.dart';
+import 'package:tinh/const/user_status.dart';
 
 class LoginForm extends StatefulWidget {
   const LoginForm({
@@ -76,7 +77,7 @@ class _LoginFormState extends State<LoginForm> {
                   ))
                 ..show();
             } else {
-              widget.mainStore.userStore.changeUserStatus(true);
+              isShopOwner = true;
               NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
             }
           });

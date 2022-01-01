@@ -31,6 +31,14 @@ mixin _$CategoriesStore on _CategoriesStore, Store {
     return _$loadDataAsyncAction.run(() => super.loadData());
   }
 
+  final _$insetCategoryAsyncAction =
+      AsyncAction('_CategoriesStore.insetCategory');
+
+  @override
+  Future<String> insetCategory(Map<String, dynamic> postData) {
+    return _$insetCategoryAsyncAction.run(() => super.insetCategory(postData));
+  }
+
   @override
   String toString() {
     return '''

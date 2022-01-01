@@ -26,6 +26,11 @@ class HttApi {
   static const String API_INSERT_PRODUCT_COLOR = '/insert-product-color';
   static const String API_INSERT_PRODUCT_DETAIL = '/insert-product-detail';
   //
+  static const String API_DELETE_IMAGE = '/delete-image';
+  static const String API_DELETE_PHONE_PRODUCT = '/delete-phone-product';
+  static const String API_DELETE_PRODUCT = '/delete-product';
+
+  //
 
   static const String API_USER_CHECK_TOKEN = '/check-token';
   static const String API_USER_LOGIN = '/login';

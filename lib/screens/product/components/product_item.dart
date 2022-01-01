@@ -3,12 +3,14 @@ import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/models/product/product_model.dart';
 import 'package:tinh/screens/product/components/product_detail.dart';
+import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/placholder_image_wdiget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class ProductItem extends StatelessWidget {
+  final MainStore mainStore;
   final ProductModel productModel;
-  const ProductItem({Key? key, required this.productModel}) : super(key: key);
+  const ProductItem({Key? key, required this.productModel, required this.mainStore}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,12 @@ class ProductItem extends StatelessWidget {
         child: Material(
           child: InkWell(
             onTap: () {
-              NavigationHelper.push(context, ProductDetail(productModel: productModel));
+              NavigationHelper.push(
+                  context,
+                  ProductDetail(
+                    productModel: productModel,
+                    mainStore: mainStore,
+                  ));
             },
             child: Column(
               children: [

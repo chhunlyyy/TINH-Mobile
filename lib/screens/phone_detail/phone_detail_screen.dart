@@ -62,6 +62,49 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
     );
   }
 
+  Widget _appBar() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.only(top: 10),
+      height: 60,
+      child: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Icon(
+                          Icons.arrow_back_ios,
+                          size: 25,
+                          color: ColorsConts.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                )),
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(color: Colors.grey.withOpacity(.1), shape: BoxShape.circle),
+          ),
+          Expanded(
+              child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 50),
+              child: Text('', style: TextStyle(color: ColorsConts.primaryColor, fontSize: 22)),
+            ),
+          )),
+        ],
+      ),
+    );
+  }
+
   Widget _detail() {
     return Column(
         children: widget.phoneProductModel.detail.map((e) {

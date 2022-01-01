@@ -62,6 +62,13 @@ mixin _$PhoneBrandStore on _PhoneBrandStore, Store {
     return _$loadDataAsyncAction.run(() => super.loadData());
   }
 
+  final _$insetbrandAsyncAction = AsyncAction('_PhoneBrandStore.insetbrand');
+
+  @override
+  Future<String> insetbrand(Map<String, dynamic> postData) {
+    return _$insetbrandAsyncAction.run(() => super.insetbrand(postData));
+  }
+
   final _$_PhoneBrandStoreActionController =
       ActionController(name: '_PhoneBrandStore');
 

@@ -6,6 +6,7 @@ import 'package:tinh/http/http_config.dart';
 import 'package:tinh/models/message/message_model.dart';
 import 'package:tinh/models/user/user_model.dart';
 import 'package:tinh/store/main/main_store.dart';
+import 'package:tinh/const/user_status.dart';
 
 class UserServices {
   Future<String> checkUserToken(String token, MainStore mainStore) async {
@@ -39,7 +40,7 @@ class UserServices {
           return MessageModel.fromJson(value.data[0]);
         } else {
           MainStore mainStore = MainStore();
-          mainStore.userStore.changeUserStatus(true);
+          isShopOwner = true;
           return MessageModel(status: '200', message: 'success');
         }
       });

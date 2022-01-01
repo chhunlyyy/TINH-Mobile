@@ -6,6 +6,7 @@ import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/home_screen/home_screen.dart';
 import 'package:tinh/services/user/user_services.dart';
 import 'package:tinh/store/main/main_store.dart';
+import 'package:tinh/const/user_status.dart';
 
 class LogOutScreen extends StatefulWidget {
   final MainStore mainStore;
@@ -57,7 +58,7 @@ class _LogOutScreenState extends State<LogOutScreen> {
                       ))
                     ..show();
                 } else {
-                  widget.mainStore.userStore.changeUserStatus(false);
+                  isShopOwner = false;
                   NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
                 }
               });

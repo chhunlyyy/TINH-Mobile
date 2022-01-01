@@ -122,7 +122,7 @@ class WidgetHelper {
               padding: const EdgeInsets.only(right: 50),
               child: Text(title, style: TextStyle(color: ColorsConts.primaryColor, fontSize: 22)),
             ),
-          ))
+          )),
         ],
       ),
     );

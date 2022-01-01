@@ -160,6 +160,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     child: WidgetHelper.animation(
                         index,
                         ProductItem(
+                          mainStore: _mainStore,
                           productModel: _mainStore.productStore.productModelList[index],
                         )));
               }));

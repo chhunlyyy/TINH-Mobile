@@ -1,0 +1,1 @@
+bool isShopOwner = false;

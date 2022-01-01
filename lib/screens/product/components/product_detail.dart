@@ -1,32 +1,93 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
-import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/product/product_model.dart';
+import 'package:tinh/services/image/image_service.dart';
+import 'package:tinh/services/product/product_service.dart';
+import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/show_full_scren_image_widget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
+import 'package:tinh/const/user_status.dart';
 
 class ProductDetail extends StatefulWidget {
+  final MainStore mainStore;
   final ProductModel productModel;
-  const ProductDetail({Key? key, required this.productModel}) : super(key: key);
+  const ProductDetail({Key? key, required this.productModel, required this.mainStore}) : super(key: key);
 
   @override
   _ProductDetailState createState() => _ProductDetailState();
 }
 
 class _ProductDetailState extends State<ProductDetail> {
-  int _imagePageCount = 1;
+  late int _imagePageCount;
+  void _errorDialog() {
+    AwesomeDialog(
+      dismissOnTouchOutside: false,
+      context: context,
+      dialogType: DialogType.ERROR,
+      borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+      width: MediaQuery.of(context).size.width,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      desc: 'មានបញ្ហាក្នុងពេលបញ្ចូលទិន្នន័យ',
+      showCloseIcon: false,
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {},
+    )..show();
+  }
+
+  void _sucessDialog() {
+    AwesomeDialog(
+      dismissOnTouchOutside: false,
+      context: context,
+      dialogType: DialogType.SUCCES,
+      borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+      width: MediaQuery.of(context).size.width,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      desc: 'ទិន្នន័យត្រូវបានលុប',
+      showCloseIcon: false,
+    )..show();
+  }
+
+  void _onDelete() {
+    imageService.deleteImage(widget.productModel.images, widget.productModel.imageIdRef).then((value) {});
+
+    productServices.deleteProduct(imageIdRef: widget.productModel.imageIdRef, id: widget.productModel.id.toString()).then((value) {
+      if (value.status == '200') {
+        _sucessDialog();
+        Future.delayed(Duration(seconds: 2)).whenComplete(() {
+          Navigator.pop(context);
+          Navigator.pop(context);
+          Navigator.pop(context);
+        });
+      } else {
+        _errorDialog();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    _imagePageCount = widget.productModel.images.length;
     return Observer(
       builder: (_) {
         return Material(
             child: SafeArea(
           child: Column(
             children: [
-              WidgetHelper.appBar(context, ''),
+              _appBar(),
               Expanded(
                 child: Container(
                   width: MediaQuery.of(context).size.width,
@@ -47,6 +108,87 @@ class _ProductDetailState extends State<ProductDetail> {
           ),
         ));
       },
+    );
+  }
+
+  Widget _appBar() {
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.only(top: 10),
+      height: 60,
+      child: Row(
+        children: [
+          Container(
+            margin: EdgeInsets.only(left: 10),
+            child: ClipRRect(
+                borderRadius: BorderRadius.circular(100),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 5),
+                        child: Icon(
+                          Icons.arrow_back_ios,
+                          size: 25,
+                          color: ColorsConts.primaryColor,
+                        ),
+                      ),
+                    ),
+                  ),
+                )),
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(color: Colors.grey.withOpacity(.1), shape: BoxShape.circle),
+          ),
+          Expanded(
+              child: Center(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 50),
+              child: Text('', style: TextStyle(color: ColorsConts.primaryColor, fontSize: 22)),
+            ),
+          )),
+          isShopOwner
+              ? AnimatedButton(
+                  borderRadius: BorderRadius.circular(5),
+                  width: 100,
+                  height: 50,
+                  pressEvent: () {},
+                  text: 'កែប្រែ',
+                )
+              : SizedBox.shrink(),
+          SizedBox(width: 10),
+          isShopOwner
+              ? AnimatedButton(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(5),
+                  width: 100,
+                  height: 50,
+                  pressEvent: () {
+                    AwesomeDialog(
+                      dismissOnTouchOutside: false,
+                      context: context,
+                      dialogType: DialogType.QUESTION,
+                      borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+                      width: MediaQuery.of(context).size.width,
+                      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+                      headerAnimationLoop: false,
+                      animType: AnimType.BOTTOMSLIDE,
+                      desc: 'តើអ្នកពិតជាចង់លុបទិន្នន័យនេះមែនទេ ?',
+                      showCloseIcon: false,
+                      btnCancelOnPress: () {},
+                      btnOkOnPress: () {
+                        _onDelete();
+                      },
+                    )..show();
+                  },
+                  text: 'លុប',
+                )
+              : SizedBox.shrink(),
+          SizedBox(width: 20),
+        ],
+      ),
     );
   }
 

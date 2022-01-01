@@ -17,7 +17,7 @@ abstract class _ProductStore with Store {
     if (productModelList.isEmpty) {
       isLoading = true;
     }
-    await productServices.getProdcutbyCategory(categoryId: categoryId, pageIndex: pageIndex, pageSize: pageSize).then((value) {
+    await productServices.getProductbyCategory(categoryId: categoryId, pageIndex: pageIndex, pageSize: pageSize).then((value) {
       for (var product in value) {
         productModelList.add(product);
       }

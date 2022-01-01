@@ -103,6 +103,7 @@ class _DiscountScreenState extends State<DiscountScreen> {
                     child: WidgetHelper.animation(
                         index,
                         nonPhone.ProductItem(
+                          mainStore: _mainStore,
                           productModel: _mainStore.productStore.productModelList[index],
                         )));
               }));
