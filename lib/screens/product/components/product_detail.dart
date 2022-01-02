@@ -13,9 +13,10 @@ import 'package:tinh/widgets/show_image_widget.dart';
 import 'package:tinh/const/user_status.dart';
 
 class ProductDetail extends StatefulWidget {
+  final Function onDispose;
   final MainStore mainStore;
   final ProductModel productModel;
-  const ProductDetail({Key? key, required this.productModel, required this.mainStore}) : super(key: key);
+  const ProductDetail({Key? key, required this.productModel, required this.mainStore, required this.onDispose}) : super(key: key);
 
   @override
   _ProductDetailState createState() => _ProductDetailState();
@@ -57,12 +58,11 @@ class _ProductDetailState extends State<ProductDetail> {
 
   void _onDelete() {
     imageService.deleteImage(widget.productModel.images, widget.productModel.imageIdRef).then((value) {});
-
     productServices.deleteProduct(imageIdRef: widget.productModel.imageIdRef, id: widget.productModel.id.toString()).then((value) {
       if (value.status == '200') {
         _sucessDialog();
+        widget.onDispose();
         Future.delayed(Duration(seconds: 2)).whenComplete(() {
-          Navigator.pop(context);
           Navigator.pop(context);
           Navigator.pop(context);
         });

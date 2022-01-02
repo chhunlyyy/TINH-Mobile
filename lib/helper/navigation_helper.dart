@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 
 class NavigationHelper {
-  static push(BuildContext context, Widget widget) {
-    Navigator.of(context).push(PageRouteBuilder(
-        transitionDuration: Duration(milliseconds: 300),
-        transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-          return new SlideTransition(
-            position: new Tween<Offset>(
-              begin: const Offset(1.0, 0.0),
-              end: Offset.zero,
-            ).animate(animation),
-            child: child,
-          );
-        },
-        pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
-          return widget;
-        }));
+  static push(BuildContext context, Widget widget) async {
+    await Navigator.of(context)
+        .push(PageRouteBuilder(
+            transitionDuration: Duration(milliseconds: 300),
+            transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+              return new SlideTransition(
+                position: new Tween<Offset>(
+                  begin: const Offset(1.0, 0.0),
+                  end: Offset.zero,
+                ).animate(animation),
+                child: child,
+              );
+            },
+            pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
+              return widget;
+            }))
+        .then((value) {});
   }
 
   static pushReplacement(BuildContext context, Widget widget) {

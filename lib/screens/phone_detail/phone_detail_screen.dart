@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -7,6 +8,7 @@ import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/phone_product/phone_product_model.dart';
 import 'package:tinh/widgets/show_full_scren_image_widget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
+import 'package:tinh/const/user_status.dart';
 
 class PhoneDetailScreen extends StatefulWidget {
   final PhoneProductModel phoneProductModel;
@@ -17,16 +19,19 @@ class PhoneDetailScreen extends StatefulWidget {
 }
 
 class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
-  int _imagePageCount = 1;
+  late int _imagePageCount;
+
+  void _onDelete() {}
 
   @override
   Widget build(BuildContext context) {
+    _imagePageCount = widget.phoneProductModel.images.length;
     return Observer(builder: (_) {
       return Material(
           child: SafeArea(
         child: Column(
           children: [
-            WidgetHelper.appBar(context, ''),
+            _appBar(),
             Expanded(
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -100,6 +105,44 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
               child: Text('', style: TextStyle(color: ColorsConts.primaryColor, fontSize: 22)),
             ),
           )),
+          isShopOwner
+              ? AnimatedButton(
+                  borderRadius: BorderRadius.circular(5),
+                  width: 100,
+                  height: 50,
+                  pressEvent: () {},
+                  text: 'កែប្រែ',
+                )
+              : SizedBox.shrink(),
+          SizedBox(width: 10),
+          isShopOwner
+              ? AnimatedButton(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(5),
+                  width: 100,
+                  height: 50,
+                  pressEvent: () {
+                    AwesomeDialog(
+                      dismissOnTouchOutside: false,
+                      context: context,
+                      dialogType: DialogType.QUESTION,
+                      borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+                      width: MediaQuery.of(context).size.width,
+                      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+                      headerAnimationLoop: false,
+                      animType: AnimType.BOTTOMSLIDE,
+                      desc: 'តើអ្នកពិតជាចង់លុបទិន្នន័យនេះមែនទេ ?',
+                      showCloseIcon: false,
+                      btnCancelOnPress: () {},
+                      btnOkOnPress: () {
+                        _onDelete();
+                      },
+                    )..show();
+                  },
+                  text: 'លុប',
+                )
+              : SizedBox.shrink(),
+          SizedBox(width: 20),
         ],
       ),
     );

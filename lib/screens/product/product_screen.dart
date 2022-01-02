@@ -160,6 +160,10 @@ class _ProductScreenState extends State<ProductScreen> {
                     child: WidgetHelper.animation(
                         index,
                         ProductItem(
+                          onDispose: () {
+                            _mainStore.productStore.productModelList.clear();
+                            _mainStore.productStore.loadData(categoryId: widget.categoriesModel.id, pageIndex: 0, pageSize: 6);
+                          },
                           mainStore: _mainStore,
                           productModel: _mainStore.productStore.productModelList[index],
                         )));
