@@ -253,9 +253,11 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
       onTap: () => FocusScope.of(context).requestFocus(new FocusNode()),
       child: Observer(
         builder: (_) {
-          return Material(
-            child: SafeArea(
-              child: _buildBody(),
+          return Scaffold(
+            body: Material(
+              child: SafeArea(
+                child: _buildBody(),
+              ),
             ),
           );
         },
