@@ -22,7 +22,7 @@ class PhoneDetailScreen extends StatefulWidget {
 }
 
 class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
-  late int _imagePageCount;
+  late int _imagePageCount = widget.phoneProductModel.images.length != 0 ? 1 : 0;
 
   void _errorDialog() {
     AwesomeDialog(
@@ -74,7 +74,6 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    _imagePageCount = widget.phoneProductModel.images.length;
     return Observer(builder: (_) {
       return Material(
           child: SafeArea(

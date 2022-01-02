@@ -23,7 +23,7 @@ class ProductDetail extends StatefulWidget {
 }
 
 class _ProductDetailState extends State<ProductDetail> {
-  late int _imagePageCount;
+  late int _imagePageCount = widget.productModel.images.length != 0 ? 1 : 0;
   void _errorDialog() {
     AwesomeDialog(
       dismissOnTouchOutside: false,
@@ -80,7 +80,6 @@ class _ProductDetailState extends State<ProductDetail> {
 
   @override
   Widget build(BuildContext context) {
-    _imagePageCount = widget.productModel.images.length;
     return Observer(
       builder: (_) {
         return Material(
