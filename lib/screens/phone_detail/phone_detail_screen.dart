@@ -57,7 +57,12 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
   }
 
   void _onDelete() {
-    imageService.deleteImage(widget.phoneProductModel.images, widget.phoneProductModel.imageIdRef).then((value) {});
+    List<String> imagePathList = [];
+    for (var image in widget.phoneProductModel.images) {
+      imagePathList.add(image.image);
+    }
+
+    imageService.deleteImage(imagePathList, widget.phoneProductModel.imageIdRef).then((value) {});
     phoneProductServices.deletePhone(id: widget.phoneProductModel.id.toString()).then((value) {
       if (value.status == '200') {
         _sucessDialog();
@@ -263,7 +268,7 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
   Widget _colorWidget() {
     List<Widget> colorItemList = [];
     widget.phoneProductModel.colors.forEach((element) {
-      colorItemList.add(_colorItem(element));
+      colorItemList.add(_colorItem(element.color));
     });
 
     return GridView.count(
@@ -414,13 +419,13 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
                     ),
                     items: widget.phoneProductModel.images
                         .map((item) => InkWell(
-                              onTap: () => NavigationHelper.push(context, ShowFullScreenImageWidget(image: item)),
+                              onTap: () => NavigationHelper.push(context, ShowFullScreenImageWidget(image: item.image)),
                               child: Container(
                                 margin: EdgeInsets.all(5),
                                 child: Hero(
                                   tag: widget.phoneProductModel.images[widget.phoneProductModel.images.indexOf(item)],
                                   child: DisplayImage(
-                                    imageString: item,
+                                    imageString: item.image,
                                     imageBorderRadius: 0,
                                     boxFit: BoxFit.contain,
                                   ),

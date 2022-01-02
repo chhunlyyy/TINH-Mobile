@@ -45,7 +45,7 @@ class ProductItem extends StatelessWidget {
                               child: DisplayImage(
                                 boxFit: BoxFit.fitHeight,
                                 imageBorderRadius: 20,
-                                imageString: productModel.images[0],
+                                imageString: productModel.images[0].image,
                               ),
                             ),
                             decoration: BoxDecoration(

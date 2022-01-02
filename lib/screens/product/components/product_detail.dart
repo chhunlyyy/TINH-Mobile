@@ -57,7 +57,12 @@ class _ProductDetailState extends State<ProductDetail> {
   }
 
   void _onDelete() {
-    imageService.deleteImage(widget.productModel.images, widget.productModel.imageIdRef).then((value) {});
+    List<String> imagePath = [];
+    for (var image in widget.productModel.images) {
+      imagePath.add(image.image);
+    }
+
+    imageService.deleteImage(imagePath, widget.productModel.imageIdRef).then((value) {});
     productServices.deleteProduct(id: widget.productModel.id.toString()).then((value) {
       if (value.status == '200') {
         _sucessDialog();
@@ -208,7 +213,7 @@ class _ProductDetailState extends State<ProductDetail> {
   Widget _colorWidget() {
     List<Widget> colorItemList = [];
     widget.productModel.colors.forEach((element) {
-      colorItemList.add(_colorItem(element));
+      colorItemList.add(_colorItem(element.color));
     });
 
     final double runSpacing = 4;
@@ -384,13 +389,13 @@ class _ProductDetailState extends State<ProductDetail> {
                     ),
                     items: widget.productModel.images
                         .map((item) => InkWell(
-                              onTap: () => NavigationHelper.push(context, ShowFullScreenImageWidget(image: item)),
+                              onTap: () => NavigationHelper.push(context, ShowFullScreenImageWidget(image: item.image)),
                               child: Container(
                                 margin: EdgeInsets.all(5),
                                 child: Hero(
                                   tag: widget.productModel.images[widget.productModel.images.indexOf(item)],
                                   child: DisplayImage(
-                                    imageString: item,
+                                    imageString: item.image,
                                     imageBorderRadius: 0,
                                     boxFit: BoxFit.contain,
                                   ),
