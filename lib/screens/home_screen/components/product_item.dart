@@ -8,9 +8,10 @@ import 'package:tinh/widgets/placholder_image_wdiget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 
 class ProductItem extends StatelessWidget {
+  final Function onDispose;
   final MainStore mainStore;
   final PhoneProductModel productModel;
-  const ProductItem({Key? key, required this.productModel, required this.mainStore}) : super(key: key);
+  const ProductItem({Key? key, required this.onDispose, required this.productModel, required this.mainStore}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,7 @@ class ProductItem extends StatelessWidget {
             onTap: () => NavigationHelper.push(
                 context,
                 PhoneDetailScreen(
+                  onDispose: onDispose,
                   phoneProductModel: productModel,
                 )),
             child: Column(

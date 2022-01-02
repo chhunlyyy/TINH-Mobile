@@ -6,13 +6,16 @@ import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/phone_product/phone_product_model.dart';
+import 'package:tinh/services/image/image_service.dart';
+import 'package:tinh/services/phone_product/phone_product_service.dart';
 import 'package:tinh/widgets/show_full_scren_image_widget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 import 'package:tinh/const/user_status.dart';
 
 class PhoneDetailScreen extends StatefulWidget {
+  final Function onDispose;
   final PhoneProductModel phoneProductModel;
-  const PhoneDetailScreen({Key? key, required this.phoneProductModel}) : super(key: key);
+  const PhoneDetailScreen({Key? key, required this.onDispose, required this.phoneProductModel}) : super(key: key);
 
   @override
   _PhoneDetailScreenState createState() => _PhoneDetailScreenState();
@@ -21,7 +24,53 @@ class PhoneDetailScreen extends StatefulWidget {
 class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
   late int _imagePageCount;
 
-  void _onDelete() {}
+  void _errorDialog() {
+    AwesomeDialog(
+      dismissOnTouchOutside: false,
+      context: context,
+      dialogType: DialogType.ERROR,
+      borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+      width: MediaQuery.of(context).size.width,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      desc: 'មានបញ្ហាក្នុងពេលបញ្ចូលទិន្នន័យ',
+      showCloseIcon: false,
+      btnCancelOnPress: () {},
+      btnOkOnPress: () {},
+    )..show();
+  }
+
+  void _sucessDialog() {
+    AwesomeDialog(
+      dismissOnTouchOutside: false,
+      context: context,
+      dialogType: DialogType.SUCCES,
+      borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+      width: MediaQuery.of(context).size.width,
+      buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+      headerAnimationLoop: false,
+      animType: AnimType.BOTTOMSLIDE,
+      desc: 'ទិន្នន័យត្រូវបានលុប',
+      showCloseIcon: false,
+    )..show();
+  }
+
+  void _onDelete() {
+    imageService.deleteImage(widget.phoneProductModel.images, widget.phoneProductModel.imageIdRef).then((value) {});
+    phoneProductServices.deletePhone(id: widget.phoneProductModel.id.toString()).then((value) {
+      if (value.status == '200') {
+        _sucessDialog();
+        widget.onDispose();
+        Future.delayed(Duration(seconds: 2)).whenComplete(() {
+          Navigator.pop(context);
+          Navigator.pop(context);
+        });
+      } else {
+        _errorDialog();
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

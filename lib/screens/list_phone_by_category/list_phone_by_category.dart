@@ -142,7 +142,18 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
                           padding: EdgeInsets.all(1.0),
                           childAspectRatio: 8 / 12.0,
                           children: List<Widget>.generate(_mainStore.phoneProductStore.phoneProductModelList.length, (index) {
-                            return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
+                            return GridTile(
+                                child: WidgetHelper.animation(
+                                    index,
+                                    ProductItem(
+                                        onDispose: () {
+                                          pageSize = 6;
+                                          pageIndex = 0;
+                                          _mainStore.phoneProductStore.phoneProductModelList.clear();
+                                          _loadPhone();
+                                        },
+                                        mainStore: _mainStore,
+                                        productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
                           }))
                       : Container()),
             )

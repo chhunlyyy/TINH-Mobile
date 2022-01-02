@@ -58,7 +58,7 @@ class _ProductDetailState extends State<ProductDetail> {
 
   void _onDelete() {
     imageService.deleteImage(widget.productModel.images, widget.productModel.imageIdRef).then((value) {});
-    productServices.deleteProduct(imageIdRef: widget.productModel.imageIdRef, id: widget.productModel.id.toString()).then((value) {
+    productServices.deleteProduct(id: widget.productModel.id.toString()).then((value) {
       if (value.status == '200') {
         _sucessDialog();
         widget.onDispose();

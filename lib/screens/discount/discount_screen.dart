@@ -125,7 +125,15 @@ class _DiscountScreenState extends State<DiscountScreen> {
               padding: EdgeInsets.all(1.0),
               childAspectRatio: 8 / 12.0,
               children: List<Widget>.generate(_mainStore.phoneProductStore.phoneProductModelList.length, (index) {
-                return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
+                return GridTile(
+                    child: WidgetHelper.animation(
+                        index,
+                        ProductItem(
+                            onDispose: () {
+                              _loadData(index, false);
+                            },
+                            mainStore: _mainStore,
+                            productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
               }))
           : WidgetHelper.noDataFound();
     }

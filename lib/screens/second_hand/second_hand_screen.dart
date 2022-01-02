@@ -35,22 +35,6 @@ class _SecondHandScreenState extends State<SecondHandScreen> {
     }
   }
 
-  // Future<void> _getData() async {
-  //   setState(() {});
-  //   _pageIndex = 0;
-  //   _pageSize = 6;
-  //   _mainStore.phoneProductStore.phoneProductModelList.clear();
-  //   return Future.delayed(Duration.zero, () async {
-  //     _mainStore.phoneProductStore.loadData(pageSize: _pageSize, pageIndex: _pageIndex, isNew: 0);
-  //   });
-  // }
-
-  // Future<void> _onLoad() {
-  //   return Future.delayed(Duration.zero, () async {
-  //     _mainStore.phoneProductStore.loadData(pageSize: _pageSize, pageIndex: _pageIndex += _pageSize, isNew: 0);
-  //   });
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -120,7 +104,18 @@ class _SecondHandScreenState extends State<SecondHandScreen> {
               padding: EdgeInsets.all(1.0),
               childAspectRatio: 8 / 12.0,
               children: List<Widget>.generate(_mainStore.phoneProductStore.phoneProductModelList.length, (index) {
-                return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
+                return GridTile(
+                    child: WidgetHelper.animation(
+                        index,
+                        ProductItem(
+                            onDispose: () {
+                              _mainStore.phoneProductStore.phoneProductModelList.clear();
+                              _pageIndex = 0;
+                              _pageSize = 6;
+                              _loadPhone();
+                            },
+                            mainStore: _mainStore,
+                            productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
               }))
           : WidgetHelper.noDataFound();
     }

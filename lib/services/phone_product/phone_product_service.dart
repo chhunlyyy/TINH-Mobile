@@ -70,7 +70,7 @@ class PhoneProductServices {
     }
   }
 
-  Future<MessageModel> deletePhone({required String imageIdRef, required String id}) async {
+  Future<MessageModel> deletePhone({required String id}) async {
     MessageModel messageModel = MessageModel(message: '', status: '');
     try {
       Map<String, dynamic> params = {'id': id};

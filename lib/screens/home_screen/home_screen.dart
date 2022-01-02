@@ -327,7 +327,17 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.all(1.0),
               childAspectRatio: 8 / 12.0,
               children: List<Widget>.generate(_mainStore.phoneProductStore.phoneProductModelList.length, (index) {
-                return GridTile(child: WidgetHelper.animation(index, ProductItem(mainStore: _mainStore, productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
+                return GridTile(
+                    child: WidgetHelper.animation(
+                        index,
+                        ProductItem(
+                            onDispose: () {
+                              _mainStore.phoneProductStore.phoneProductModelList.clear();
+
+                              _mainStore.phoneProductStore.loadData(pageSize: 6, pageIndex: 0, isNew: 1);
+                            },
+                            mainStore: _mainStore,
+                            productModel: _mainStore.phoneProductStore.phoneProductModelList[index])));
               }))
           : WidgetHelper.noDataFound();
     }
