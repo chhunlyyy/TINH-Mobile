@@ -11,6 +11,7 @@ class HttApi {
   static const String API_SEARCH_PRODUCT = '/search-product';
   static const String API_DISCOUNT_PHONE = '/discount-phone';
   static const String API_DISCOUNT_PRODUCT = '/discount-product';
+  static const String API_PHONE_BY_ID = '/phone-by-id';
 
   //
 
@@ -29,7 +30,11 @@ class HttApi {
   static const String API_DELETE_IMAGE = '/delete-image';
   static const String API_DELETE_PHONE_PRODUCT = '/delete-phone-product';
   static const String API_DELETE_PRODUCT = '/delete-product';
-
+  //
+  static const String API_UPDATE_PHONE_PRODCUT = '/update-phone-product';
+  static const String API_UPDATE_PHONE_DETAIL = '/update-phone-detail';
+  static const String API_UPDATE_PHONE_STORAGE = '/update-phone-storage';
+  static const String API_UPDATE_PHONE_COLOR = '/update-phone-color';
   //
 
   static const String API_USER_CHECK_TOKEN = '/check-token';

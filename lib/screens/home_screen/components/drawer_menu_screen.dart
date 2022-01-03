@@ -24,7 +24,19 @@ class DrawerMenuScreen extends StatelessWidget {
       color: ColorsConts.primaryColor,
       child: Column(
         children: [
-          isShopOwner ? _drawerItem(context, 'បន្ថែមទូរស័ព្ទ', Icons.add, () => NavigationHelper.push(context, AddPhoneFormScreen(mainStore: mainStore))) : SizedBox.shrink(),
+          isShopOwner
+              ? _drawerItem(
+                  context,
+                  'បន្ថែមទូរស័ព្ទ',
+                  Icons.add,
+                  () => NavigationHelper.push(
+                      context,
+                      AddPhoneFormScreen(
+                        onDispose: () {},
+                        mainStore: mainStore,
+                        phoneProductModel: null,
+                      )))
+              : SizedBox.shrink(),
           isShopOwner ? _drawerItem(context, 'បន្ថែមផលិតផលផ្សេងៗ', Icons.add, () => NavigationHelper.push(context, AddProductFormScreen(mainStore: mainStore))) : SizedBox.shrink(),
           _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () => NavigationHelper.push(context, AboutUsScreen())),
           !isShopOwner

@@ -11,7 +11,6 @@ class CategoriesService {
         return List<CategoriesModel>.from(value.data.map((x) => CategoriesModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -22,7 +21,6 @@ class CategoriesService {
         return value.data[0]['status'];
       });
     } catch (e) {
-      print(e);
       return '402';
     }
   }

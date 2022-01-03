@@ -6,16 +6,19 @@ import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/phone_product/phone_product_model.dart';
+import 'package:tinh/screens/add_phone_form/add_phone_form_screen.dart';
 import 'package:tinh/services/image/image_service.dart';
 import 'package:tinh/services/phone_product/phone_product_service.dart';
+import 'package:tinh/store/main/main_store.dart';
 import 'package:tinh/widgets/show_full_scren_image_widget.dart';
 import 'package:tinh/widgets/show_image_widget.dart';
 import 'package:tinh/const/user_status.dart';
 
 class PhoneDetailScreen extends StatefulWidget {
+  final MainStore mainStore;
   final Function onDispose;
   final PhoneProductModel phoneProductModel;
-  const PhoneDetailScreen({Key? key, required this.onDispose, required this.phoneProductModel}) : super(key: key);
+  const PhoneDetailScreen({Key? key, required this.mainStore, required this.onDispose, required this.phoneProductModel}) : super(key: key);
 
   @override
   _PhoneDetailScreenState createState() => _PhoneDetailScreenState();
@@ -62,7 +65,7 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
       imagePathList.add(image.image);
     }
 
-    imageService.deleteImage(imagePathList, widget.phoneProductModel.imageIdRef).then((value) {});
+    imageService.deleteImage(widget.phoneProductModel.images).then((value) {});
     phoneProductServices.deletePhone(id: widget.phoneProductModel.id.toString()).then((value) {
       if (value.status == '200') {
         _sucessDialog();
@@ -163,7 +166,7 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
                   borderRadius: BorderRadius.circular(5),
                   width: 100,
                   height: 50,
-                  pressEvent: () {},
+                  pressEvent: () => NavigationHelper.push(context, AddPhoneFormScreen(onDispose: widget.onDispose, phoneProductModel: widget.phoneProductModel, mainStore: widget.mainStore)),
                   text: 'កែប្រែ',
                 )
               : SizedBox.shrink(),

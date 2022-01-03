@@ -5,6 +5,7 @@ import 'package:tinh/http/http_api_service.dart';
 import 'package:tinh/http/http_config.dart';
 import 'package:path/path.dart';
 import 'package:tinh/models/message/message_model.dart';
+import 'package:tinh/models/phone_product/phone_product_model.dart';
 
 class ImageService {
   Future<String> insertImage(List<File> files, String imageIdRef) async {
@@ -23,7 +24,6 @@ class ImageService {
             return result;
           });
         } catch (e) {
-          print(e);
           result = '402';
         }
       }
@@ -32,15 +32,14 @@ class ImageService {
     return result;
   }
 
-  Future<MessageModel> deleteImage(List<String> pathList, String imageIdRef) async {
+  Future<MessageModel> deleteImage(List<ImageModel> imageModelList) async {
     MessageModel messageModel = MessageModel(message: '', status: '');
-    Map<String, dynamic> postData = {
-      'id_ref': imageIdRef,
-    };
+    Map<String, dynamic> postData = {};
 
-    if (pathList.isNotEmpty) {
-      for (String path in pathList) {
-        postData['path'] = path;
+    if (imageModelList.isNotEmpty) {
+      for (ImageModel model in imageModelList) {
+        postData['path'] = model.image;
+        postData['id'] = model.id;
         try {
           return await httpApiService.post(HttApi.API_DELETE_IMAGE, postData, null, new Options(headers: HttpConfig.headers)).then((value) {
             messageModel = value.data;
@@ -48,7 +47,6 @@ class ImageService {
             return messageModel;
           });
         } catch (e) {
-          print(e);
           messageModel = MessageModel(message: 'មានបញ្ហាក្នុងពេលលុប', status: '402');
         }
       }

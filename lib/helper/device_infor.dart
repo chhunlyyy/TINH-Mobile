@@ -14,7 +14,6 @@ class DeviceInfoHelper {
         var build = await deviceInfoPlugin.iosInfo;
         token = build.identifierForVendor;
       } catch (e) {
-        print(e);
         return '';
       }
     }

@@ -10,7 +10,6 @@ class InsertPhoneService {
         return value.data[0]['status'];
       });
     } catch (e) {
-      print(e);
       return '402';
     }
   }
@@ -21,7 +20,6 @@ class InsertPhoneService {
         return value.data[0]['status'];
       });
     } catch (e) {
-      print(e);
       return '402';
     }
   }
@@ -32,7 +30,6 @@ class InsertPhoneService {
         return value.data[0]['status'];
       });
     } catch (e) {
-      print(e);
       return '402';
     }
   }
@@ -43,7 +40,47 @@ class InsertPhoneService {
         return value.data[0]['productId'].toString();
       });
     } catch (e) {
-      print(e);
+      return '402';
+    }
+  }
+
+  //
+  Future<String> updatePhoneProduct(Map<String, dynamic> postData) async {
+    try {
+      return await httpApiService.post(HttApi.API_UPDATE_PHONE_PRODCUT, postData, {}, new Options(headers: HttpConfig.headers)).then((value) {
+        return value.data[0]['status'];
+      });
+    } catch (e) {
+      return '402';
+    }
+  }
+
+  Future<String> updatePhoneDetail(Map<String, dynamic> postData) async {
+    try {
+      return await httpApiService.post(HttApi.API_UPDATE_PHONE_DETAIL, postData, {}, new Options(headers: HttpConfig.headers)).then((value) {
+        return value.data[0]['status'];
+      });
+    } catch (e) {
+      return '402';
+    }
+  }
+
+  Future<String> updatePhoneColor(Map<String, dynamic> postData) async {
+    try {
+      return await httpApiService.post(HttApi.API_UPDATE_PHONE_COLOR, postData, {}, new Options(headers: HttpConfig.headers)).then((value) {
+        return value.data[0]['status'];
+      });
+    } catch (e) {
+      return '402';
+    }
+  }
+
+  Future<String> updatePhoneStorage(Map<String, dynamic> postData) async {
+    try {
+      return await httpApiService.post(HttApi.API_UPDATE_PHONE_STORAGE, postData, {}, new Options(headers: HttpConfig.headers)).then((value) {
+        return value.data[0]['status'];
+      });
+    } catch (e) {
       return '402';
     }
   }

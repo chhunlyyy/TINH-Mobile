@@ -13,8 +13,18 @@ class PhoneProductServices {
         return List<PhoneProductModel>.from(value.data.map((x) => PhoneProductModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
+    }
+  }
+
+  Future<PhoneProductModel?> getPhoneById(String id) async {
+    try {
+      Map<String, dynamic> params = {'id': id};
+      return await httpApiService.get(HttApi.API_PHONE_BY_ID, params, new Options(headers: HttpConfig.headers)).then((value) {
+        return PhoneProductModel.fromJson(value.data);
+      });
+    } catch (e) {
+      return null;
     }
   }
 
@@ -25,7 +35,6 @@ class PhoneProductServices {
         return List<PhoneProductModel>.from(value.data.map((x) => PhoneProductModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -37,7 +46,6 @@ class PhoneProductServices {
         return List<PhoneProductModel>.from(value.data.map((x) => PhoneProductModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -49,7 +57,6 @@ class PhoneProductServices {
         return List<PhoneProductModel>.from(value.data.map((x) => PhoneProductModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -65,7 +72,6 @@ class PhoneProductServices {
         return List<PhoneProductModel>.from(value.data.map((x) => PhoneProductModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -78,7 +84,6 @@ class PhoneProductServices {
         return messageModel = MessageModel.fromJson(value.data[0]);
       });
     } catch (e) {
-      print(e);
       messageModel = MessageModel(message: 'មានបញ្ហាក្នុងពេលលុប', status: '402');
     }
 

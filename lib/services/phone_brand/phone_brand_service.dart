@@ -11,7 +11,6 @@ class PhoneBrandService {
         return List<PhoneBrandModel>.from(value.data.map((x) => PhoneBrandModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -22,7 +21,6 @@ class PhoneBrandService {
         return value.data[0]['status'];
       });
     } catch (e) {
-      print(e);
       return '402';
     }
   }

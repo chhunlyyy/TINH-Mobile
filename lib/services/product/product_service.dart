@@ -13,7 +13,6 @@ class ProductServices {
         return List<ProductModel>.from(value.data.map((x) => ProductModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -25,7 +24,6 @@ class ProductServices {
         return List<ProductModel>.from(value.data.map((x) => ProductModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -37,7 +35,6 @@ class ProductServices {
         return List<ProductModel>.from(value.data.map((x) => ProductModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -50,7 +47,6 @@ class ProductServices {
         return messageModel = MessageModel.fromJson(value.data[0]);
       });
     } catch (e) {
-      print(e);
       messageModel = MessageModel(message: 'មានបញ្ហាក្នុងពេលលុប', status: '402');
     }
 

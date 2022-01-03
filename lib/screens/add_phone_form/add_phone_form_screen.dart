@@ -1,23 +1,31 @@
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinh/const/colors_conts.dart';
-import 'package:tinh/helper/device_infor.dart';
+import 'package:tinh/helper/custom_cache_manager.dart';
 import 'package:tinh/helper/file_picker_widget.dart';
 import 'package:tinh/helper/navigation_helper.dart';
-import 'package:tinh/helper/widget_helper.dart';
+import 'package:tinh/http/http_get_base_url.dart';
+import 'package:tinh/models/phone_product/phone_product_model.dart' as prefix;
+import 'package:tinh/models/phone_product/phone_product_model.dart';
 import 'package:tinh/screens/home_screen/home_screen.dart';
+import 'package:tinh/screens/phone_detail/phone_detail_screen.dart';
 import 'package:tinh/services/image/image_service.dart';
 import 'package:tinh/services/phone_product/insert_phone_service.dart';
+import 'package:tinh/services/phone_product/phone_product_service.dart';
 import 'package:tinh/store/main/main_store.dart';
 import 'package:uuid/uuid.dart';
 
 class AddPhoneFormScreen extends StatefulWidget {
+  final Function onDispose;
+  final prefix.PhoneProductModel? phoneProductModel;
   final MainStore mainStore;
-  const AddPhoneFormScreen({Key? key, required this.mainStore}) : super(key: key);
+  const AddPhoneFormScreen({Key? key, required this.onDispose, required this.phoneProductModel, required this.mainStore}) : super(key: key);
 
   @override
   _AddPhoneFormScreenState createState() => _AddPhoneFormScreenState();
@@ -64,18 +72,26 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   List<File> phoneImage = [];
   /* */
 
+  List<ImageModel> _deletedImage = [];
+
   String _categoryName = '';
   String _brandName = '';
   MainStore _mainStore = MainStore();
   List<File> categoryAttachmentsList = [];
   List<File> brandAttachmentsList = [];
 
-  bool _checkValidation() {
+  bool _checkValidation(bool isEdit) {
     bool result = false;
-
     bool warrantyValidate = true;
+    late bool imagevalidate;
     if (_isWrranty && _warrantyPeriodController.text.isEmpty) {
       warrantyValidate = false;
+    }
+
+    if (!isEdit) {
+      imagevalidate = phoneImage.isNotEmpty;
+    } else {
+      imagevalidate = phoneImage.isNotEmpty || widget.phoneProductModel!.images.isNotEmpty;
     }
 
     if (_nameController.text.isNotEmpty &&
@@ -88,7 +104,7 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
         _priceAfterDiscountControllerList[0].text.isNotEmpty &&
         _detailNameControllerList[0].text.isNotEmpty &&
         _detailDescControllerList[0].text.isNotEmpty &&
-        phoneImage.isNotEmpty) {
+        imagevalidate) {
       result = true;
     }
     return result;
@@ -213,6 +229,37 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
         });
   }
 
+  Future<void> _onUpdateColor(String phoneId) async {
+    for (int i = 0; i < _colorLength; i++) {
+      Map<String, dynamic> postData = {'id': phoneId, 'color': _colorControllerList[i].text};
+      await insertPhoneService.updatePhoneColor(postData);
+    }
+  }
+
+  Future<void> _onUpdateDetail(String phoneId) async {
+    for (int i = 0; i < _detailLength; i++) {
+      Map<String, dynamic> postData = {
+        'name': _detailNameControllerList[i].text,
+        'descs': _detailDescControllerList[i].text,
+        'id': phoneId,
+      };
+      await insertPhoneService.updatePhoneDetail(postData);
+    }
+  }
+
+  Future<void> _onAddStorage(String phoneId) async {
+    for (int i = 0; i < _storageLength; i++) {
+      Map<String, dynamic> postData = {
+        'id': phoneId,
+        'storage': _storageControllerList[i].text,
+        'price': _priceControllerList[i].text,
+        'discount': _discountControllerList[i].text,
+        'price_after_discount': _priceAfterDiscountControllerList[i].text,
+      };
+      await insertPhoneService.updatePhoneStorage(postData);
+    }
+  }
+
   Future<void> _onAddColor(String phoneId) async {
     for (int i = 0; i < _colorLength; i++) {
       Map<String, dynamic> postData = {'phone_id': phoneId, 'color': _colorControllerList[i].text};
@@ -231,16 +278,16 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
     }
   }
 
-  Future<void> _onAddStorage(String phoneId) async {
+  Future<void> _onUpdateStorage(String phoneId) async {
     for (int i = 0; i < _storageLength; i++) {
       Map<String, dynamic> postData = {
-        'phone_id': phoneId,
+        'id': phoneId,
         'storage': _storageControllerList[i].text,
         'price': _priceControllerList[i].text,
         'discount': _discountControllerList[i].text,
         'price_after_discount': _priceAfterDiscountControllerList[i].text,
       };
-      await insertPhoneService.insertPhoneStorage(postData);
+      await insertPhoneService.updatePhoneStorage(postData);
     }
   }
 
@@ -249,7 +296,7 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   }
 
   void _onInsertPhone() {
-    if (_checkValidation()) {
+    if (_checkValidation(false)) {
       Map<String, dynamic> postData = {
         'name': _nameController.text,
         'is_warranty': _isWrranty ? 1 : 0, // 1 is warranty 0 is not warranty
@@ -285,11 +332,132 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
               NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
             },
             btnOkOnPress: () {
-              NavigationHelper.pushReplacement(context, AddPhoneFormScreen(mainStore: widget.mainStore));
+              NavigationHelper.pushReplacement(
+                  context,
+                  AddPhoneFormScreen(
+                    onDispose: widget.onDispose,
+                    mainStore: widget.mainStore,
+                    phoneProductModel: null,
+                  ));
             },
             btnCancelText: 'បោះបង់',
             btnOkText: 'បញ្ចូលបន្តរ')
           ..show();
+      });
+    } else {
+      _successDialog(true);
+    }
+  }
+
+  void _onEditInit() {
+    if (widget.phoneProductModel != null) {
+      prefix.PhoneProductModel pModel = widget.phoneProductModel!;
+      //
+      _nameController.text = pModel.name;
+      _isWrranty = pModel.isWarranty == 1;
+      _warrantyPeriodController.text = _isWrranty ? pModel.warrantyPeriod : '';
+      _categoryId = pModel.categoryId;
+      _isNew = pModel.isNew == 1;
+      _brandId = pModel.brandId;
+      //
+      for (var brand in _mainStore.phoneBrandStore.phoneBrandList) {
+        if (brand.id == _brandId) {
+          _brandName = brand.name;
+          break;
+        }
+      }
+      //
+      //
+      for (var category in _mainStore.phoneCategoryStore.phoneCategoryModelList) {
+        if (category.id == _categoryId) {
+          _categoryName = category.name;
+          break;
+        }
+      }
+      //
+      if (pModel.colors.isNotEmpty) {
+        _colorControllerList = List.generate(pModel.colors.length, (index) => TextEditingController());
+        _colorLength = pModel.colors.length;
+        for (var color in pModel.colors) {
+          _colorControllerList[pModel.colors.indexOf(color)].text = color.color;
+        }
+      }
+      //
+      if (pModel.storage.isNotEmpty) {
+        _storageControllerList = List.generate(pModel.storage.length, (index) => TextEditingController());
+        _priceControllerList = List.generate(pModel.storage.length, (index) => TextEditingController());
+        _discountControllerList = List.generate(pModel.storage.length, (index) => TextEditingController());
+        _priceAfterDiscountControllerList = List.generate(pModel.storage.length, (index) => TextEditingController());
+        _storageLength = pModel.storage.length;
+        for (var storage in pModel.storage) {
+          _storageControllerList[pModel.storage.indexOf(storage)].text = storage.storage;
+          _priceControllerList[pModel.storage.indexOf(storage)].text = storage.price.toString();
+          _discountControllerList[pModel.storage.indexOf(storage)].text = storage.discount.toString();
+          _priceAfterDiscountControllerList[pModel.storage.indexOf(storage)].text = storage.priceAfterDiscount.toString();
+        }
+      }
+      //
+      if (pModel.detail.isNotEmpty) {
+        _detailNameControllerList = List.generate(pModel.detail.length, (index) => TextEditingController());
+        _detailDescControllerList = List.generate(pModel.detail.length, (index) => TextEditingController());
+        _detailLength = pModel.detail.length;
+        for (var detail in pModel.detail) {
+          _detailNameControllerList[pModel.detail.indexOf(detail)].text = detail.name;
+          _detailDescControllerList[pModel.detail.indexOf(detail)].text = detail.descs;
+        }
+      }
+      //
+
+    }
+
+    setState(() {});
+  }
+
+  void _onUpdate() {
+    if (_deletedImage.isNotEmpty) {
+      imageService.deleteImage(_deletedImage).whenComplete(() {
+        _deletedImage.clear();
+      });
+    }
+    if (phoneImage.isNotEmpty) {
+      imageService.insertImage(phoneImage, widget.phoneProductModel!.imageIdRef);
+    }
+    //
+    if (_checkValidation(true)) {
+      Map<String, dynamic> postData = {
+        'id': widget.phoneProductModel!.id,
+        'name': _nameController.text,
+        'is_warranty': _isWrranty ? 1 : 0, // 1 is warranty 0 is not warranty
+        'warranty_period': _isWrranty ? _warrantyPeriodController.text : 'No Warranty',
+        'category_id': _categoryId,
+        'brand_id': _brandId,
+        'is_new': _isNew ? 1 : 0,
+      };
+      Future.delayed(Duration.zero, () async {
+        await insertPhoneService.updatePhoneProduct(postData).then((value) {
+          Future.delayed(Duration.zero, () async {
+            await _onUpdateColor(widget.phoneProductModel!.id.toString());
+            await _onUpdateDetail(widget.phoneProductModel!.id.toString());
+            await _onUpdateStorage(widget.phoneProductModel!.id.toString());
+            await _onUpdateDetail(widget.phoneProductModel!.id.toString());
+          });
+        });
+      }).whenComplete(() {
+        _successDialog(false);
+        Future.delayed(Duration(seconds: 2)).whenComplete(() {
+          Future.delayed(Duration.zero, () async {
+            await phoneProductServices.getPhoneById(widget.phoneProductModel!.id.toString()).then((value) {
+              if (value != null) {
+                widget.onDispose();
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                  return PhoneDetailScreen(mainStore: _mainStore, onDispose: () {}, phoneProductModel: value);
+                }));
+              }
+            });
+          });
+        });
       });
     } else {
       _successDialog(true);
@@ -302,7 +470,9 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
     super.initState();
     _mainStore = widget.mainStore;
     _mainStore.phoneCategoryStore.phoneCategoryModelList.clear();
-    _mainStore.phoneCategoryStore.loadData();
+    _mainStore.phoneCategoryStore.loadData().whenComplete(() {
+      _onEditInit();
+    });
   }
 
   @override
@@ -346,6 +516,58 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
     );
   }
 
+  Widget _showImageWidget() {
+    List<Widget> colorItemList = [];
+    widget.phoneProductModel!.images.forEach((element) {
+      colorItemList.add(_showImageItem(element.image, widget.phoneProductModel!.images.indexOf(element)));
+    });
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('មាន\t' + widget.phoneProductModel!.images.length.toString() + "\tរូបភាព"),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: List.generate(colorItemList.length, (index) {
+              return colorItemList[index];
+            }),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _showImageItem(String path, int index) {
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.all(10),
+          width: 120,
+          height: 120,
+          child: CachedNetworkImage(
+            cacheManager: CustomCacheManager(),
+            fit: BoxFit.fill,
+            imageUrl: baseUrl + path,
+            errorWidget: (context, imageUrl, error) => Image.asset('assets/images/placeholder.jpg'),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              _deletedImage.add(widget.phoneProductModel!.images[index]);
+              widget.phoneProductModel!.images.removeAt(index);
+            });
+          },
+          child: Icon(
+            FontAwesomeIcons.times,
+            color: Colors.red,
+          ),
+        )
+      ],
+    );
+  }
+
   Widget _appBar() {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -360,7 +582,14 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () => NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore)),
+                    onTap: () {
+                      if (widget.phoneProductModel == null) {
+                        NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
+                      } else {
+                        Navigator.pop(context);
+                        widget.phoneProductModel!.images.addAll(_deletedImage);
+                      }
+                    },
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.only(left: 5),
@@ -394,7 +623,7 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       child: AnimatedButton(
         pressEvent: () {
-          _onInsertPhone();
+          widget.phoneProductModel != null ? _onUpdate() : _onInsertPhone();
         },
         text: 'រក្សាទុក',
       ),
@@ -423,6 +652,8 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
                 phoneImage = files;
               },
             ),
+            SizedBox(height: 20),
+            widget.phoneProductModel != null ? _showImageWidget() : SizedBox.shrink(),
           ],
         ),
       ),

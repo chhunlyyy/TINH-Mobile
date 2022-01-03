@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import 'package:tinh/models/phone_product/phone_product_model.dart';
+
 ProductModel productModelFromJson(String str) => ProductModel.fromJson(json.decode(str));
 
 String productModelToJson(ProductModel data) => json.encode(data.toJson());
@@ -33,7 +35,7 @@ class ProductModel {
   int isWarranty;
   String warrantyPeriod;
   String imageIdRef;
-  List<Image> images;
+  List<ImageModel> images;
   List<Color> colors;
   List<Detail> detail;
 
@@ -47,7 +49,7 @@ class ProductModel {
         isWarranty: json["is_warranty"],
         warrantyPeriod: json["warranty_period"],
         imageIdRef: json["image_id_ref"],
-        images: List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
+        images: List<ImageModel>.from(json["images"].map((x) => ImageModel.fromJson(x))),
         colors: List<Color>.from(json["colors"].map((x) => Color.fromJson(x))),
         detail: List<Detail>.from(json["detail"].map((x) => Detail.fromJson(x))),
       );
@@ -109,25 +111,5 @@ class Detail {
         "id": id,
         "name": name,
         "descs": descs,
-      };
-}
-
-class Image {
-  Image({
-    required this.id,
-    required this.image,
-  });
-
-  int id;
-  String image;
-
-  factory Image.fromJson(Map<String, dynamic> json) => Image(
-        id: json["id"],
-        image: json["image"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "image": image,
       };
 }

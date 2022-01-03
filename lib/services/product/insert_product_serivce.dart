@@ -10,7 +10,6 @@ class InsertProductService {
         return value.data[0]['status'];
       });
     } catch (e) {
-      print(e);
       return '402';
     }
   }
@@ -21,7 +20,6 @@ class InsertProductService {
         return value.data[0]['status'];
       });
     } catch (e) {
-      print(e);
       return '402';
     }
   }
@@ -32,7 +30,6 @@ class InsertProductService {
         return value.data[0]['productId'].toString();
       });
     } catch (e) {
-      print(e);
       return '402';
     }
   }

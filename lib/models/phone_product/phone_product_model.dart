@@ -32,8 +32,8 @@ class PhoneProductModel {
   int categoryId;
   int brandId;
   int isNew;
-  List<Image> images;
-  List<Color> colors;
+  List<ImageModel> images;
+  List<ColorModel> colors;
   List<Detail> detail;
   List<Storage> storage;
 
@@ -46,8 +46,8 @@ class PhoneProductModel {
         categoryId: json["category_id"],
         brandId: json["brand_id"],
         isNew: json["is_new"],
-        images: List<Image>.from(json["images"].map((x) => Image.fromJson(x))),
-        colors: List<Color>.from(json["colors"].map((x) => Color.fromJson(x))),
+        images: List<ImageModel>.from(json["images"].map((x) => ImageModel.fromJson(x))),
+        colors: List<ColorModel>.from(json["colors"].map((x) => ColorModel.fromJson(x))),
         detail: List<Detail>.from(json["detail"].map((x) => Detail.fromJson(x))),
         storage: List<Storage>.from(json["storage"].map((x) => Storage.fromJson(x))),
       );
@@ -68,8 +68,8 @@ class PhoneProductModel {
       };
 }
 
-class Color {
-  Color({
+class ColorModel {
+  ColorModel({
     required this.id,
     required this.color,
   });
@@ -77,7 +77,7 @@ class Color {
   int id;
   String color;
 
-  factory Color.fromJson(Map<String, dynamic> json) => Color(
+  factory ColorModel.fromJson(Map<String, dynamic> json) => ColorModel(
         id: json["id"],
         color: json["color"],
       );
@@ -112,8 +112,8 @@ class Detail {
       };
 }
 
-class Image {
-  Image({
+class ImageModel {
+  ImageModel({
     required this.id,
     required this.image,
   });
@@ -121,7 +121,7 @@ class Image {
   int id;
   String image;
 
-  factory Image.fromJson(Map<String, dynamic> json) => Image(
+  factory ImageModel.fromJson(Map<String, dynamic> json) => ImageModel(
         id: json["id"],
         image: json["image"],
       );

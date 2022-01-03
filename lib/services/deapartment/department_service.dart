@@ -11,7 +11,6 @@ class DepartmentService {
         return List<DepartmentModel>.from(value.data.map((x) => DepartmentModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }

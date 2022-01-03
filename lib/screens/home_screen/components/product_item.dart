@@ -29,6 +29,7 @@ class ProductItem extends StatelessWidget {
             onTap: () => NavigationHelper.push(
                 context,
                 PhoneDetailScreen(
+                  mainStore: mainStore,
                   onDispose: onDispose,
                   phoneProductModel: productModel,
                 )),

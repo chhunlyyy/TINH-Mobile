@@ -11,7 +11,6 @@ class PhoneCategoryService {
         return List<PhoneCategoryModel>.from(value.data.map((x) => PhoneCategoryModel.fromJson(x)));
       });
     } catch (e) {
-      print(e);
       return [];
     }
   }
@@ -22,7 +21,6 @@ class PhoneCategoryService {
         return value.data[0]['status'];
       });
     } catch (e) {
-      print(e);
       return '402';
     }
   }
