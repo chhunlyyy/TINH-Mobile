@@ -1,10 +1,13 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:tinh/const/colors_conts.dart';
+import 'package:tinh/helper/device_infor.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/screens/about_us/about_us_screen.dart';
 import 'package:tinh/screens/add_phone_form/add_phone_form_screen.dart';
 import 'package:tinh/screens/add_product_form/add_product_form_screen.dart';
+import 'package:tinh/screens/chat/chat_main_screen.dart';
+import 'package:tinh/screens/chat/chat_screen.dart';
 import 'package:tinh/screens/login/login_screen/login.dart';
 import 'package:tinh/screens/logout/logout_screen.dart';
 import 'package:tinh/store/main/main_store.dart';
@@ -50,6 +53,15 @@ class DrawerMenuScreen extends StatelessWidget {
                         productModel: null,
                       )))
               : SizedBox.shrink(),
+          _drawerItem(context, 'ទំនាក់ទំនង', Icons.chat_rounded, () {
+            if (isShopOwner) {
+              NavigationHelper.push(context, ChatMainScreen());
+            } else {
+              DeviceInfoHelper.getDivceId().then((value) {
+                NavigationHelper.push(context, ChatScreen(tokenDoc: value, name: 'ទិញ-TINH'));
+              });
+            }
+          }),
           _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () => NavigationHelper.push(context, AboutUsScreen())),
           !isShopOwner
               ? _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen(mainStore)))
