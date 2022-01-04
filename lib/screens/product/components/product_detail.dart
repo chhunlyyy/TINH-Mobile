@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/models/product/product_model.dart';
+import 'package:tinh/screens/add_product_form/add_product_form_screen.dart';
 import 'package:tinh/services/image/image_service.dart';
 import 'package:tinh/services/product/product_service.dart';
 import 'package:tinh/store/main/main_store.dart';
@@ -158,7 +159,9 @@ class _ProductDetailState extends State<ProductDetail> {
                   borderRadius: BorderRadius.circular(5),
                   width: 100,
                   height: 50,
-                  pressEvent: () {},
+                  pressEvent: () {
+                    NavigationHelper.push(context, AddProductFormScreen(onDispose: widget.onDispose, productModel: widget.productModel, mainStore: widget.mainStore));
+                  },
                   text: 'កែប្រែ',
                 )
               : SizedBox.shrink(),

@@ -439,7 +439,6 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
             await _onUpdateColor(widget.phoneProductModel!.id.toString());
             await _onUpdateDetail(widget.phoneProductModel!.id.toString());
             await _onUpdateStorage(widget.phoneProductModel!.id.toString());
-            await _onUpdateDetail(widget.phoneProductModel!.id.toString());
           });
         });
       }).whenComplete(() {

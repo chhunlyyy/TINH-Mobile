@@ -52,6 +52,17 @@ class ProductServices {
 
     return messageModel;
   }
+
+  Future<ProductModel?> getProductById({required String id}) async {
+    try {
+      Map<String, dynamic> params = {'id': id};
+      return await httpApiService.get(HttApi.API_PRODUCT_BY_ID, params, new Options(headers: HttpConfig.headers)).then((value) {
+        return ProductModel.fromJson(value.data);
+      });
+    } catch (e) {
+      return null;
+    }
+  }
 }
 
 ProductServices productServices = ProductServices();

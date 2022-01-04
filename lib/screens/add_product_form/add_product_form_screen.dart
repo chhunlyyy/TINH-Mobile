@@ -1,20 +1,30 @@
 import 'dart:io';
 
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinh/const/colors_conts.dart';
+import 'package:tinh/helper/custom_cache_manager.dart';
 import 'package:tinh/helper/file_picker_widget.dart';
 import 'package:tinh/helper/navigation_helper.dart';
+import 'package:tinh/http/http_get_base_url.dart';
+import 'package:tinh/models/phone_product/phone_product_model.dart';
+import 'package:tinh/models/product/product_model.dart' as prefix;
 import 'package:tinh/screens/home_screen/home_screen.dart';
+import 'package:tinh/screens/product/components/product_detail.dart';
 import 'package:tinh/services/image/image_service.dart';
 import 'package:tinh/services/product/insert_product_serivce.dart';
+import 'package:tinh/services/product/product_service.dart';
 import 'package:tinh/store/main/main_store.dart';
 import 'package:uuid/uuid.dart';
 
 class AddProductFormScreen extends StatefulWidget {
+  final Function onDispose;
   final MainStore mainStore;
-  const AddProductFormScreen({Key? key, required this.mainStore}) : super(key: key);
+  final prefix.ProductModel? productModel;
+  const AddProductFormScreen({Key? key, required this.onDispose, required this.productModel, required this.mainStore}) : super(key: key);
 
   @override
   _AddProductFormScreenState createState() => _AddProductFormScreenState();
@@ -53,15 +63,23 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
   MainStore _mainStore = MainStore();
   /*  */
 
-  bool _checkValidation() {
-    bool result = false;
+  List<ImageModel> deletedImage = [];
 
+  bool _checkValidation(bool isEdit) {
+    bool result = false;
+    late bool imagevalidate;
     bool warrantyValidate = true;
+
+    if (!isEdit) {
+      imagevalidate = productImages.isNotEmpty;
+    } else {
+      imagevalidate = productImages.isNotEmpty || widget.productModel!.images.isNotEmpty;
+    }
     if (_isWrranty && _warrantyPeriodController.text.isEmpty) {
       warrantyValidate = false;
     }
 
-    if (_nameController.text.isNotEmpty && warrantyValidate && _categoryId != null && _priceController.text.isNotEmpty && _priceAfterDiscoutnController.text.isNotEmpty && productImages.isNotEmpty) {
+    if (_nameController.text.isNotEmpty && warrantyValidate && _categoryId != null && _priceController.text.isNotEmpty && _priceAfterDiscoutnController.text.isNotEmpty && imagevalidate) {
       result = true;
     }
     return result;
@@ -161,7 +179,7 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
   }
 
   void _onInsertProduct() {
-    if (_checkValidation()) {
+    if (_checkValidation(false)) {
       Map<String, dynamic> postData = {
         'name': _nameController.text,
         'price': _priceController.text,
@@ -198,7 +216,13 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
               NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore));
             },
             btnOkOnPress: () {
-              NavigationHelper.pushReplacement(context, AddProductFormScreen(mainStore: widget.mainStore));
+              NavigationHelper.pushReplacement(
+                  context,
+                  AddProductFormScreen(
+                    onDispose: () {},
+                    mainStore: widget.mainStore,
+                    productModel: widget.productModel,
+                  ));
             },
             btnCancelText: 'បោះបង់',
             btnOkText: 'បញ្ចូលបន្តរ')
@@ -238,13 +262,135 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
     }
   }
 
+  void _onEditInit() {
+    if (widget.productModel != null) {
+      prefix.ProductModel pModel = widget.productModel!;
+      //
+      _nameController.text = pModel.name;
+      _isWrranty = pModel.isWarranty == 1;
+      _warrantyPeriodController.text = _isWrranty ? pModel.warrantyPeriod : '';
+      _categoryId = pModel.categoryId;
+      _priceController.text = pModel.price.toString();
+      _discountController.text = pModel.price.toString();
+      _priceAfterDiscoutnController.text = pModel.priceAfterDiscount.toString();
+      _categoryId = pModel.categoryId;
+
+      for (var category in _mainStore.categoriesStore.categoriesList) {
+        if (category.id == _categoryId) {
+          _categoryName = category.name;
+          break;
+        }
+      }
+
+      for (var category in _mainStore.phoneCategoryStore.phoneCategoryModelList) {
+        if (category.id == _categoryId) {
+          _categoryName = category.name;
+          break;
+        }
+      }
+      //
+      if (pModel.colors.isNotEmpty) {
+        _colorControllerList = List.generate(pModel.colors.length, (index) => TextEditingController());
+        _colorLength = pModel.colors.length;
+        for (var color in pModel.colors) {
+          _colorControllerList[pModel.colors.indexOf(color)].text = color.color;
+        }
+      }
+
+      if (pModel.detail.isNotEmpty) {
+        _detailNameControllerList = List.generate(pModel.detail.length, (index) => TextEditingController());
+        _detailDescControllerList = List.generate(pModel.detail.length, (index) => TextEditingController());
+        _detailLength = pModel.detail.length;
+        for (var detail in pModel.detail) {
+          _detailNameControllerList[pModel.detail.indexOf(detail)].text = detail.name;
+          _detailDescControllerList[pModel.detail.indexOf(detail)].text = detail.descs;
+        }
+      }
+      //
+
+    }
+
+    setState(() {});
+  }
+
+  void _onUpdate() {
+    if (deletedImage.isNotEmpty) {
+      imageService.deleteImage(deletedImage).whenComplete(() {
+        deletedImage.clear();
+      });
+    }
+    if (productImages.isNotEmpty) {
+      imageService.insertImage(productImages, widget.productModel!.imageIdRef);
+    }
+    //
+
+    if (_checkValidation(true)) {
+      Map<String, dynamic> postData = {
+        'id': widget.productModel!.id,
+        'name': _nameController.text,
+        'is_warranty': _isWrranty ? 1 : 0, // 1 is warranty 0 is not warranty
+        'warranty_period': _isWrranty ? _warrantyPeriodController.text : 'No Warranty',
+        'category_id': _categoryId,
+        'price': _priceController.text,
+        'discount': _discountController.text,
+        'price_after_discount': _priceAfterDiscoutnController.text,
+      };
+      Future.delayed(Duration.zero, () async {
+        await insertProductService.updateProduct(postData).then((value) {
+          Future.delayed(Duration.zero, () async {
+            await _onUpdateColor(widget.productModel!.id.toString());
+            await _onUpdateDetail(widget.productModel!.id.toString());
+          });
+        });
+      }).whenComplete(() {
+        _successDialog(false);
+        Future.delayed(Duration(seconds: 2)).whenComplete(() {
+          Future.delayed(Duration.zero, () async {
+            await productServices.getProductById(id: widget.productModel!.id.toString()).then((value) {
+              if (value != null) {
+                widget.onDispose();
+                Navigator.pop(context);
+                Navigator.pop(context);
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) {
+                  return ProductDetail(mainStore: _mainStore, onDispose: () {}, productModel: value);
+                }));
+              }
+            });
+          });
+        });
+      });
+    } else {
+      _successDialog(true);
+    }
+  }
+
+  Future<void> _onUpdateColor(String phoneId) async {
+    for (int i = 0; i < _colorLength; i++) {
+      Map<String, dynamic> postData = {'id': phoneId, 'color': _colorControllerList[i].text};
+      await insertProductService.updateProductColor(postData);
+    }
+  }
+
+  Future<void> _onUpdateDetail(String phoneId) async {
+    for (int i = 0; i < _detailLength; i++) {
+      Map<String, dynamic> postData = {
+        'name': _detailNameControllerList[i].text,
+        'descs': _detailDescControllerList[i].text,
+        'id': phoneId,
+      };
+      await insertProductService.updatePorductDetail(postData);
+    }
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     _mainStore = widget.mainStore;
     _mainStore.categoriesStore.categoriesList.clear();
-    _mainStore.categoriesStore.loadData();
+    _mainStore.categoriesStore.loadData().whenComplete(() {
+      _onEditInit();
+    });
   }
 
   @override
@@ -315,7 +461,7 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
       child: AnimatedButton(
-        pressEvent: _onInsertProduct,
+        pressEvent: widget.productModel == null ? _onInsertProduct : _onUpdate,
         text: 'រក្សាទុក',
       ),
     );
@@ -343,9 +489,63 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
                 productImages = files;
               },
             ),
+            SizedBox(height: 20),
+            widget.productModel != null ? _showImageWidget() : SizedBox.shrink(),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _showImageWidget() {
+    List<Widget> colorItemList = [];
+    widget.productModel!.images.forEach((element) {
+      colorItemList.add(_showImageItem(element.image, widget.productModel!.images.indexOf(element)));
+    });
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('មាន\t' + widget.productModel!.images.length.toString() + "\tរូបភាព"),
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: List.generate(colorItemList.length, (index) {
+              return colorItemList[index];
+            }),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _showImageItem(String path, int index) {
+    return Stack(
+      children: [
+        Container(
+          margin: EdgeInsets.all(10),
+          width: 120,
+          height: 120,
+          child: CachedNetworkImage(
+            cacheManager: CustomCacheManager(),
+            fit: BoxFit.fill,
+            imageUrl: baseUrl + path,
+            errorWidget: (context, imageUrl, error) => Image.asset('assets/images/placeholder.jpg'),
+          ),
+        ),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              deletedImage.add(widget.productModel!.images[index]);
+              widget.productModel!.images.removeAt(index);
+            });
+          },
+          child: Icon(
+            FontAwesomeIcons.times,
+            color: Colors.red,
+          ),
+        )
+      ],
     );
   }
 
@@ -656,7 +856,10 @@ class _AddProductFormScreenState extends State<AddProductFormScreen> {
                 child: Material(
                   color: Colors.transparent,
                   child: InkWell(
-                    onTap: () => NavigationHelper.pushReplacement(context, HomeScreen(widget.mainStore)),
+                    onTap: () {
+                      Navigator.pop(context);
+                      widget.productModel!.images.addAll(deletedImage);
+                    },
                     child: Center(
                       child: Padding(
                         padding: EdgeInsets.only(left: 5),
