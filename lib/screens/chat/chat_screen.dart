@@ -1,11 +1,17 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/const/user_status.dart';
+import 'package:tinh/helper/custom_cache_manager.dart';
 import 'package:tinh/helper/device_infor.dart';
+import 'package:tinh/helper/file_picker_widget.dart';
+import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/services/chat/chat_service.dart';
+import 'package:tinh/widgets/show_full_scren_image_widget.dart';
 
 class ChatScreen extends StatefulWidget {
   final String name;
@@ -27,14 +33,36 @@ class _ChatScreenState extends State<ChatScreen> {
   TextEditingController _userNameController = TextEditingController();
   String getName = '';
   int lastDataIndex = 0;
+  bool isShowLoading = false;
   //
   void _onSendTextMessage() {
     if (textController.text.isNotEmpty) {
-      chatService.chatText(textController.text, widget.tokenDoc, isShopOwner ? 1 : 0);
+      chatService.chatText(textController.text, '', widget.tokenDoc, isShopOwner ? 1 : 0);
       chatService.addUnread(textController.text, widget.tokenDoc, _userNameController.text.isEmpty ? getName : _userNameController.text);
       textController.text = '';
       showListViewLastIndex();
     }
+  }
+
+  void _onSendImage() {
+    Future.delayed(Duration.zero, () async {
+      final ImagePicker _picker = ImagePicker();
+      // Pick an image
+      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        setState(() {
+          isShowLoading = true;
+        });
+        await chatService.addAttachmentToFirebase(DateTime.now().toString(), image).then((value) {
+          chatService.chatText('', value, widget.tokenDoc, isShopOwner ? 1 : 0);
+          chatService.addUnread('sent an image', widget.tokenDoc, _userNameController.text.isEmpty ? getName : _userNameController.text);
+        }).whenComplete(() {
+          setState(() {
+            isShowLoading = false;
+          });
+        });
+      }
+    });
   }
 
   _showDialog() async {
@@ -122,10 +150,15 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildBody() {
-    return Column(
+    return Stack(
       children: [
-        Expanded(child: _chatList()),
-        _textingArea(),
+        isShowLoading ? WidgetHelper.loadingWidget(context, MediaQuery.of(context).size.height) : SizedBox.shrink(),
+        Column(
+          children: [
+            Expanded(child: _chatList()),
+            _textingArea(),
+          ],
+        ),
       ],
     );
   }
@@ -154,9 +187,10 @@ class _ChatScreenState extends State<ChatScreen> {
                     if (isShopOwner) {
                       chatService.changeUnread(widget.tokenDoc, name);
                     }
+                    showListViewLastIndex();
                     return Align(
                       alignment: doc['sentBy'] == isOwner ? Alignment.topRight : Alignment.centerLeft,
-                      child: _buildChatItem(doc['message'], doc['sentBy'] == isOwner),
+                      child: doc['url'].toString().isNotEmpty ? _chatImageItem(doc['url'], doc['sentBy'] == isOwner) : _buildChatItem(doc['message'], doc['sentBy'] == isOwner),
                     );
                   })
               : WidgetHelper.noDataFound();
@@ -164,6 +198,27 @@ class _ChatScreenState extends State<ChatScreen> {
           return Container();
         }
       },
+    );
+  }
+
+  Widget _chatImageItem(String url, bool isSender) {
+    return GestureDetector(
+      onTap: () {
+        NavigationHelper.push(context, ShowFullScreenFirebaseImage(url: url));
+      },
+      child: Container(
+        decoration: BoxDecoration(border: Border.all(color: isSender ? Colors.blue : Colors.grey, width: 2)),
+        padding: EdgeInsets.all(5),
+        margin: EdgeInsets.all(5),
+        width: 150,
+        height: 150,
+        child: CachedNetworkImage(
+          cacheManager: CustomCacheManager(),
+          fit: BoxFit.fill,
+          imageUrl: url,
+          errorWidget: (context, imageUrl, error) => Image.asset('assets/images/placeholder.jpg'),
+        ),
+      ),
     );
   }
 
@@ -194,9 +249,10 @@ class _ChatScreenState extends State<ChatScreen> {
                           onTap: () {
                             setState(() {
                               showAttachmentButton = !showAttachmentButton;
+                              _onSendImage();
                             });
                           },
-                          child: _buildIcon(FontAwesomeIcons.folder)),
+                          child: _buildIcon(FontAwesomeIcons.image)),
                       SizedBox(width: 20),
                       InkWell(
                           onTap: () {
@@ -253,6 +309,52 @@ class _ChatScreenState extends State<ChatScreen> {
         icon,
         color: ColorsConts.primaryColor,
       ),
+    );
+  }
+}
+
+class ShowFullScreenFirebaseImage extends StatelessWidget {
+  final String url;
+  const ShowFullScreenFirebaseImage({Key? key, required this.url}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: Stack(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: CachedNetworkImage(
+                  cacheManager: CustomCacheManager(),
+                  fit: BoxFit.contain,
+                  imageUrl: url,
+                  errorWidget: (context, imageUrl, error) => Image.asset('assets/images/placeholder.jpg'),
+                ),
+              ),
+              Container(
+                  width: 50,
+                  height: 50,
+                  margin: EdgeInsets.symmetric(vertical: 30, horizontal: 20),
+                  child: GestureDetector(
+                    onTap: () => Navigator.pop(context),
+                    child: Align(
+                        alignment: Alignment.topRight,
+                        child: InkWell(
+                          child: Center(
+                            child: Icon(
+                              Icons.close,
+                              size: 30,
+                              color: Colors.red,
+                            ),
+                          ),
+                        )),
+                  ))
+            ],
+          )),
     );
   }
 }

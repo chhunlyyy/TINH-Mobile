@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:image_picker/image_picker.dart';
 import 'package:tinh/helper/date_helper.dart';
+import 'package:path/path.dart' as path;
 
 class ChatService {
   var instance = FirebaseFirestore.instance;
@@ -23,9 +27,10 @@ class ChatService {
     instance.collection(collection).doc(token).set(data);
   }
 
-  void chatText(String message, String tokenDoc, int isShopOwner) {
+  void chatText(String message, String url, String tokenDoc, int isShopOwner) {
     Map<String, dynamic> data = {
       'message': message,
+      'url': url,
       'sentBy': isShopOwner,
       'sentDate': DateTime.now(),
     };
@@ -44,6 +49,21 @@ class ChatService {
     return await instance.collection(collection).doc(token).get().then((value) {
       return value['name'];
     });
+  }
+
+  Future<String> addAttachmentToFirebase(String createdDate, XFile? file) async {
+    File getFile = File(file!.path);
+
+    String fileName = path.basename(file.path);
+    String name = DateHelper.format(DateTime.parse(createdDate), dateFormatddMMyyy) + fileName;
+
+    //
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('images').child('/${name}');
+    await ref.putFile(getFile).then((p0) {
+      if (p0.state == firebase_storage.TaskState.success) {}
+    });
+
+    return await firebase_storage.FirebaseStorage.instance.ref().child('images/' + name).getDownloadURL();
   }
 }
 
