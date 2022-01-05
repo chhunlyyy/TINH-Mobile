@@ -155,15 +155,20 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        backgroundColor: ColorsConts.primaryColor,
-        title: Text(widget.name),
-      ),
-      body: Material(
-        child: Container(
-          child: SafeArea(child: _buildBody()),
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(new FocusNode());
+      },
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          backgroundColor: ColorsConts.primaryColor,
+          title: Text(widget.name),
+        ),
+        body: Material(
+          child: Container(
+            child: SafeArea(child: _buildBody()),
+          ),
         ),
       ),
     );
