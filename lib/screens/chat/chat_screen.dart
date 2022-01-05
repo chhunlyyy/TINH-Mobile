@@ -160,7 +160,6 @@ class _ChatScreenState extends State<ChatScreen> {
         FocusScope.of(context).requestFocus(new FocusNode());
       },
       child: Scaffold(
-        resizeToAvoidBottomInset: false,
         appBar: AppBar(
           backgroundColor: ColorsConts.primaryColor,
           title: Text(widget.name),
@@ -225,7 +224,9 @@ class _ChatScreenState extends State<ChatScreen> {
 
                     return Align(alignment: doc['sentBy'] == isOwner ? Alignment.topRight : Alignment.centerLeft, child: child);
                   })
-              : WidgetHelper.noDataFound();
+              : SingleChildScrollView(
+                  child: WidgetHelper.noDataFound(),
+                );
         } else {
           return Container();
         }
