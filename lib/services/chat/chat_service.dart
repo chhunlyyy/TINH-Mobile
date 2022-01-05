@@ -31,6 +31,20 @@ class ChatService {
     };
     instance.collection(collection).doc(tokenDoc).collection('messages').doc().set(data);
   }
+
+  void addUnread(String message, String token, String name) {
+    instance.collection(collection).doc(token).set({'unread-message': message, 'name': name});
+  }
+
+  void changeUnread(String token, String name) {
+    instance.collection(collection).doc(token).set({'unread-message': '', 'name': name});
+  }
+
+  Future<String> getName(String token) async {
+    return await instance.collection(collection).doc(token).get().then((value) {
+      return value['name'];
+    });
+  }
 }
 
 ChatService chatService = ChatService();

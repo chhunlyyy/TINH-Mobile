@@ -24,17 +24,19 @@ class _ChatScreenState extends State<ChatScreen> {
   String deviceToken = '';
   int isOwner = isShopOwner ? 1 : 0;
   ScrollController controller = new ScrollController();
-
+  TextEditingController _userNameController = TextEditingController();
+  String getName = '';
   int lastDataIndex = 0;
   //
   void _onSendTextMessage() {
     if (textController.text.isNotEmpty) {
       chatService.chatText(textController.text, widget.tokenDoc, isShopOwner ? 1 : 0);
+      chatService.addUnread(textController.text, widget.tokenDoc, _userNameController.text.isEmpty ? getName : _userNameController.text);
+      textController.text = '';
       showListViewLastIndex();
     }
   }
 
-  TextEditingController _userNameController = TextEditingController();
   _showDialog() async {
     await showDialog<String>(
         context: context,
@@ -97,12 +99,16 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     if (!isShopOwner) {
       _checkExistChat();
+      Future.delayed(Duration.zero, () async {
+        await chatService.getName(widget.tokenDoc).then((value) => {getName = value});
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: ColorsConts.primaryColor,
         title: Text(widget.name),
@@ -129,34 +135,47 @@ class _ChatScreenState extends State<ChatScreen> {
       stream: FirebaseFirestore.instance.collection('CHAT').doc(widget.tokenDoc).collection('messages').orderBy('sentDate', descending: false).snapshots(),
       builder: (context, snapshot) {
         if (snapshot.hasData) {
+          String name = '';
+
+          if (_userNameController.text.isEmpty) {
+            if (getName.isEmpty) {
+              name = widget.name;
+            } else {
+              name = getName;
+            }
+          }
+
           return snapshot.data!.docs.isNotEmpty
               ? ListView.builder(
                   controller: controller,
                   itemCount: snapshot.data!.docs.length,
                   itemBuilder: (context, index) {
                     DocumentSnapshot doc = snapshot.data!.docs[index];
-                    /* go to the last index when open */
-                    if (snapshot.data!.docs.length == index + 1) {
-                      showListViewLastIndex();
+                    if (isShopOwner) {
+                      chatService.changeUnread(widget.tokenDoc, name);
                     }
-                    /* ...  */
-                    /* if have new chat message go to the last index and make last message is read */
-                    if (snapshot.data!.docs.length > lastDataIndex) {
-                      lastDataIndex = snapshot.data!.docs.length;
-                      showListViewLastIndex();
-                    }
-                    /* ...  */
                     return Align(
-                        alignment: doc['sentBy'] == isOwner ? Alignment.topRight : Alignment.centerLeft,
-                        child: Text(
-                          doc['message'],
-                        ));
+                      alignment: doc['sentBy'] == isOwner ? Alignment.topRight : Alignment.centerLeft,
+                      child: _buildChatItem(doc['message'], doc['sentBy'] == isOwner),
+                    );
                   })
               : WidgetHelper.noDataFound();
         } else {
           return Container();
         }
       },
+    );
+  }
+
+  Widget _buildChatItem(String message, bool isSender) {
+    return Container(
+      margin: EdgeInsets.all(5),
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+      decoration: BoxDecoration(color: isSender ? Colors.blue : Colors.grey, borderRadius: BorderRadius.circular(20)),
+      child: Text(
+        message,
+        style: TextStyle(color: Colors.white, fontSize: 16),
+      ),
     );
   }
 
