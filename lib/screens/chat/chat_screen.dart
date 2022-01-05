@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,8 @@ import 'package:tinh/helper/device_infor.dart';
 import 'package:tinh/helper/file_picker_widget.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
+import 'package:tinh/screens/chat/components/voice_chat_widget.dart';
+import 'package:tinh/screens/chat/components/voice_recorder.dart';
 import 'package:tinh/services/chat/chat_service.dart';
 import 'package:tinh/widgets/show_full_scren_image_widget.dart';
 
@@ -37,11 +41,27 @@ class _ChatScreenState extends State<ChatScreen> {
   //
   void _onSendTextMessage() {
     if (textController.text.isNotEmpty) {
-      chatService.chatText(textController.text, '', widget.tokenDoc, isShopOwner ? 1 : 0);
+      chatService.chatText(textController.text, '', '', widget.tokenDoc, isShopOwner ? 1 : 0);
       chatService.addUnread(textController.text, widget.tokenDoc, _userNameController.text.isEmpty ? getName : _userNameController.text);
       textController.text = '';
       showListViewLastIndex();
     }
+  }
+
+  void _onSendVoice(File file) {
+    Future.delayed(Duration.zero, () async {
+      setState(() {
+        isShowLoading = true;
+      });
+      await chatService.addVoiceToFirebase(DateTime.now().toString(), file).then((value) {
+        chatService.chatText('', '', value, widget.tokenDoc, isShopOwner ? 1 : 0);
+        chatService.addUnread('sent a voice message', widget.tokenDoc, _userNameController.text.isEmpty ? getName : _userNameController.text);
+      }).whenComplete(() {
+        setState(() {
+          isShowLoading = false;
+        });
+      });
+    });
   }
 
   void _onSendImage() {
@@ -54,7 +74,7 @@ class _ChatScreenState extends State<ChatScreen> {
           isShowLoading = true;
         });
         await chatService.addAttachmentToFirebase(DateTime.now().toString(), image).then((value) {
-          chatService.chatText('', value, widget.tokenDoc, isShopOwner ? 1 : 0);
+          chatService.chatText('', value, '', widget.tokenDoc, isShopOwner ? 1 : 0);
           chatService.addUnread('sent an image', widget.tokenDoc, _userNameController.text.isEmpty ? getName : _userNameController.text);
         }).whenComplete(() {
           setState(() {
@@ -188,10 +208,17 @@ class _ChatScreenState extends State<ChatScreen> {
                       chatService.changeUnread(widget.tokenDoc, name);
                     }
                     showListViewLastIndex();
-                    return Align(
-                      alignment: doc['sentBy'] == isOwner ? Alignment.topRight : Alignment.centerLeft,
-                      child: doc['url'].toString().isNotEmpty ? _chatImageItem(doc['url'], doc['sentBy'] == isOwner) : _buildChatItem(doc['message'], doc['sentBy'] == isOwner),
-                    );
+
+                    Widget child = Container();
+                    if (doc['image-url'].toString().isNotEmpty) {
+                      child = _chatImageItem(doc['image-url'], doc['sentBy'] == isOwner);
+                    } else if (doc['voice-url'].toString().isNotEmpty) {
+                      child = _chatVoiceItem(doc['voice-url'], doc['sentBy'] == isOwner);
+                    } else {
+                      child = _buildChatItem(doc['message'], doc['sentBy'] == isOwner);
+                    }
+
+                    return Align(alignment: doc['sentBy'] == isOwner ? Alignment.topRight : Alignment.centerLeft, child: child);
                   })
               : WidgetHelper.noDataFound();
         } else {
@@ -201,13 +228,25 @@ class _ChatScreenState extends State<ChatScreen> {
     );
   }
 
+  Widget _chatVoiceItem(String url, bool isSender) {
+    return Container(
+      margin: EdgeInsets.all(5),
+      decoration: BoxDecoration(color: isSender ? Colors.blue : Colors.grey, borderRadius: BorderRadius.circular(10)),
+      padding: EdgeInsets.all(5),
+      child: ChatAudioPlayer(
+        url: url,
+        type: ChatAudioPlayerType.slider,
+      ),
+    );
+  }
+
   Widget _chatImageItem(String url, bool isSender) {
     return GestureDetector(
       onTap: () {
         NavigationHelper.push(context, ShowFullScreenFirebaseImage(url: url));
       },
       child: Container(
-        decoration: BoxDecoration(border: Border.all(color: isSender ? Colors.blue : Colors.grey, width: 2)),
+        decoration: BoxDecoration(border: Border.all(color: isSender ? Colors.blue : Colors.grey, width: 2), borderRadius: BorderRadius.circular(10)),
         padding: EdgeInsets.all(5),
         margin: EdgeInsets.all(5),
         width: 150,
@@ -235,70 +274,105 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _textingArea() {
-    return Container(
-      color: Colors.transparent,
-      child: Padding(
-        padding: EdgeInsets.all(10),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            !isTexting
-                ? Row(
-                    children: [
-                      InkWell(
+    return !showVoiceRecordButton
+        ? Container(
+            color: Colors.transparent,
+            child: Padding(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  !isTexting
+                      ? Row(
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    showAttachmentButton = !showAttachmentButton;
+                                    _onSendImage();
+                                  });
+                                },
+                                child: _buildIcon(FontAwesomeIcons.image)),
+                            SizedBox(width: 20),
+                            InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    showVoiceRecordButton = !showVoiceRecordButton;
+                                  });
+                                },
+                                child: _buildIcon(FontAwesomeIcons.microphone)),
+                          ],
+                        )
+                      : InkWell(
                           onTap: () {
                             setState(() {
-                              showAttachmentButton = !showAttachmentButton;
-                              _onSendImage();
+                              isTexting = !isTexting;
                             });
                           },
-                          child: _buildIcon(FontAwesomeIcons.image)),
-                      SizedBox(width: 20),
-                      InkWell(
+                          child: _buildIcon(FontAwesomeIcons.angleRight),
+                        ),
+                  SizedBox(width: 20),
+                  Flexible(
+                    child: Container(
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.grey[200]),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8),
+                        child: TextField(
+                          maxLines: null,
                           onTap: () {
                             setState(() {
-                              showVoiceRecordButton = !showVoiceRecordButton;
+                              isTexting = true;
                             });
                           },
-                          child: _buildIcon(FontAwesomeIcons.microphone)),
-                    ],
-                  )
-                : InkWell(
-                    onTap: () {
-                      setState(() {
-                        isTexting = !isTexting;
-                      });
-                    },
-                    child: _buildIcon(FontAwesomeIcons.angleRight),
+                          controller: textController,
+                          decoration: InputDecoration(hintText: 'Aa', border: InputBorder.none),
+                        ),
+                      ),
+                    ),
                   ),
-            SizedBox(width: 20),
-            Flexible(
-              child: Container(
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(20), color: Colors.grey[200]),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 8),
-                  child: TextField(
-                    maxLines: null,
-                    onTap: () {
-                      setState(() {
-                        isTexting = true;
-                      });
-                    },
-                    controller: textController,
-                    decoration: InputDecoration(hintText: 'Aa', border: InputBorder.none),
-                  ),
-                ),
+                  SizedBox(width: 20),
+                  InkWell(
+                      onTap: () {
+                        _onSendTextMessage();
+                      },
+                      child: _buildIcon(FontAwesomeIcons.paperPlane)),
+                ],
               ),
             ),
-            SizedBox(width: 20),
-            InkWell(
+          )
+        : _voicRecord();
+  }
+
+  Widget _voicRecord() {
+    return Column(
+      children: [
+        Container(
+          color: Colors.grey.withOpacity(.05),
+          alignment: Alignment.centerLeft,
+          child: Padding(
+            padding: const EdgeInsets.only(left: 15, top: 5),
+            child: GestureDetector(
                 onTap: () {
-                  _onSendTextMessage();
+                  setState(() {
+                    showVoiceRecordButton = !showVoiceRecordButton;
+                  });
                 },
-                child: _buildIcon(FontAwesomeIcons.paperPlane)),
-          ],
+                child: Icon(FontAwesomeIcons.times)),
+          ),
         ),
-      ),
+        Container(
+          margin: EdgeInsets.only(left: 12, right: 12),
+          child: ChatAudioRecorderWidget(
+            sendVoidCallBack: (File? voice) {
+              setState(() {});
+              if (voice != null) {
+                showVoiceRecordButton = !showVoiceRecordButton;
+                _onSendVoice(voice);
+              }
+            },
+          ),
+        ),
+      ],
     );
   }
 

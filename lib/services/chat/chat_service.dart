@@ -27,10 +27,11 @@ class ChatService {
     instance.collection(collection).doc(token).set(data);
   }
 
-  void chatText(String message, String url, String tokenDoc, int isShopOwner) {
+  void chatText(String message, String imageUrl, String voiceUrl, String tokenDoc, int isShopOwner) {
     Map<String, dynamic> data = {
       'message': message,
-      'url': url,
+      'image-url': imageUrl,
+      'voice-url': voiceUrl,
       'sentBy': isShopOwner,
       'sentDate': DateTime.now(),
     };
@@ -49,6 +50,19 @@ class ChatService {
     return await instance.collection(collection).doc(token).get().then((value) {
       return value['name'];
     });
+  }
+
+  Future<String> addVoiceToFirebase(String createdDate, File file) async {
+    String fileName = path.basename(file.path);
+    String name = DateHelper.format(DateTime.parse(createdDate), dateFormatddMMyyy) + fileName;
+
+    //
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance.ref().child('voices/').child('/${name}');
+    await ref.putFile(file).then((p0) {
+      if (p0.state == firebase_storage.TaskState.success) {}
+    });
+
+    return await firebase_storage.FirebaseStorage.instance.ref().child('voices/' + name).getDownloadURL();
   }
 
   Future<String> addAttachmentToFirebase(String createdDate, XFile? file) async {
