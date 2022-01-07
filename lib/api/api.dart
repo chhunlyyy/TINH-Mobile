@@ -40,6 +40,8 @@ class HttApi {
   static const String API_UPDATE_PRODUCT_DETAIL = '/update-product-detail';
   static const String API_UPDATE_PRODUCT_COLOR = '/update-product-color';
   //
+  static const String API_UPDATE_PHONE_BRAND = '/update-brand';
+  //
 
   static const String API_USER_CHECK_TOKEN = '/check-token';
   static const String API_USER_LOGIN = '/login';

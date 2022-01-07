@@ -24,6 +24,16 @@ class PhoneBrandService {
       return '402';
     }
   }
+
+  Future<String> updatePhonebrand(Map<String, dynamic> postData) async {
+    try {
+      return await httpApiService.post(HttApi.API_UPDATE_PHONE_BRAND, postData, {}, new Options(headers: HttpConfig.headers)).then((value) {
+        return value.data[0]['status'];
+      });
+    } catch (e) {
+      return '402';
+    }
+  }
 }
 
 PhoneBrandService phoneBrandService = PhoneBrandService();

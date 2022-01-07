@@ -23,6 +23,8 @@ Future<void> main() async {
       builder: (context) => const TinhApp(),
     ),
   );
+
+  // runApp(TinhApp());
 }
 
 class TinhApp extends StatelessWidget {

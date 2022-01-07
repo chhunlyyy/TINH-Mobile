@@ -27,21 +27,18 @@ class PhoneBrandItem extends StatelessWidget {
           child: Column(
             children: [
               Expanded(
-                flex: 2,
-                child: phoneBrandModel.images.isNotEmpty
-                    ? Container(
-                        child: DisplayImage(
-                          boxFit: BoxFit.fill,
-                          imageBorderRadius: 5,
-                          imageString: phoneBrandModel.images[0],
-                        ),
-                        decoration: BoxDecoration(
-                          // color: Color.fromRGBO(255, 236, 223, 1),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                      )
-                    : PlaceholderImageWidget(),
-              ),
+                  flex: 2,
+                  child: Container(
+                    child: DisplayImage(
+                      boxFit: BoxFit.fill,
+                      imageBorderRadius: 5,
+                      imageString: phoneBrandModel.images.image,
+                    ),
+                    decoration: BoxDecoration(
+                      // color: Color.fromRGBO(255, 236, 223, 1),
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                  )),
               SizedBox(height: 5),
               Expanded(
                 child: Text(
