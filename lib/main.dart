@@ -1,3 +1,4 @@
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
@@ -10,10 +11,18 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+  // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  runApp(TinhApp());
+  runApp(
+    DevicePreview(
+      enabled: true,
+      tools: [
+        ...DevicePreview.defaultTools,
+      ],
+      builder: (context) => const TinhApp(),
+    ),
+  );
 }
 
 class TinhApp extends StatelessWidget {
@@ -32,6 +41,7 @@ class TinhApp extends StatelessWidget {
             DeviceOrientation.portraitDown,
           ]);
           return MaterialApp(
+            useInheritedMediaQuery: true,
             debugShowCheckedModeBanner: false,
             home: Scaffold(
               body: SplashScreen(),

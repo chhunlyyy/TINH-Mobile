@@ -20,53 +20,54 @@ class DrawerMenuScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3),
-      alignment: Alignment.centerLeft,
+      alignment: Alignment.center,
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.height,
       color: ColorsConts.primaryColor,
-      child: Column(
-        children: [
-          isShopOwner
-              ? _drawerItem(
-                  context,
-                  'បន្ថែមទូរស័ព្ទ',
-                  Icons.add,
-                  () => NavigationHelper.push(
-                      context,
-                      AddPhoneFormScreen(
-                        onDispose: () {},
-                        mainStore: mainStore,
-                        phoneProductModel: null,
-                      )))
-              : SizedBox.shrink(),
-          isShopOwner
-              ? _drawerItem(
-                  context,
-                  'បន្ថែមផលិតផលផ្សេងៗ',
-                  Icons.add,
-                  () => NavigationHelper.push(
-                      context,
-                      AddProductFormScreen(
-                        onDispose: () {},
-                        mainStore: mainStore,
-                        productModel: null,
-                      )))
-              : SizedBox.shrink(),
-          _drawerItem(context, 'ទំនាក់ទំនង', Icons.chat_rounded, () {
-            if (isShopOwner) {
-              NavigationHelper.push(context, ChatMainScreen());
-            } else {
-              DeviceInfoHelper.getDivceId().then((value) {
-                NavigationHelper.push(context, ChatScreen(tokenDoc: value, name: 'ទិញ-TINH'));
-              });
-            }
-          }),
-          _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () => NavigationHelper.push(context, AboutUsScreen())),
-          !isShopOwner
-              ? _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen(mainStore)))
-              : _drawerItem(context, 'ចាកចេញ', Icons.logout, () => NavigationHelper.push(context, LogOutScreen(mainStore: mainStore))),
-        ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            isShopOwner
+                ? _drawerItem(
+                    context,
+                    'បន្ថែមទូរស័ព្ទ',
+                    Icons.add,
+                    () => NavigationHelper.push(
+                        context,
+                        AddPhoneFormScreen(
+                          onDispose: () {},
+                          mainStore: mainStore,
+                          phoneProductModel: null,
+                        )))
+                : SizedBox.shrink(),
+            isShopOwner
+                ? _drawerItem(
+                    context,
+                    'បន្ថែមផលិតផលផ្សេងៗ',
+                    Icons.add,
+                    () => NavigationHelper.push(
+                        context,
+                        AddProductFormScreen(
+                          onDispose: () {},
+                          mainStore: mainStore,
+                          productModel: null,
+                        )))
+                : SizedBox.shrink(),
+            _drawerItem(context, 'ទំនាក់ទំនង', Icons.chat_rounded, () {
+              if (isShopOwner) {
+                NavigationHelper.push(context, ChatMainScreen());
+              } else {
+                DeviceInfoHelper.getDivceId().then((value) {
+                  NavigationHelper.push(context, ChatScreen(tokenDoc: value, name: 'ទិញ-TINH'));
+                });
+              }
+            }),
+            _drawerItem(context, 'អំពីយើង', Icons.person_pin_circle_rounded, () => NavigationHelper.push(context, AboutUsScreen())),
+            !isShopOwner
+                ? _drawerItem(context, 'ចូល', Icons.login, () => NavigationHelper.push(context, LoginScreen(mainStore)))
+                : _drawerItem(context, 'ចាកចេញ', Icons.logout, () => NavigationHelper.push(context, LogOutScreen(mainStore: mainStore))),
+          ],
+        ),
       ),
     );
   }

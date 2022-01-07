@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:tinh/services/user/user_services.dart';
 import 'package:tinh/const/user_status.dart';
+import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
 import 'package:tinh/store/main/main_store.dart';
 
@@ -87,3 +89,25 @@ class SplashScreen extends StatelessWidget {
     });
   }
 }
+
+// class Rectangle1Widget extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     // Figma Flutter Generator Rectangle1Widget - RECTANGLE
+//     return Transform.rotate(
+//       angle: 44.65301968594614 * (math.pi / 180),
+//       child: Container(
+//           width: 428.2761535644531,
+//           height: 321.36810302734375,
+//           decoration: BoxDecoration(
+//             borderRadius: BorderRadius.only(
+//               topLeft: Radius.circular(0),
+//               topRight: Radius.circular(0),
+//               bottomLeft: Radius.circular(10),
+//               bottomRight: Radius.circular(0),
+//             ),
+//             color: Color.fromRGBO(86, 92, 168, 1),
+//           )),
+//     );
+//   }
+// }

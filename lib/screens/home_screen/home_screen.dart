@@ -316,16 +316,17 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _productWidget() {
+    var _crossAxisSpacing = 8;
+    var _screenWidth = MediaQuery.of(context).size.width;
+    var _crossAxisCount = _screenWidth > 440 ? 3 : 2;
+    var _width = (_screenWidth - ((_crossAxisCount - 1) * _crossAxisSpacing)) / _crossAxisCount;
+    var cellHeight = 300;
+    var _aspectRatio = _width / cellHeight;
     Widget content = WidgetHelper.loadingWidget(context, MediaQuery.of(context).size.height / 3);
     if (!_mainStore.phoneProductStore.isLoading) {
       content = _mainStore.phoneProductStore.phoneProductModelList.isNotEmpty && _mainStore.phoneBrandStore.isLoading == false
-          ? GridView.count(
-              controller: _scrollController,
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              padding: EdgeInsets.all(1.0),
-              childAspectRatio: 8 / 12.0,
+          ? WidgetHelper.gridView(
+              context: context,
               children: List<Widget>.generate(_mainStore.phoneProductStore.phoneProductModelList.length, (index) {
                 return GridTile(
                     child: WidgetHelper.animation(
@@ -368,12 +369,11 @@ class _HomeScreenState extends State<HomeScreen> {
             )
           : Container(
               margin: EdgeInsets.only(top: 20, left: 5, right: 5),
-              child: GridView.count(
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
-                shrinkWrap: true,
+              child: WidgetHelper.gridView(
+                cellHeight: 80,
                 crossAxisCount: 4,
-                physics: new NeverScrollableScrollPhysics(),
+                crossAxisCountForBigScreen: 6,
+                context: context,
                 children: _departmentItemList.map((child) {
                   return WidgetHelper.animation(_departmentItemList.indexOf(child), child);
                 }).toList(),

@@ -274,10 +274,11 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
       colorItemList.add(_colorItem(element.color));
     });
 
-    return GridView.count(
-      shrinkWrap: true,
-      crossAxisCount: 4,
-      physics: new NeverScrollableScrollPhysics(),
+    return WidgetHelper.gridView(
+      crossAxisCountForBigScreen: 4,
+      crossAxisCount: 3,
+      cellHeight: MediaQuery.of(context).size.height / 6,
+      context: context,
       children: colorItemList.map((child) {
         return WidgetHelper.animation(colorItemList.indexOf(child), child);
       }).toList(),
@@ -300,10 +301,11 @@ class _PhoneDetailScreenState extends State<PhoneDetailScreen> {
       priceItemList.add(_priceItem(element));
     });
 
-    return GridView.count(
-      shrinkWrap: true,
+    return WidgetHelper.gridView(
+      crossAxisCountForBigScreen: 4,
       crossAxisCount: 3,
-      physics: new NeverScrollableScrollPhysics(),
+      cellHeight: MediaQuery.of(context).size.height / 6,
+      context: context,
       children: priceItemList.map((child) {
         return WidgetHelper.animation(priceItemList.indexOf(child), child);
       }).toList(),

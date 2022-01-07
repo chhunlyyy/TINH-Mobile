@@ -94,15 +94,10 @@ class _SecondHandScreenState extends State<SecondHandScreen> {
 
   Widget _productWidget() {
     Widget content = WidgetHelper.loadingWidget(context, MediaQuery.of(context).size.height);
-
     if (!_mainStore.phoneProductStore.isLoading) {
       content = _mainStore.phoneProductStore.phoneProductModelList.isNotEmpty
-          ? GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              padding: EdgeInsets.all(1.0),
-              childAspectRatio: 8 / 12.0,
+          ? WidgetHelper.gridView(
+              context: context,
               children: List<Widget>.generate(_mainStore.phoneProductStore.phoneProductModelList.length, (index) {
                 return GridTile(
                     child: WidgetHelper.animation(

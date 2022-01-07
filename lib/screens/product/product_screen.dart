@@ -149,12 +149,8 @@ class _ProductScreenState extends State<ProductScreen> {
     if (!_mainStore.productStore.isLoading) {
       content = _mainStore.productStore.productModelList.isEmpty
           ? WidgetHelper.noDataFound()
-          : GridView.count(
-              physics: const NeverScrollableScrollPhysics(),
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              padding: EdgeInsets.all(1.0),
-              childAspectRatio: 8 / 12.0,
+          : WidgetHelper.gridView(
+              context: context,
               children: List<Widget>.generate(_mainStore.productStore.productModelList.length, (index) {
                 return GridTile(
                     child: WidgetHelper.animation(

@@ -59,15 +59,18 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     if (_mainStore.categoriesStore.categoriesList.isNotEmpty) {
       content = Padding(
         padding: const EdgeInsets.only(top: 20),
-        child: GridView.count(
-            physics: const NeverScrollableScrollPhysics(),
-            shrinkWrap: true,
-            crossAxisCount: 2,
-            padding: EdgeInsets.all(1.0),
-            childAspectRatio: 8 / 9,
-            children: List<Widget>.generate(_mainStore.categoriesStore.categoriesList.length, (index) {
-              return GridTile(child: WidgetHelper.animation(index, _categoriesItem(_mainStore.categoriesStore.categoriesList[index])));
-            })),
+        child: WidgetHelper.gridView(
+          context: context,
+          children: List<Widget>.generate(_mainStore.categoriesStore.categoriesList.length, (index) {
+            return GridTile(
+              child: WidgetHelper.animation(
+                index,
+                _categoriesItem(_mainStore.categoriesStore.categoriesList[index]),
+              ),
+            );
+          }),
+          cellHeight: 250,
+        ),
       );
     }
 

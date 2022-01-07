@@ -43,6 +43,7 @@ dependencies:
   intl: ^0.17.0
   audioplayers: ^0.20.1
   flutter_audio_recorder2: ^0.0.2
+  device_preview:
  
 
 dev_dependencies:
