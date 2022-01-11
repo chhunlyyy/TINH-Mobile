@@ -14,17 +14,17 @@ Future<void> main() async {
   // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
   // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
 
-  runApp(
-    DevicePreview(
-      enabled: true,
-      tools: [
-        ...DevicePreview.defaultTools,
-      ],
-      builder: (context) => const TinhApp(),
-    ),
-  );
+  // runApp(
+  //   DevicePreview(
+  //     enabled: true,
+  //     tools: [
+  //       ...DevicePreview.defaultTools,
+  //     ],
+  //     builder: (context) => const TinhApp(),
+  //   ),
+  // );
 
-  // runApp(TinhApp());
+  runApp(TinhApp());
 }
 
 class TinhApp extends StatelessWidget {

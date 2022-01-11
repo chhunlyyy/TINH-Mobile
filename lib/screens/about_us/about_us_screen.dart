@@ -41,7 +41,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                     children: [
                       _animationWidget(context),
                       Text(
-                        'ទាក់ទងកាន់យើងតាមរយៈ',
+                        'ទាក់ទងមកកាន់យើងតាមរយៈ',
                         textAlign: TextAlign.center,
                         style: TextStyle(color: ColorsConts.primaryColor, fontSize: 18, fontWeight: FontWeight.bold),
                       ),

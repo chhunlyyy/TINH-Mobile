@@ -19,6 +19,7 @@ class PhoneBrandItem extends StatelessWidget {
             context,
             ListPhoneByCategory(
               phoneBrandModel: phoneBrandModel,
+              mainStore: mainStore,
             )),
         child: Container(
           width: 80,

@@ -516,9 +516,9 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
   }
 
   Widget _showImageWidget() {
-    List<Widget> colorItemList = [];
+    List<Widget> imageItemList = [];
     widget.phoneProductModel!.images.forEach((element) {
-      colorItemList.add(_showImageItem(element.image, widget.phoneProductModel!.images.indexOf(element)));
+      imageItemList.add(_showImageItem(element.image, widget.phoneProductModel!.images.indexOf(element)));
     });
 
     return Column(
@@ -528,8 +528,8 @@ class _AddPhoneFormScreenState extends State<AddPhoneFormScreen> {
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
           child: Row(
-            children: List.generate(colorItemList.length, (index) {
-              return colorItemList[index];
+            children: List.generate(imageItemList.length, (index) {
+              return imageItemList[index];
             }),
           ),
         ),
