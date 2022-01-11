@@ -71,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _mainStore = widget.mainStore;
-
     _getData();
   }
 

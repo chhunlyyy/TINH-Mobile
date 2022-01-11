@@ -34,6 +34,16 @@ class PhoneBrandService {
       return '402';
     }
   }
+
+  Future<String> deletePhonebrand(String id) async {
+    try {
+      return await httpApiService.post(HttApi.API_DELETE_PHONE_BRAND, {'id': id}, {}, new Options(headers: HttpConfig.headers)).then((value) {
+        return value.data[0]['status'];
+      });
+    } catch (e) {
+      return '402';
+    }
+  }
 }
 
 PhoneBrandService phoneBrandService = PhoneBrandService();

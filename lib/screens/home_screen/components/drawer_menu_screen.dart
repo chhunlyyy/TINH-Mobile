@@ -55,7 +55,6 @@ class DrawerMenuScreen extends StatelessWidget {
                           productModel: null,
                         )))
                 : SizedBox.shrink(),
-            isShopOwner ? _drawerItem(context, 'ផ្ទាំងគ្រប់គ្រង', FontAwesomeIcons.chartArea, () => NavigationHelper.push(context, ManagementDashboard())) : SizedBox.shrink(),
             _drawerItem(context, 'ទំនាក់ទំនង', Icons.chat_rounded, () {
               if (isShopOwner) {
                 NavigationHelper.push(context, ChatMainScreen());

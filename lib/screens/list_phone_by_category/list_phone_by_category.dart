@@ -56,6 +56,60 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
     });
   }
 
+  void onDeleteBrand() {
+    Future.delayed(Duration.zero).whenComplete(() {
+      _mainStore.phoneProductStore.phoneProductModelList.clear();
+      _mainStore.phoneProductStore
+          .loadPhoneByBrand(
+        pageSize: pageSize,
+        pageIndex: pageIndex,
+        brandId: widget.phoneBrandModel.id,
+      )
+          .whenComplete(() {
+        if (_mainStore.phoneProductStore.phoneProductModelList.isNotEmpty) {
+          AwesomeDialog(
+            dismissOnTouchOutside: false,
+            context: context,
+            dialogType: DialogType.INFO,
+            borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+            width: MediaQuery.of(context).size.width,
+            buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+            headerAnimationLoop: false,
+            animType: AnimType.BOTTOMSLIDE,
+            desc: 'មិនអនុញ្ញាតអោយលុបម៉ាកទូរស័ព្ទនេះទេ',
+            showCloseIcon: false,
+            btnOkOnPress: () {},
+          )..show();
+        } else {
+          AwesomeDialog(
+            dismissOnTouchOutside: false,
+            context: context,
+            dialogType: DialogType.QUESTION,
+            borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+            width: MediaQuery.of(context).size.width,
+            buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+            headerAnimationLoop: false,
+            animType: AnimType.BOTTOMSLIDE,
+            desc: 'តើអ្នកពិតជាចង់លុបម៉ាកទូរស័ព្ទនេះមែនទេ ?',
+            showCloseIcon: false,
+            btnCancelOnPress: () {},
+            btnOkOnPress: () {
+              Future.delayed(Duration.zero, () async {
+                await phoneBrandService.deletePhonebrand(widget.phoneBrandModel.id.toString());
+                await imageService.deleteImage([widget.phoneBrandModel.images]);
+
+                widget.mainStore.phoneBrandStore.phoneBrandList.clear();
+                widget.mainStore.phoneBrandStore.loadData().whenComplete(() {
+                  Navigator.pop(context);
+                });
+              });
+            },
+          )..show();
+        }
+      });
+    });
+  }
+
   @override
   void initState() {
     _loadPhone();
@@ -242,7 +296,7 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
                   isShopOwner
                       ? AnimatedButton(
                           width: 80,
-                          pressEvent: () {},
+                          pressEvent: onDeleteBrand,
                           text: 'លុប',
                           color: Colors.red,
                         )
