@@ -273,13 +273,17 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
                         imageBorderRadius: 0,
                         boxFit: BoxFit.contain,
                       )),
-                  Container(
-                    margin: EdgeInsets.only(left: 20),
-                    height: 50,
-                    alignment: Alignment.center,
-                    child: Text(
-                      widget.phoneBrandModel.name,
-                      style: TextStyle(fontSize: 20),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(left: 20),
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: Text(
+                        widget.phoneBrandModel.name,
+                        style: TextStyle(fontSize: 20),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                   ),
                   isShopOwner ? Expanded(child: SizedBox()) : SizedBox.shrink(),

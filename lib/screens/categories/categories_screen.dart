@@ -96,19 +96,17 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               children: [
                 Stack(
                   children: [
-                    categoriesModel.images.isNotEmpty
-                        ? Container(
-                            width: MediaQuery.of(context).size.width / 2,
-                            height: 150,
-                            child: DisplayImage(
-                              boxFit: BoxFit.fitHeight,
-                              imageBorderRadius: 20,
-                              imageString: categoriesModel.images[0],
-                            ),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                            ))
-                        : PlaceholderImageWidget(),
+                    Container(
+                        width: MediaQuery.of(context).size.width / 2,
+                        height: 150,
+                        child: DisplayImage(
+                          boxFit: BoxFit.fitHeight,
+                          imageBorderRadius: 20,
+                          imageString: categoriesModel.images.image,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                        ))
                   ],
                 ),
                 SizedBox(height: 20),

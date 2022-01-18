@@ -24,6 +24,26 @@ class CategoriesService {
       return '402';
     }
   }
+
+  Future<String> updateCategory(Map<String, dynamic> postData) async {
+    try {
+      return await httpApiService.post(HttApi.API_UPDATE_CATEGORY, postData, {}, new Options(headers: HttpConfig.headers)).then((value) {
+        return value.data[0]['status'];
+      });
+    } catch (e) {
+      return '402';
+    }
+  }
+
+  Future<String> deleteCategory(String id) async {
+    try {
+      return await httpApiService.post(HttApi.API_DELETE_CATEGORY, {'id': id}, {}, new Options(headers: HttpConfig.headers)).then((value) {
+        return value.data[0]['status'];
+      });
+    } catch (e) {
+      return '402';
+    }
+  }
 }
 
 CategoriesService categoriesService = CategoriesService();

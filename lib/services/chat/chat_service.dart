@@ -67,7 +67,6 @@ class ChatService {
 
   Future<String> addAttachmentToFirebase(String createdDate, XFile? file) async {
     File getFile = File(file!.path);
-
     String fileName = path.basename(file.path);
     String name = DateHelper.format(DateTime.parse(createdDate), dateFormatddMMyyy) + fileName;
 

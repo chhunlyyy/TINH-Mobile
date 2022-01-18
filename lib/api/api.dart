@@ -44,6 +44,11 @@ class HttApi {
   static const String API_DELETE_PHONE_BRAND = '/delete-brand';
   //
 
+  //
+  static const String API_UPDATE_CATEGORY = '/update-category';
+  static const String API_DELETE_CATEGORY = '/delete-category';
+  //
+
   static const String API_USER_CHECK_TOKEN = '/check-token';
   static const String API_USER_LOGIN = '/login';
   static const String API_USER_LOGOUT = '/logout';

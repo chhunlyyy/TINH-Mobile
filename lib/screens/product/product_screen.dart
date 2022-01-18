@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:tinh/const/colors_conts.dart';
+import 'package:tinh/const/user_status.dart';
+import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/helper/widget_helper.dart';
 import 'package:tinh/models/categories/categories_model.dart';
+import 'package:tinh/screens/categories/categories_screen.dart';
 import 'package:tinh/screens/product/components/product_item.dart';
+import 'package:tinh/screens/update_category/update_category.dart';
+import 'package:tinh/services/categories/categories_service.dart';
+import 'package:tinh/services/image/image_service.dart';
 import 'package:tinh/store/main/main_store.dart';
+import 'package:tinh/widgets/show_image_widget.dart';
 
 class ProductScreen extends StatefulWidget {
   final CategoriesModel categoriesModel;
@@ -22,6 +29,62 @@ class _ProductScreenState extends State<ProductScreen> {
   int _pageIndex = 0;
 
   TextEditingController _searchController = TextEditingController();
+
+  void _onDelete() {
+    Future.delayed(Duration.zero).whenComplete(() {
+      _mainStore.productStore.productModelList.clear();
+      _mainStore.productStore
+          .loadData(
+        pageSize: 10,
+        pageIndex: 0,
+        categoryId: widget.categoriesModel.id,
+      )
+          .whenComplete(() {
+        if (_mainStore.productStore.productModelList.isNotEmpty) {
+          AwesomeDialog(
+            dismissOnTouchOutside: false,
+            context: context,
+            dialogType: DialogType.INFO,
+            borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+            width: MediaQuery.of(context).size.width,
+            buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+            headerAnimationLoop: false,
+            animType: AnimType.BOTTOMSLIDE,
+            desc: 'មិនអនុញ្ញាតអោយលុបប្រភេទផលិតផលនេះទេ',
+            showCloseIcon: false,
+            btnOkOnPress: () {},
+          )..show();
+        } else {
+          AwesomeDialog(
+            dismissOnTouchOutside: false,
+            context: context,
+            dialogType: DialogType.QUESTION,
+            borderSide: BorderSide(color: ColorsConts.primaryColor, width: 2),
+            width: MediaQuery.of(context).size.width,
+            buttonsBorderRadius: BorderRadius.all(Radius.circular(2)),
+            headerAnimationLoop: false,
+            animType: AnimType.BOTTOMSLIDE,
+            desc: 'តើអ្នកពិតជាចង់លុបប្រភេទផលិតផលនេះមែនទេ ?',
+            showCloseIcon: false,
+            btnCancelOnPress: () {},
+            btnOkOnPress: () {
+              Future.delayed(Duration.zero, () async {
+                await categoriesService.deleteCategory(widget.categoriesModel.id.toString());
+                await imageService.deleteImage([widget.categoriesModel.images]);
+
+                _mainStore.categoriesStore.categoriesList.clear();
+                _mainStore.categoriesStore.loadData().whenComplete(() {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  NavigationHelper.push(context, CategoriesScreen(title: 'សម្ភារៈផ្សេងៗ'));
+                });
+              });
+            },
+          )..show();
+        }
+      });
+    });
+  }
 
   void _onSearch(String text) {
     _pageSize = 6;
@@ -50,7 +113,7 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget _buildBody() {
     return Column(
       children: [
-        WidgetHelper.appBar(context, widget.categoriesModel.name),
+        isShopOwner ? _titleWidget() : WidgetHelper.appBar(context, widget.categoriesModel.name),
         SizedBox(height: 20),
         Row(
           children: [
@@ -166,5 +229,95 @@ class _ProductScreenState extends State<ProductScreen> {
               }));
     }
     return content;
+  }
+
+  Widget _titleWidget() {
+    return Container(
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(
+          color: Colors.grey.withOpacity(.4),
+          blurRadius: 2,
+          spreadRadius: 2,
+          offset: Offset(0, 1),
+        )
+      ]),
+      margin: EdgeInsets.only(top: 10),
+      padding: EdgeInsets.symmetric(vertical: 5),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Container(
+                margin: EdgeInsets.only(left: 10),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(100),
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: () => Navigator.pop(context),
+                        child: Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(left: 5),
+                            child: Icon(
+                              Icons.arrow_back_ios,
+                              size: 25,
+                              color: ColorsConts.primaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )),
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(color: Colors.grey.withOpacity(.1), shape: BoxShape.circle),
+              ),
+              Expanded(
+                  child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  isShopOwner ? SizedBox(width: 20) : SizedBox.shrink(),
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.only(left: 20),
+                      height: 50,
+                      alignment: Alignment.center,
+                      child: Text(
+                        widget.categoriesModel.name,
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ),
+                  isShopOwner ? Expanded(child: SizedBox()) : SizedBox.shrink(),
+                  isShopOwner
+                      ? AnimatedButton(
+                          width: 80,
+                          pressEvent: () {
+                            NavigationHelper.push(context, UpdateCategoryScreen(mainStore: _mainStore, categoriesModel: widget.categoriesModel));
+                          },
+                          text: 'កែប្រែ',
+                        )
+                      : SizedBox.shrink(),
+                  isShopOwner ? SizedBox(width: 10) : SizedBox.shrink(),
+                  isShopOwner
+                      ? AnimatedButton(
+                          width: 80,
+                          pressEvent: _onDelete,
+                          text: 'លុប',
+                          color: Colors.red,
+                        )
+                      : SizedBox.shrink(),
+                  SizedBox(width: isShopOwner ? 10 : MediaQuery.of(context).size.width / 8),
+                ],
+              ))
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

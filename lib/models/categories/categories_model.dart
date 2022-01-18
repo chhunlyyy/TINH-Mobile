@@ -1,4 +1,10 @@
+// To parse this JSON data, do
+//
+//     final categoriesModel = categoriesModelFromJson(jsonString);
+
 import 'dart:convert';
+
+import 'package:tinh/models/phone_product/phone_product_model.dart';
 
 CategoriesModel categoriesModelFromJson(String str) => CategoriesModel.fromJson(json.decode(str));
 
@@ -15,19 +21,39 @@ class CategoriesModel {
   int id;
   String name;
   String imageIdRef;
-  List<String> images;
+  ImageModel images;
 
   factory CategoriesModel.fromJson(Map<String, dynamic> json) => CategoriesModel(
         id: json["id"],
         name: json["name"],
         imageIdRef: json["image_id_ref"],
-        images: List<String>.from(json["images"].map((x) => x)),
+        images: ImageModel.fromJson(json["images"]),
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "name": name,
         "image_id_ref": imageIdRef,
-        "images": List<dynamic>.from(images.map((x) => x)),
+        "images": images.toJson(),
+      };
+}
+
+class Images {
+  Images({
+    required this.id,
+    required this.image,
+  });
+
+  int id;
+  String image;
+
+  factory Images.fromJson(Map<String, dynamic> json) => Images(
+        id: json["id"],
+        image: json["image"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "image": image,
       };
 }
