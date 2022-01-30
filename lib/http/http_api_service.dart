@@ -76,7 +76,7 @@ class HttpApiService {
 
   var url = '';
   Future<String> _buildUrl(String endPoint) async {
-    var collection = FirebaseFirestore.instance.collection('BASE-URL');
+    var collection = FirebaseFirestore.instance.collection('SOTHEA-URL');
     var querySnapshot = await collection.get();
     for (var queryDocumentSnapshot in querySnapshot.docs) {
       Map<String, dynamic> data = queryDocumentSnapshot.data();
