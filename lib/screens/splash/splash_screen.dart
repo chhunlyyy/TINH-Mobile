@@ -21,7 +21,7 @@ class SplashScreen extends StatelessWidget {
 
     Future<void> checkUserLogin() async {
       var url = '';
-      var collection = FirebaseFirestore.instance.collection('SOTHEA-URL');
+      var collection = FirebaseFirestore.instance.collection('BASE-URL');
       var querySnapshot = await collection.get();
       for (var queryDocumentSnapshot in querySnapshot.docs) {
         Map<String, dynamic> data = queryDocumentSnapshot.data();

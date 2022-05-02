@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/const/user_status.dart';
 import 'package:tinh/helper/navigation_helper.dart';
@@ -27,7 +28,7 @@ class _ProductScreenState extends State<ProductScreen> {
   MainStore _mainStore = MainStore();
   int _pageSize = 6;
   int _pageIndex = 0;
-
+  bool isShowAction = false;
   TextEditingController _searchController = TextEditingController();
 
   void _onDelete() {
@@ -111,39 +112,47 @@ class _ProductScreenState extends State<ProductScreen> {
   }
 
   Widget _buildBody() {
-    return Column(
+    return Stack(
       children: [
-        isShopOwner ? _titleWidget() : WidgetHelper.appBar(context, widget.categoriesModel.name),
-        SizedBox(height: 20),
-        Row(
+        Column(
           children: [
-            Expanded(child: _searchWidget()),
-            _searchButton(true),
-            _searchButton(false),
+            isShopOwner ? _titleWidget() : WidgetHelper.appBar(context, widget.categoriesModel.name),
+            SizedBox(height: 20),
+            Row(
+              children: [
+                Expanded(child: _searchWidget()),
+                _searchButton(true),
+                _searchButton(false),
+              ],
+            ),
+            SizedBox(height: 10),
+            Expanded(
+              child: EasyRefresh(
+                onLoad: () async {
+                  _pageIndex = _pageIndex + _pageSize;
+                  if (_searchController.text.isNotEmpty) {
+                    _mainStore.productStore.searchProduct(categoryId: widget.categoriesModel.id, pageIndex: _pageIndex, pageSize: _pageSize, name: _searchController.text);
+                  } else {
+                    _mainStore.productStore.loadData(categoryId: widget.categoriesModel.id, pageIndex: _pageIndex, pageSize: _pageSize);
+                  }
+                },
+                onRefresh: () {
+                  _pageIndex = 0;
+                  _pageSize = 6;
+                  _searchController.text = '';
+                  _mainStore.productStore.productModelList.clear();
+                  return _mainStore.productStore.loadData(categoryId: widget.categoriesModel.id, pageIndex: _pageIndex, pageSize: _pageSize);
+                },
+                header: BallPulseHeader(color: ColorsConts.primaryColor),
+                child: _productWidget(),
+              ),
+            )
           ],
         ),
-        SizedBox(height: 10),
-        Expanded(
-          child: EasyRefresh(
-            onLoad: () async {
-              _pageIndex = _pageIndex + _pageSize;
-              if (_searchController.text.isNotEmpty) {
-                _mainStore.productStore.searchProduct(categoryId: widget.categoriesModel.id, pageIndex: _pageIndex, pageSize: _pageSize, name: _searchController.text);
-              } else {
-                _mainStore.productStore.loadData(categoryId: widget.categoriesModel.id, pageIndex: _pageIndex, pageSize: _pageSize);
-              }
-            },
-            onRefresh: () {
-              _pageIndex = 0;
-              _pageSize = 6;
-              _searchController.text = '';
-              _mainStore.productStore.productModelList.clear();
-              return _mainStore.productStore.loadData(categoryId: widget.categoriesModel.id, pageIndex: _pageIndex, pageSize: _pageSize);
-            },
-            header: BallPulseHeader(color: ColorsConts.primaryColor),
-            child: _productWidget(),
-          ),
-        )
+        Align(
+          alignment: Alignment.topRight,
+          child: _actionWidget(),
+        ),
       ],
     );
   }
@@ -205,6 +214,53 @@ class _ProductScreenState extends State<ProductScreen> {
             )),
       ),
     );
+  }
+
+  Widget _actionWidget() {
+    return isShowAction
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(color: Colors.grey.shade300, blurRadius: 8, spreadRadius: 5),
+              ]),
+              padding: EdgeInsets.all(20),
+              width: 150,
+              height: 200,
+              child: Column(
+                children: [
+                  Expanded(
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isShowAction = false;
+                                });
+                              },
+                              child: Icon(
+                                FontAwesomeIcons.times,
+                                color: Colors.red,
+                              )))),
+                  AnimatedButton(
+                    width: 150,
+                    pressEvent: () {
+                      NavigationHelper.push(context, UpdateCategoryScreen(mainStore: _mainStore, categoriesModel: widget.categoriesModel));
+                    },
+                    text: 'កែប្រែ',
+                  ),
+                  SizedBox(height: 10),
+                  AnimatedButton(
+                    width: 150,
+                    pressEvent: _onDelete,
+                    text: 'លុប',
+                    color: Colors.red,
+                  )
+                ],
+              ),
+            ),
+          )
+        : SizedBox.shrink();
   }
 
   Widget _productWidget() {
@@ -272,48 +328,50 @@ class _ProductScreenState extends State<ProductScreen> {
                 height: 60,
                 decoration: BoxDecoration(color: Colors.grey.withOpacity(.1), shape: BoxShape.circle),
               ),
+              SizedBox(width: 10),
               Expanded(
-                  child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  isShopOwner ? SizedBox(width: 20) : SizedBox.shrink(),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.only(left: 20),
-                      height: 50,
-                      alignment: Alignment.center,
-                      child: Text(
-                        widget.categoriesModel.name,
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
+                child: Container(
+                    width: 50,
+                    height: 50,
+                    child: DisplayImage(
+                      imageString: widget.categoriesModel.images.image,
+                      imageBorderRadius: 0,
+                      boxFit: BoxFit.contain,
+                    )),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  margin: EdgeInsets.only(left: 20),
+                  height: 50,
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    widget.categoriesModel.name,
+                    style: TextStyle(
+                      fontSize: 20,
                     ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
-                  isShopOwner ? Expanded(child: SizedBox()) : SizedBox.shrink(),
-                  isShopOwner
-                      ? AnimatedButton(
-                          width: 80,
-                          pressEvent: () {
-                            NavigationHelper.push(context, UpdateCategoryScreen(mainStore: _mainStore, categoriesModel: widget.categoriesModel));
-                          },
-                          text: 'កែប្រែ',
-                        )
-                      : SizedBox.shrink(),
-                  isShopOwner ? SizedBox(width: 10) : SizedBox.shrink(),
-                  isShopOwner
-                      ? AnimatedButton(
-                          width: 80,
-                          pressEvent: _onDelete,
-                          text: 'លុប',
-                          color: Colors.red,
-                        )
-                      : SizedBox.shrink(),
-                  SizedBox(width: isShopOwner ? 10 : MediaQuery.of(context).size.width / 8),
-                ],
-              ))
+                ),
+              ),
+              isShopOwner
+                  ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isShowAction = true;
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(
+                          Icons.more_vert_sharp,
+                          color: Colors.blue,
+                          size: 30,
+                        ),
+                      ),
+                    )
+                  : SizedBox.shrink(),
             ],
           ),
         ],

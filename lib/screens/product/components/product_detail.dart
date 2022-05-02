@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:tinh/const/animated_button.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/helper/navigation_helper.dart';
 import 'package:tinh/models/product/product_model.dart';
@@ -90,28 +91,36 @@ class _ProductDetailState extends State<ProductDetail> {
       builder: (_) {
         return Material(
             child: SafeArea(
-          child: Column(
-            children: [
-              _appBar(),
-              Expanded(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        _imageWidget(),
-                        _nameLabel(),
-                        SizedBox(height: 10),
-                        _detailWidget(),
-                      ],
+                child: Stack(
+          children: [
+            Column(
+              children: [
+                _appBar(),
+                Expanded(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          _imageWidget(),
+                          _nameLabel(),
+                          SizedBox(height: 10),
+                          _detailWidget(),
+                          SizedBox(height: 100),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ));
+              ],
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: _addToCartWidget(),
+            ),
+          ],
+        )));
       },
     );
   }
@@ -424,6 +433,19 @@ class _ProductDetailState extends State<ProductDetail> {
           ),
         )
       ],
+    );
+  }
+
+  Widget _addToCartWidget() {
+    return Container(
+      child: CustomeAnimatedButton(
+        title: "កក់ផលិតផលនេះ",
+        onTap: () {},
+        isShowShadow: true,
+        width: MediaQuery.of(context).size.width - 20,
+        hegith: 50,
+        backgroundColor: ColorsConts.primaryColor,
+      ),
     );
   }
 }

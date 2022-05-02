@@ -1,7 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
-import 'package:provider/provider.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:flutter/material.dart';
 import 'package:tinh/helper/navigation_helper.dart';
@@ -31,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
   TextEditingController _searchController = TextEditingController();
   MainStore _mainStore = MainStore();
 
-  ScrollController _scrollController = ScrollController();
   ZoomDrawerController _drawerController = ZoomDrawerController();
 
   int _pageSize = 6;

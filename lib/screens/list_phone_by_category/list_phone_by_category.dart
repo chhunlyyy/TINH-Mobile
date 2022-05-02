@@ -2,6 +2,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tinh/const/colors_conts.dart';
 import 'package:tinh/const/user_status.dart';
 import 'package:tinh/helper/navigation_helper.dart';
@@ -29,6 +30,8 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
   int pageSize = 6;
   int pageIndex = 0;
   int categoryIndex = 0;
+
+  bool isShowAction = false;
 
   Future<void> _loadPhone() async {
     if (categoryIndex == 0) {
@@ -135,14 +138,22 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
   }
 
   Widget _buildBody() {
-    return Container(
-      child: Column(
-        children: [
-          _titleWidget(),
-          SizedBox(height: 5),
-          Expanded(child: _productWidget()),
-        ],
-      ),
+    return Stack(
+      children: [
+        Container(
+          child: Column(
+            children: [
+              _titleWidget(),
+              SizedBox(height: 5),
+              Expanded(child: _productWidget()),
+            ],
+          ),
+        ),
+        Align(
+          alignment: Alignment.topRight,
+          child: _actionWidget(),
+        ),
+      ],
     );
   }
 
@@ -219,6 +230,53 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
     return _content;
   }
 
+  Widget _actionWidget() {
+    return isShowAction
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Container(
+              decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                BoxShadow(color: Colors.grey.shade300, blurRadius: 8, spreadRadius: 5),
+              ]),
+              padding: EdgeInsets.all(20),
+              width: 150,
+              height: 200,
+              child: Column(
+                children: [
+                  Expanded(
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isShowAction = false;
+                                });
+                              },
+                              child: Icon(
+                                FontAwesomeIcons.times,
+                                color: Colors.red,
+                              )))),
+                  AnimatedButton(
+                    width: 150,
+                    pressEvent: () {
+                      NavigationHelper.push(context, UpdateBrandScreen(mainStore: widget.mainStore, phoneBrandModel: widget.phoneBrandModel));
+                    },
+                    text: 'កែប្រែ',
+                  ),
+                  SizedBox(height: 10),
+                  AnimatedButton(
+                    width: 150,
+                    pressEvent: onDeleteBrand,
+                    text: 'លុប',
+                    color: Colors.red,
+                  )
+                ],
+              ),
+            ),
+          )
+        : SizedBox.shrink();
+  }
+
   Widget _titleWidget() {
     return Container(
       decoration: BoxDecoration(color: Colors.white, boxShadow: [
@@ -265,22 +323,25 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   isShopOwner ? SizedBox(width: 20) : SizedBox.shrink(),
-                  Container(
-                      width: 50,
-                      height: 50,
-                      child: DisplayImage(
-                        imageString: widget.phoneBrandModel.images.image,
-                        imageBorderRadius: 0,
-                        boxFit: BoxFit.contain,
-                      )),
                   Expanded(
+                    child: Container(
+                        width: 50,
+                        height: 50,
+                        child: DisplayImage(
+                          imageString: widget.phoneBrandModel.images.image,
+                          imageBorderRadius: 0,
+                          boxFit: BoxFit.contain,
+                        )),
+                  ),
+                  Expanded(
+                    flex: 2,
                     child: Container(
                       margin: EdgeInsets.only(left: 20),
                       height: 50,
                       alignment: Alignment.center,
                       child: Text(
                         widget.phoneBrandModel.name,
-                        style: TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 14, color: ColorsConts.primaryColor),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -288,24 +349,22 @@ class _ListPhoneByCategoryState extends State<ListPhoneByCategory> {
                   ),
                   isShopOwner ? Expanded(child: SizedBox()) : SizedBox.shrink(),
                   isShopOwner
-                      ? AnimatedButton(
-                          width: 80,
-                          pressEvent: () {
-                            NavigationHelper.push(context, UpdateBrandScreen(mainStore: widget.mainStore, phoneBrandModel: widget.phoneBrandModel));
+                      ? GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              isShowAction = true;
+                            });
                           },
-                          text: 'កែប្រែ',
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.more_vert_sharp,
+                              color: Colors.blue,
+                              size: 30,
+                            ),
+                          ),
                         )
                       : SizedBox.shrink(),
-                  isShopOwner ? SizedBox(width: 10) : SizedBox.shrink(),
-                  isShopOwner
-                      ? AnimatedButton(
-                          width: 80,
-                          pressEvent: onDeleteBrand,
-                          text: 'លុប',
-                          color: Colors.red,
-                        )
-                      : SizedBox.shrink(),
-                  SizedBox(width: isShopOwner ? 10 : MediaQuery.of(context).size.width / 8),
                 ],
               ))
             ],
